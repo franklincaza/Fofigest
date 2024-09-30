@@ -1,4 +1,433 @@
-from flask import Flask, flash, redirect, render_template, request, session, url_for,jsonify,session, send_file
+analiza este templade de :
+
+```
+{% extends 'Base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container-fluid bg-light py-5">
+    <div class="card p-4 shadow">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-center">TAREAS</h2>
+            {% if session['username'] == "admin" %}
+            <button type="button" class="btn btn-primary btn-lg d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico()">
+                <span class="material-icons-outlined mr-2">add</span>
+                <span>Agregar Tarea</span>
+            </button>
+            {% endif %}
+        </div>
+        
+        <!-- Filtros -->
+        <form method="GET" action="/tareas">
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <label for="estado">Filtrar Estado</label>
+                    <select class="form-control" id="estado" name="estado" onchange="this.form.submit();">
+                        <option value="" {% if not estado %}selected{% endif %}>Todos los estados</option>
+                        <option value="PENDIENTE" {% if estado == "PENDIENTE" %}selected{% endif %}>PENDIENTE</option>
+                        <option value="PROGRESO" {% if estado == "PROGRESO" %}selected{% endif %}>PROGRESO</option>
+                        <option value="REVISIÓN" {% if estado == "REVISIÓN" %}selected{% endif %}>REVISIÓN</option>
+                        <option value="IMPEDIMENTOS" {% if estado == "IMPEDIMENTOS" %}selected{% endif %}>IMPEDIMENTOS</option>
+                        <option value="COMPLETADOS" {% if estado == "COMPLETADOS" %}selected{% endif %}>COMPLETADOS</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="responsable">Filtrar Responsables</label>
+                    <select class="form-control" id="responsable" name="responsable" onchange="this.form.submit();">
+                        <option value="" {% if not responsable %}selected{% endif %}>Todos los responsables</option>
+                        {% for usuario in usuarios %}
+                        <option value="{{ usuario.nombres }}" {% if responsable == usuario.nombres %}selected{% endif %}>
+                            {{ usuario.nombres }} {{ usuario.apellidos }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="proyecto">Filtrar Proyecto</label>
+                    <select class="form-control" id="proyecto" name="proyecto" onchange="this.form.submit();">
+                        <option value="" {% if not proyecto_filtro %}selected{% endif %}>Todos los proyectos</option>
+                        {% for proyecto_item in proyectos %}
+                        <option value="{{ proyecto_item.codigo_proyecto }}" {% if proyecto_filtro == proyecto_item.codigo_proyecto %}selected{% endif %}>
+                            {{ proyecto_item.nombre_proyecto }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="empresa">Filtrar Empresa</label>
+                    <select class="form-control" id="empresa" name="empresa" onchange="this.form.submit();">
+                        <option value="" {% if not empresa_filtro %}selected{% endif %}>Todas las empresas</option>
+                        {% for empresa_item in empresas %}
+                        <option value="{{ empresa_item.empresa }}" {% if empresa_filtro == empresa_item.empresa %}selected{% endif %}>
+                            {{ empresa_item.empresa }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <!-- Tabla de Tareas -->
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>EMPRESA</th>
+                            <th>CODIGO PROYECTO</th>
+                            <th>CODIGO TAREA</th>
+                            <th>TITULO</th>
+                            <th>DESCRIPCION</th>
+                            <th>FECHA INICIO</th>
+                            <th>FECHA FIN</th>
+                            <th>HORAS DEDICADAS</th>
+                            <th>HORAS ESTIMADAS</th>
+                            <th>FECHA FACTURACION</th>
+                            <th>ESTADO</th>
+                            <th>RESPONSABLE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tarea in tareas %}
+                        <tr>
+                            <td class="position-relative" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})" onmouseover="showDeleteIcon({{ tarea.id }})" onmouseout="hideDeleteIcon({{ tarea.id }})">
+                                {{ tarea.id }}
+                                <span class="delete-icon material-icons-outlined position-absolute text-danger" id="delete-icon-{{ tarea.id }}" style="display: none; right: 5px; cursor: pointer;" onclick="event.stopPropagation(); eliminarTarea({{ tarea.id }})">delete</span>
+                            </td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>                               
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_tarea }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_estimadas }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_facturacion }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.estado }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.responsable }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Crear/Editar Tareas -->
+<div class="modal fade modal-fullscreen-xxl-down" id="tareasform" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para Crear/Editar tareas -->
+                <form id="formTarea" method="POST">
+                    <input type="hidden" id="tareaId" name="tareaId" />
+
+                    <div class="form-group">
+                        <label for="Empresa">Empresa</label>
+                        <select class="form-control" id="empresa" name="empresa" required>
+                            <option value="" disabled selected>Selecciona la empresa</option>
+                            {% for empresa_item in empresas %}
+                            <option value="{{ empresa_item.empresa }}">{{ empresa_item.empresa }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="Proyecto">Proyecto</label>
+                        <select class="form-control" id="codigo_proyecto" name="codigo_proyecto" required>
+                            <option value="" disabled selected>Selecciona el proyecto</option>
+                            {% for proyecto_item in proyectos %}
+                            <option value="{{ proyecto_item.codigo_proyecto }}">{{ proyecto_item.nombre_proyecto }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codigo_tarea">Código Tarea</label>
+                        <input type="text" class="form-control" id="codigo_tarea" name="codigo_tarea" onclick="generarCodigoUnico()" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titulo">Título</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_inicio">Fecha Inicio</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_fin">Fecha Fin</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_estimadas">Horas Estimadas</label>
+                        <input type="number" class="form-control" id="horas_estimadas" name="horas_estimadas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_dedicadas">Horas Dedicadas</label>
+                        <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_facturacion">Fecha Facturación</label>
+                        <input type="date" class="form-control" id="fecha_facturacion" name="fecha_facturacion">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <select class="form-control" id="estado" name="estado" required>
+                            <option value="PENDIENTE" selected>PENDIENTE</option>
+                            <option value="PROGRESO">PROGRESO</option>
+                            <option value="REVISIÓN">REVISIÓN</option>
+                            <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
+                            {% if session['username'] == "admin" %}
+                            <option value="COMPLETADOS">COMPLETADOS</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responsable">Responsable</label>
+                        <select class="form-control" id="responsable" name="responsable" required>
+                            <option value="" disabled selected>Selecciona el responsable</option>
+                            {% for usuario in usuarios %}
+                            <option value="{{ usuario.nombres }}">{{ usuario.nombres }} {{ usuario.apellidos }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showDeleteIcon(id) {
+        document.getElementById('delete-icon-' + id).style.display = 'inline';
+    }
+    
+    function editarTarea(id) {
+        // Obtener los detalles de la tarea por ID y rellenar el formulario para editar
+        fetch(`/tareas/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('tareaId').value = data.id;
+            document.getElementById('empresa').value = data.empresa;
+            document.getElementById('codigo_proyecto').value = data.codigo_proyecto;
+            document.getElementById('codigo_tarea').value = data.codigo_tarea;
+            document.getElementById('titulo').value = data.titulo;
+            document.getElementById('descripcion').value = data.descripcion;
+            document.getElementById('fecha_inicio').value = data.fecha_inicio.split('T')[0];
+            document.getElementById('fecha_fin').value = data.fecha_fin ? data.fecha_fin.split('T')[0] : '';
+            document.getElementById('horas_estimadas').value = data.horas_estimadas;
+            document.getElementById('horas_dedicadas').value = data.horas_dedicadas;
+            document.getElementById('estado').value = data.estado;
+            document.getElementById('responsable').value = data.responsable;
+        });
+    }
+    
+    function eliminarTarea(id) {
+        if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
+            fetch(`/tareas/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        }
+    }
+    
+    document.getElementById('formTarea').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        const id = document.getElementById('tareaId').value;
+        const method = id ? 'PUT' : 'POST';  // Usar PUT si es edición, POST si es creación
+        const url = id ? `/tareas/${id}` : '/tareas';
+    
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                empresa: document.getElementById('empresa').value,
+                codigo_proyecto: document.getElementById('codigo_proyecto').value,
+                codigo_tarea: document.getElementById('codigo_tarea').value,
+                titulo: document.getElementById('titulo').value,
+                descripcion: document.getElementById('descripcion').value,
+                fecha_inicio: document.getElementById('fecha_inicio').value,
+                fecha_fin: document.getElementById('fecha_fin').value,
+                horas_estimadas: document.getElementById('horas_estimadas').value,
+                horas_dedicadas: document.getElementById('horas_dedicadas').value,
+                estado: document.getElementById('estado').value,
+                responsable: document.getElementById('responsable').value
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            }
+        });
+    });
+    
+    function limpiarFormulario() {
+        document.getElementById('formTarea').reset();
+        document.getElementById('tareaId').value = '';
+    }
+    
+    function generarCodigoUnico() {
+        const now = new Date();
+        const timestamp = now.getFullYear().toString() + 
+                          (now.getMonth() + 1).toString().padStart(2, '0') + 
+                          now.getDate().toString().padStart(2, '0') + 
+                          now.getHours().toString().padStart(2, '0') + 
+                          now.getMinutes().toString().padStart(2, '0') + 
+                          now.getSeconds().toString().padStart(2, '0') + 
+                          now.getMilliseconds().toString().padStart(3, '0');
+        
+        const randomPart = Math.random().toString(36).substring(2, 10);
+    
+        const uniqueCode = `${timestamp}-${randomPart}`;
+    
+        document.getElementById('codigo_tarea').value = uniqueCode;  // Asignar el código al input de 'codigo'
+        return uniqueCode;
+    }
+    </script>
+    {% endblock %}
+    
+
+
+
+```
+ahora analiza este models:
+```
+# models.py
+
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+
+# Initialize the SQLAlchemy instance
+db = SQLAlchemy()
+
+class Empresas(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    nit = db.Column(db.String(20), nullable=False, unique=True)
+    empresa = db.Column(db.String(100), nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'nit': self.nit,
+            'empresa': self.empresa
+        }
+
+class Proyecto(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    empresa = db.Column(db.String(100), nullable=False)
+    codigo_proyecto = db.Column(db.String(50), nullable=False, unique=True)
+    nombre_proyecto = db.Column(db.String(100), nullable=False)
+    descripcion_proyecto = db.Column(db.Text, nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'empresa': self.empresa,
+            'codigo_proyecto': self.codigo_proyecto,
+            'nombre_proyecto': self.nombre_proyecto,
+            'descripcion_proyecto': self.descripcion_proyecto
+        }
+
+class Tareas(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    empresa = db.Column(db.String(100), nullable=False)
+    codigo_proyecto = db.Column(db.String(50), nullable=False)
+    codigo_tarea = db.Column(db.String(50), nullable=False, unique=True)
+    titulo = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.Text, nullable=False)  # Se mantiene db.Text para permitir cualquier tamaño de texto
+    fecha_inicio = db.Column(db.Date, nullable=False)  # Fecha de inicio del proyecto
+    fecha_fin = db.Column(db.Date, nullable=True)  # Fecha de fin del proyecto
+    responsable = db.Column(db.String(100), nullable=False)  # Responsable asignado a la tarea
+    horas_dedicadas = db.Column(db.Float, nullable=False, default=0)  # Horas dedicadas
+    horas_estimadas = db.Column(db.Float, nullable=False)  # Horas estimadas para completar la tarea
+    fecha_facturacion = db.Column(db.Date, nullable=True)  # Fecha de facturación
+    estado = db.Column(db.Enum('PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS', name='estado_tarea'), nullable=False, default='PENDIENTE')  # Estado de la tarea
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'empresa': self.empresa,
+            'codigo_proyecto': self.codigo_proyecto,
+            'codigo_tarea': self.codigo_tarea,
+            'titulo': self.titulo,
+            'descripcion': self.descripcion,
+            'fecha_inicio': self.fecha_inicio.strftime('%Y-%m-%d') if self.fecha_inicio else None,
+            'fecha_fin': self.fecha_fin.strftime('%Y-%m-%d') if self.fecha_fin else None,
+            'responsable': self.responsable,
+            'horas_dedicadas': self.horas_dedicadas,
+            'horas_estimadas': self.horas_estimadas,
+            'fecha_facturacion': self.fecha_facturacion.strftime('%Y-%m-%d') if self.fecha_facturacion else None,
+            'estado': self.estado
+        }
+
+class SubTareas(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    codigo_tarea = db.Column(db.String(50), nullable=False)
+    titulo = db.Column(db.String(100), nullable=False)
+    descripcion = db.Column(db.Text, nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'codigo_tarea': self.codigo_tarea,
+            'titulo': self.titulo,
+            'descripcion': self.descripcion
+        }
+
+class Usuarios(UserMixin,db.Model):
+    __tablename__ = 'usuarios'
+    id = db.Column(db.Integer, primary_key=True)
+    nombres = db.Column(db.String(50))
+    apellidos = db.Column(db.String(50))
+    correo = db.Column(db.String(100), unique=True)
+    contraseña = db.Column(db.String(100))
+    empresa = db.Column(db.String(50))
+    permisos = db.Column(db.String(20))
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'nombres': self.nombres,
+            'apellidos': self.apellidos,
+            'empresa': self.empresa,
+            'correo': self.correo,
+            'permisos': self.permisos
+        }
+```
+ahora analiza tambien el el modulo app:
+```
+# aap.py
+from flask import Flask, flash, redirect, render_template, request, session, url_for,jsonify,session
 from models import models  
 import config 
 from datetime import datetime
@@ -20,8 +449,6 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from werkzeug.security import check_password_hash
 from flask_ckeditor import CKEditor
 from sqlalchemy import or_, and_
-from io import BytesIO
-from waitress import serve
 
 
 
@@ -38,7 +465,7 @@ logging.basicConfig(
 
 # Inicialización de la aplicación Flask
 app = Flask(__name__)
-app.secret_key = 'GDSGODSGFY56D4F8asc8assS6854DCSX85Z13ZXC8478SD94C6XZ1asSDA6F48V4D615SVGZDS4ZV1_65CXZ<3F4'
+app.secret_key = 'clave_secreta'
 # Generador de tokens seguros
 serializer = URLSafeTimedSerializer(app.secret_key)
 
@@ -76,9 +503,6 @@ with app.app_context():
 @login_manager.user_loader
 def load_user(user_id):
     return models.Usuarios.query.get(int(user_id))
-
-
-
 
 #<___________________________________Vista___________________________________________________>
 
@@ -132,6 +556,8 @@ def buscar_tareas(clave_busqueda):
     return tareas
 
 
+
+
 # login 
 @app.route("/")
 def login():
@@ -154,12 +580,8 @@ def loginInp():
         session['username'] = usuario.permisos
         session['empresa'] = usuario.empresa
         session['correo'] = usuario.correo 
-
-        if  session['username'] == "admin" or session['username'] == "dev" :
-            return render_template("splash.html") # Redirigir al tablero
             
-        else:   
-            return render_template("splash.html") # Redirigir al tablero
+        return redirect(url_for('obtener_tareas_reporte') ) # Redirigir al tablero
           
     else:
         # Si no se encuentra el usuario o la contraseña es incorrecta
@@ -519,7 +941,6 @@ def obtener_tareas_reporte():
         return render_template('proyectos.html', proyectos=proyectos, empresas=empresas ,usuarios=usuarios)
 
 @app.route('/logout')
-@app.route('/Reporte-Horas/logout')
 @login_required
 def logout():
     logout_user()  # Cerrar sesión
@@ -527,138 +948,6 @@ def logout():
     session.pop('empresa', None)
     session.pop('correo', None)
     return redirect(url_for('login'))
-
-
-# Reporte de horas vista 
-@app.route('/Reporte-Horas<empresa>', methods=['GET'])
-@login_required
-def vista_reporte_Horas(empresa):
-    """
-    Obtener todas las tareas con los filtros seleccionados por empresa.
-    """
-    out=empresa
-    # Obtener los filtros seleccionados por el usuario
-    estado = request.args.get('estado', '')  # Filtro de estado
-    responsable = request.args.get('responsable', '')  # Filtro de responsable
-    proyecto = request.args.get('proyecto', '')  # Filtro de proyecto
-    empresa = request.args.get('empresa', '')  # Filtro de empresa
-
-    # Consulta base sin filtros
-    query = models.Tareas.query
-
-    if empresa == "Fofimatic S.A":
-        empresa = request.args.get('empresa', '')
-      
-        # Aplicar filtro de estado si existe
-        if estado:
-            query = query.filter(models.Tareas.estado == estado)
-
-        # Aplicar filtro de responsable si existe
-        if responsable:
-            query = query.filter(models.Tareas.responsable == responsable)
-
-        # Aplicar filtro de proyecto si existe
-        if proyecto:
-            query = query.filter(models.Tareas.codigo_proyecto == proyecto)
-
-        # Aplicar filtro de empresa si existe
-        if empresa:
-            query = query.filter(models.Tareas.empresa == out)
-
-            # Obtener los resultados de la consulta filtrada
-            tareas = query.all()
-    
-    else:
-        empresa = request.args.get('empresa', out) 
-        # Aplicar filtro de estado si existe
-        if estado:
-            query = query.filter(models.Tareas.estado == estado)
-
-        # Aplicar filtro de responsable si existe
-        if responsable:
-            query = query.filter(models.Tareas.responsable == responsable)
-
-        # Aplicar filtro de proyecto si existe
-        if proyecto:
-            query = query.filter(models.Tareas.codigo_proyecto == proyecto)
-
-        # Aplicar filtro de empresa si existe
-        if empresa:
-            query = query.filter(models.Tareas.empresa == out)
-
-            # Obtener los resultados de la consulta filtrada
-            tareas = query.all()
-
-    # Obtener datos adicionales para el formulario de filtrado
-    empresas = models.Empresas.query.all()
-    proyectos = models.Proyecto.query.all()
-    usuarios = models.Usuarios.query.all()
-
-    return render_template("Reporte de horas.html", tareas=tareas,
-                                        empresas=empresas,
-                                        proyectos=proyectos,
-                                        usuarios=usuarios)
-
-#Descarga del excel reporte → /Reporte-HorasDownloadFofimatic S.A
-@app.route('/Reporte-HorasDownload<empresa>', methods=['GET'])
-@login_required
-def reporte_excel_horas(empresa):
-    # Obtener los filtros seleccionados por el usuario
-    estado = request.args.get('estado', '')  # Filtro de estado
-    responsable = request.args.get('responsable', '')  # Filtro de responsable
-    proyecto = request.args.get('proyecto', '')  # Filtro de proyecto
-    empresa = request.args.get('empresa', empresa)  # Filtro de empresa
-
-    # Iniciar la consulta base
-    query = models.Tareas.query
-
-    # Aplicar filtros si existen
-    if estado:
-        query = query.filter(models.Tareas.estado == estado)
-
-    if responsable:
-        query = query.filter(models.Tareas.responsable == responsable)
-
-    if proyecto:
-        query = query.filter(models.Tareas.codigo_proyecto == proyecto)
-
-    if empresa:
-        query = query.filter(models.Tareas.empresa == empresa)
-
-    # Obtener los resultados de la consulta filtrada
-    tareas = query.all()
-
-    # Convertir los resultados en una lista de diccionarios
-    data = []
-    for tarea in tareas:
-        data.append({
-            'TIPO DE CONSUMO': tarea.tipo_consumo,
-            'CONSUMO': tarea.codigo_proyecto,
-            'TÍTULO': tarea.titulo,
-            'FECHA INICIO': tarea.fecha_inicio,
-            'FECHA LIMITE': tarea.fecha_fin,
-            'HORAS REGISTRADOS	': tarea.horas_dedicadas,
-            'MES': tarea.mes
-            # Añade otros campos necesarios
-        })
-
-    # Crear un DataFrame de pandas
-    reporte = pd.DataFrame(data)
-
-    # Crear un archivo Excel en memoria
-    output = BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        reporte.to_excel(writer, index=False)
-    output.seek(0)
-
-    # Enviar el archivo Excel como respuesta para descarga
-    return send_file(output, download_name='reporte.xlsx', as_attachment=True, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
-
-
-
-
-
 #</__________________________________Vista___________________________________________________>
 
 #<__________________________________ Tareas___________________________________________________>
@@ -752,7 +1041,6 @@ def actualizar_tarea(id):
     tarea.horas_estimadas = data.get('horas_estimadas', tarea.horas_estimadas)
     tarea.fecha_facturacion = datetime.strptime(data['fecha_facturacion'], '%Y-%m-%d') if 'fecha_facturacion' in data else tarea.fecha_facturacion
     tarea.estado = data.get('estado', tarea.estado)
-    tarea.mes = data.get('mes', tarea.mes)
 
     models.db.session.commit()
     return jsonify(tarea.serialize()), 200
@@ -1129,17 +1417,80 @@ def eliminar_usuario(id):
 
 if __name__ == '__main__':
     # Se obtiene la configuración de debug desde el archivo config.py
-    debug = config.config["debug"]
+    produccion = config.config["debug"]
     
-    if debug:
-        logging.info("mode de debug esta True ")
-        print("mode de debug esta True ")
-        app.run(host="0.0.0.0",debug=debug, port=5000)
-        
+    # Inicia el servidor Flask con debug activado (según configuración) en el puerto 5000
+    app.run(host="0.0.0.0",debug=produccion, port=5000)
 
-    else:
-        # Inicia el servidor Flask con debug activado (según configuración) en el puerto 5000
-        logging.info("mode de debug esta falso , aplicacion en producciion")
-        print("mode de debug esta falso , aplicacion en producciion")
-        serve(app,host="0.0.0.0", port=5000 , threads=2)
 
+
+
+```
+
+→ revisa tareas.html corrige los siguientes errores en la consola :
+
+Traceback (most recent call last):
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py", line 1619, in _object_value_for_elem
+    return self._object_lookup[elem]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: ''
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\flask\app.py", line 1498, in __call__
+    return self.wsgi_app(environ, start_response)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\flask\app.py", line 1476, in wsgi_app
+    response = self.handle_exception(e)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\app.py", line 172, in proyecto
+    tareas = models.Tareas.query.all()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 2673, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 1769, in all
+    return self._allrows()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 548, in _allrows
+    rows = self._fetchall_impl()
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 1676, in _fetchall_impl
+    return self._real_result._fetchall_impl()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 2270, in _fetchall_impl
+    return list(self.iterator)
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\orm\loading.py", line 219, in chunks
+    fetch = cursor._raw_all_rows()
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 541, in _raw_all_rows
+    return [make_row(row) for row in rows]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\engine\result.py", line 541, in <listcomp>
+    return [make_row(row) for row in rows]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "lib\\sqlalchemy\\cyextension\\resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
+  File "lib\\sqlalchemy\\cyextension\\resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py", line 1739, in process
+    value = self._object_value_for_elem(value)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\FofiGest\.venv\Lib\site-packages\sqlalchemy\sql\sqltypes.py", line 1621, in _object_value_for_elem
+    raise LookupError(
+LookupError: '' is not among the defined enum values. Enum name: estado_tarea. Possible values: PENDIENTE, PROGRESO, REVISIÓN, ..., COMPLETADOS
