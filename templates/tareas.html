@@ -1,0 +1,389 @@
+<!-- tareas.html -->
+
+{% extends 'Base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container-fluid bg-light py-5">
+    <div class="card p-4 shadow">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-center">TAREAS</h2>
+            {% if session['username'] == "admin" %}
+            <button type="button" class="btn btn-primary btn-lg d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico()">
+                <span class="material-icons-outlined mr-2">add</span>
+                <span>Agregar Tarea</span>
+            </button>
+            {% endif %}
+        </div>
+        
+        <!-- Filtros -->
+        <form method="GET" action="/tareas">
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <label for="estado">Filtrar Estado</label>
+                    <select class="form-control" id="estado" name="estado" onchange="this.form.submit();">
+                        <option value="" {% if not estado %}selected{% endif %}>Todos los estados</option>
+                        <option value="PENDIENTE" {% if estado == "PENDIENTE" %}selected{% endif %}>PENDIENTE</option>
+                        <option value="PROGRESO" {% if estado == "PROGRESO" %}selected{% endif %}>PROGRESO</option>
+                        <option value="REVISIÓN" {% if estado == "REVISIÓN" %}selected{% endif %}>REVISIÓN</option>
+                        <option value="IMPEDIMENTOS" {% if estado == "IMPEDIMENTOS" %}selected{% endif %}>IMPEDIMENTOS</option>
+                        <option value="COMPLETADOS" {% if estado == "COMPLETADOS" %}selected{% endif %}>COMPLETADOS</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="responsable">Filtrar Responsable</label>
+                    <select class="form-control" id="responsable" name="responsable" onchange="this.form.submit();">
+                        <option value="" {% if not responsable %}selected{% endif %}>Todos los responsables</option>
+                        {% for usuario in usuarios %}
+                        <option value="{{ usuario.nombres }} {{ usuario.apellidos }}" {% if responsable == usuario.nombres %}selected{% endif %}>
+                            {{ usuario.nombres }} {{ usuario.apellidos }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="proyecto">Filtrar Proyecto</label>
+                    <select class="form-control" id="proyecto" name="proyecto" onchange="this.form.submit();">
+                        <option value="" {% if not proyecto_filtro %}selected{% endif %}>Todos los proyectos</option>
+                        {% for proyecto_item in proyectos %}
+                        <option value="{{ proyecto_item.codigo_proyecto }}" {% if proyecto_filtro == proyecto_item.codigo_proyecto %}selected{% endif %}>
+                            {{ proyecto_item.nombre_proyecto }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="empresa">Filtrar Empresa</label>
+                    <select class="form-control" id="empresa" name="empresa" onchange="this.form.submit();">
+                        <option value="" {% if not empresa_filtro %}selected{% endif %}>Todas las empresas</option>
+                        {% for empresa_item in empresas %}
+                        <option value="{{ empresa_item.empresa }}" {% if empresa_filtro == empresa_item.empresa %}selected{% endif %}>
+                            {{ empresa_item.empresa }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <!-- Tabla de Tareas -->
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr>
+                            {% if session['username'] == "admin" %}
+                            <th>ID</th>
+                            {% endif %}
+                            <th>TIPO DE CONSUMO</th>
+                            <th>EMPRESA</th>
+                            <th>CÓDIGO PROYECTO</th>
+                            <th>CÓDIGO TAREA</th>
+                            <th>TÍTULO</th>
+                            <th>DESCRIPCIÓN</th>
+                            <th>FECHA INICIO</th>
+                            <th>FECHA FIN</th>
+                            <th>HORAS DEDICADAS</th>
+                            <th>HORAS ESTIMADAS</th>
+                            <th>FECHA FACTURACIÓN</th>
+                            <th>ESTADO</th>
+                            <th>RESPONSABLE</th>
+                            <th>MES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for tarea in tareas %}
+                        <tr>
+                            {% if session['username'] == "admin" %}
+                            <td class="position-relative" data-bs-toggle="modal" data-bs-target="#tareasform"  onmouseover="showDeleteIcon({{ tarea.id }})" onmouseout="hideDeleteIcon({{ tarea.id }})">
+                            
+                                {{ tarea.id }}
+                                
+                                <span class="delete-icon material-icons-outlined position-absolute text-danger" id="delete-icon-{{ tarea.id }}" style="display: none; right: 5px; cursor: pointer;" onclick="event.stopPropagation(); eliminarTarea({{ tarea.id }})">delete</span>
+                               
+                            </td>
+                            {% endif %}
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.tipo_consumo }}</td>   
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>                               
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_tarea }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_estimadas }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_facturacion }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.estado }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.responsable }}</td>
+                            <td data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.mes }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Crear/Editar Tareas -->
+<div class="modal fade modal-fullscreen-xxl-down" id="tareasform" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para Crear/Editar tareas -->
+                <form id="formTarea" method="POST">
+                    <input type="hidden" id="tareaId" name="tareaId" />
+
+                    <div class="form-group">
+                        <label for="empresa">Empresa</label>
+                        <select class="form-control" id="Cempresa" name="Cempresa" required>
+                            <option value="" disabled selected>Selecciona la empresa</option>
+                            {% for empresa in empresas %}
+                            <option value="{{ empresa.empresa }}">{{ empresa.empresa }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codigo_proyecto">Proyecto</label>
+                        <select class="form-control" id="codigo_proyecto" name="codigo_proyecto" required>
+                            <option value="" disabled selected>Selecciona el proyecto</option>
+                            {% for proyecto_item in proyectos %}
+                            <option value="{{ proyecto_item.nombre_proyecto }}">{{ proyecto_item.nombre_proyecto }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codigo_tarea">Código Tarea</label>
+                        <input type="text" class="form-control" id="codigo_tarea" name="codigo_tarea" onclick="generarCodigoUnico()" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titulo">Título</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_inicio">Fecha Inicio</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_fin">Fecha Fin</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_estimadas">Horas Estimadas</label>
+                        <input type="number" class="form-control" id="horas_estimadas" name="horas_estimadas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_dedicadas">Horas Dedicadas</label>
+                        <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_facturacion">Fecha Facturación</label>
+                        <input type="date" class="form-control" id="fecha_facturacion" name="fecha_facturacion">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <select class="form-control" id="Cestado" name="Cestado" required>
+                            <option value="" disabled selected>Selecciona un estado</option>
+                            <option value="PENDIENTE">PENDIENTE</option>
+                            <option value="PROGRESO">PROGRESO</option>
+                            <option value="REVISIÓN">REVISIÓN</option>
+                            <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
+                            {% if session['username'] == "admin" %}
+                            <option value="COMPLETADOS">COMPLETADOS</option>
+                            {% endif %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responsable">Responsable</label>
+                        <select class="form-control" id="Cresponsable" name="Cresponsable" required>
+                            <option value="" disabled selected>Selecciona el responsable</option>
+                            {% for usuario in usuarios %}
+                            <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">{{ usuario.nombres }} {{ usuario.apellidos }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responsable">Tipo de consumo</label>
+                        <select class="form-control" id="consumo" name="consumo" required>
+                            <option value="" disabled selected>Selecciona el tipo de consumo</option>
+                            <option value="Reuniones" selected>Reuniones</option>
+                            <option value="Desarrollo">Desarrollo</option>
+                            <option value="Desarrollo por control de cambio">Desarrollo por control de cambio</option>
+                            <option value="Soporte">Soporte</option>
+                            <option value="Oportunidad de mejora">Oportunidad de mejora</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mes">Mes</label>
+                        <select class="form-control" id="mes" name="mes" required>
+                            <option value="" disabled selected>Selecciona el mes</option>
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Septiembre">Septiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                            <option value="Diciembre">Diciembre</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showDeleteIcon(id) {
+        document.getElementById('delete-icon-' + id).style.display = 'inline';
+    }
+    function hideDeleteIcon(id) {
+        document.getElementById('delete-icon-' + id).style.display = 'none';
+    }
+
+    function editarTarea(id) {
+        // Obtener los detalles de la tarea por ID y rellenar el formulario para editar
+        fetch(`/tareas/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('tareaId').value = data.id;
+            document.getElementById('Cempresa').value = data.empresa;
+            document.getElementById('codigo_proyecto').value = data.codigo_proyecto;
+            document.getElementById('codigo_tarea').value = data.codigo_tarea;
+            document.getElementById('titulo').value = data.titulo;
+            document.getElementById('descripcion').value = data.descripcion;
+            document.getElementById('fecha_inicio').value = data.fecha_inicio;
+            document.getElementById('fecha_fin').value = data.fecha_fin || '';
+            document.getElementById('horas_estimadas').value = data.horas_estimadas;
+            document.getElementById('horas_dedicadas').value = data.horas_dedicadas;
+            document.getElementById('fecha_facturacion').value = data.fecha_facturacion || '';
+            document.getElementById('Cestado').value = data.estado;
+            document.getElementById('Cresponsable').value = data.responsable;
+            document.getElementById('consumo').value = data.tipo_consumo;
+            document.getElementById('mes').value = data.mes;
+        });
+    }
+
+
+  
+
+
+
+    document.getElementById('formTarea').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('tareaId').value;
+            const method = id ? 'PUT' : 'POST';  // Usar PUT si es edición, POST si es creación
+            const url = id ? `/tareas/${id}` : '/tareas';
+
+            fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    empresa: document.getElementById('Cempresa').value,
+                    codigo_proyecto: document.getElementById('codigo_proyecto').value,
+                    codigo_tarea: document.getElementById('codigo_tarea').value,
+                    titulo: document.getElementById('titulo').value,
+                    descripcion: document.getElementById('descripcion').value,
+                    fecha_inicio: document.getElementById('fecha_inicio').value,
+                    fecha_fin: document.getElementById('fecha_fin').value,
+                    horas_estimadas: document.getElementById('horas_estimadas').value,
+                    horas_dedicadas: document.getElementById('horas_dedicadas').value,
+                    estado: document.getElementById('Cestado').value,
+                    responsable: document.getElementById('Cresponsable').value,
+                    tipo_consumo: document.getElementById('consumo').value,
+                    mes: document.getElementById('mes').value
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        });
+    function limpiarFormulario() {
+        document.getElementById('formTarea').reset();
+        document.getElementById('tareaId').value = '';
+    }
+
+    function generarCodigoUnico() {
+        const now = new Date();
+        const timestamp = now.getFullYear().toString() + 
+                          (now.getMonth() + 1).toString().padStart(2, '0') + 
+                          now.getDate().toString().padStart(2, '0') + 
+                          now.getHours().toString().padStart(2, '0') + 
+                          now.getMinutes().toString().padStart(2, '0') + 
+                          now.getSeconds().toString().padStart(2, '0') + 
+                          now.getMilliseconds().toString().padStart(3, '0');
+        
+        const randomPart = Math.random().toString(36).substring(2, 10);
+
+        const uniqueCode = `${timestamp}-${randomPart}`;
+
+        document.getElementById('codigo_tarea').value = uniqueCode;  // Asignar el código al input de 'codigo'
+        return uniqueCode;
+    }
+
+{% if session['username'] == "admin" %}
+
+function eliminarTarea(id) {
+    if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
+        fetch(`/tareas/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            } else {
+                alert('Error al eliminar la tarea');
+            }
+        });
+    }
+}
+{% else %}
+
+function eliminarTarea(id) {
+ 
+                alert('No tienes permisos para borrar tareas');
+
+}
+
+
+
+{% endif %}
+
+
+
+</script>
+{% endblock %}
