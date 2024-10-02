@@ -1,0 +1,1153 @@
+
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+        <style>
+            th {
+                text-align: center;  /* Estilo para centrar los encabezados */
+            }
+        </style>
+        <title>Log</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2>Log de Eventos</h2>
+            <table border="1" class="dataframe table table-striped table-hover" id="logTable">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Fecha</th>
+      <th>Nivel</th>
+      <th>Mensaje</th>
+      <th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2024-09-17 06:16:30</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-17 06:44:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-17 07:42:48</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-17 18:50:53</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-20 17:05:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-20 17:27:27</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-20 17:33:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-20 17:58:06</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 18:46:44</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 19:03:18</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 19:19:02</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 19:32:55</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 19:44:06</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 20:23:04</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 20:32:18</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 20:40:30</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 20:44:56</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 20:45:39</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 20:52:26</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 21:06:56</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 21:12:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 21:19:24</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 21:22:16</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 21:24:50</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-23 21:28:52</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 03:53:51</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 03:56:04</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 04:09:17</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 04:10:28</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 04:21:16</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 04:32:11</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 04:39:06</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 05:25:16</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 05:50:47</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 18:34:22</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-24 19:03:31</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 19:02:42</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 19:20:03</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 19:21:16</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 19:24:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 22:08:21</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 23:03:32</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 23:35:17</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-25 23:39:14</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 00:29:43</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 07:16:34</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 07:20:42</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 08:15:28</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 08:24:28</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 08:52:37</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 08:53:56</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 08:57:26</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 10:30:30</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 10:55:06</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 11:52:40</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 12:22:32</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 12:28:09</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 14:56:28</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 14:57:08</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 15:09:19</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 15:50:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 16:14:55</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 16:15:18</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 16:17:39</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 16:23:20</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 16:46:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 17:07:00</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 17:13:58</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 18:33:43</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 19:23:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 19:44:29</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 19:53:26</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 22:19:27</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 22:29:33</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 22:47:20</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 23:29:40</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 23:46:10</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 23:46:44</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 23:48:29</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 23:49:21</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-26 23:54:59</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 00:00:09</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 00:05:46</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 05:52:44</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 06:00:09</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 06:06:36</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 06:31:33</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 06:46:49</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 06:48:33</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 07:08:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 07:10:20</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 15:20:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 15:30:19</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 15:46:30</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 15:50:02</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 15:58:27</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 16:11:36</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 16:56:30</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 17:07:51</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:21:34</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:25:35</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:34:36</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:44:14</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:45:31</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:50:55</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:53:32</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 18:55:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 19:07:11</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 19:41:11</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 19:42:10</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 20:00:02</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 20:24:20</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 21:41:45</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 22:16:48</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 22:37:58</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 23:34:49</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 23:39:40</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 23:49:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 23:51:07</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-27 23:54:39</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-28 00:07:37</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-28 00:10:36</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-28 00:22:52</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-28 00:23:11</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-28 00:38:22</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-28 20:06:36</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 09:27:35</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 09:40:36</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 10:16:40</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 10:24:52</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 10:25:50</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 10:58:14</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 12:03:50</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 13:41:26</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 13:48:26</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 13:50:11</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:16:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:19:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:29:48</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:30:50</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:44:24</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:45:47</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:49:02</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:53:51</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 14:59:32</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 15:02:07</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 15:04:28</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 15:43:48</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 16:40:16</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 16:55:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-29 17:14:31</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 04:04:41</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 05:23:25</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 05:24:22</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 05:37:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 05:52:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 06:01:46</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 06:14:52</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 06:28:09</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 07:21:14</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 07:22:28</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 07:27:37</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 07:36:06</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 07:45:15</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 07:56:05</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 08:22:13</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 08:25:02</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 08:39:39</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 08:41:34</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 08:58:08</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 09:16:12</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 09:44:26</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 10:24:17</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 10:27:23</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 10:41:49</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 11:01:22</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 14:04:01</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 14:51:35</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 15:36:54</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-09-30 15:39:07</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-10-01 17:08:35</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-10-01 18:38:25</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-10-01 19:34:11</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+    <tr>
+      <td>2024-10-01 19:48:36</td>
+      <td>INFO</td>
+      <td>[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m</td>
+      <td><i class="text-center bi bi-check-circle-fill"></i></td>
+    </tr>
+  </tbody>
+</table>
+        </div>
+        
+        <!-- Scripts de DataTables y jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#logTable').DataTable({
+                    "searching": true,   // Habilita la búsqueda en la tabla
+                    "paging": true,      // Habilita la paginación
+                    "info": true,        // Muestra información de la tabla
+                    "ordering": true     // Habilita la opción de ordenar las columnas
+                });
+            });
+        </script>
+    </body>
+    </html>
+    

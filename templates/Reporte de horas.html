@@ -9,32 +9,40 @@
     <div class="card p-4 shadow">
         <div class="row mb-4">
             <div class="col-12 text-center">
-                <h2>REPORTE DE BOLSA DE HORAS</h2>
+                <h2 class="mb-3">REPORTE DE BOLSA DE HORAS</h2>
             </div>
         </div>
-        <div class="row justify-content-end">
-            <div class="col-auto">
+        <div class="row justify-content-end mb-3">
+            <div class="col-auto d-flex flex-column flex-sm-row">
                 {% if session['username'] == "admin" %}
-                <button type="button" class="btn btn-primary btn-lg d-flex align-items-center mr-2" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico()">
+                <button type="button" class="btn btn-primary btn-lg mb-2 mb-sm-0 mr-sm-2 d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico()">
                     <span class="material-icons-outlined mr-2">add</span>
                     <span>Agregar Tarea</span>
                 </button>
                 {% endif %}
-            </div>
-            <div class="col-auto">
-                <button id="descargarReporte" type="button" class="btn btn-success btn-lg d-flex align-items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-excel" viewBox="0 0 16 16">
-                        <path d="M5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"></path>
-                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"></path>
-                    </svg>
-                    <span class="ml-2">Descargar</span>
+
+  
+                <!-- Botón de refrescar -->
+                <button id="refrescar" type="button" class="btn btn-secondary btn-lg mb-2 mb-sm-0 mr-sm-2 d-flex align-items-center" onclick="window.location.reload();">
+                    <span class="material-icons-outlined mr-2">refresh</span>
+                    <span>Refrescar</span>
                 </button>
+
+
+                              <!-- Botón de descargar Excel -->
+        <a class="btn btn-success btn-lg mb-2 mb-sm-0 mr-sm-2 d-flex align-items-center" href="/Reporte-HorasDownload{{ session['empresa'] }}">
+            <span class="material-icons-outlined mr-2">download</span>
+            <span>Descargar Excel</span>
+        </a>
+            
+
             </div>
         </div>
 
         <!-- Filtros -->
         <form method="GET" action="/Reporte-Horas{{ session['empresa'] }}">
             <div class="row mb-4">
+                <!-- Filtro de Estado -->
                 <div class="col-sm-12 col-md-4 mb-2">
                     <label for="estado">Filtrar Estado</label>
                     <select class="form-control" id="estado" name="estado" onchange="this.form.submit();">
@@ -47,6 +55,7 @@
                     </select>
                 </div>
 
+                <!-- Filtro de Responsable -->
                 <div class="col-sm-12 col-md-4 mb-2">
                     <label for="responsable">Filtrar Responsable</label>
                     <select class="form-control" id="responsable" name="responsable" onchange="this.form.submit();">
@@ -59,6 +68,7 @@
                     </select>
                 </div>
 
+                <!-- Filtro de Proyecto -->
                 <div class="col-sm-12 col-md-4 mb-2">
                     <label for="proyecto">Filtrar Proyecto</label>
                     <select class="form-control" id="proyecto" name="proyecto" onchange="this.form.submit();">
@@ -70,8 +80,47 @@
                         {% endfor %}
                     </select>
                 </div>
+
+                <!-- Filtro por Mes -->
+                <div class="col-sm-12 col-md-4 mb-2">
+                    <label for="mes">Filtrar por Mes</label>
+                    <select class="form-control" id="mes" name="mes" onchange="this.form.submit();">
+                        <option value="" {% if not mes %}selected{% endif %}>Todos los meses</option>
+                        <option value="01" {% if mes == "01" %}selected{% endif %}>Enero</option>
+                        <option value="02" {% if mes == "02" %}selected{% endif %}>Febrero</option>
+                        <option value="03" {% if mes == "03" %}selected{% endif %}>Marzo</option>
+                        <option value="04" {% if mes == "04" %}selected{% endif %}>Abril</option>
+                        <option value="05" {% if mes == "05" %}selected{% endif %}>Mayo</option>
+                        <option value="06" {% if mes == "06" %}selected{% endif %}>Junio</option>
+                        <option value="07" {% if mes == "07" %}selected{% endif %}>Julio</option>
+                        <option value="08" {% if mes == "08" %}selected{% endif %}>Agosto</option>
+                        <option value="09" {% if mes == "09" %}selected{% endif %}>Septiembre</option>
+                        <option value="10" {% if mes == "10" %}selected{% endif %}>Octubre</option>
+                        <option value="11" {% if mes == "11" %}selected{% endif %}>Noviembre</option>
+                        <option value="12" {% if mes == "12" %}selected{% endif %}>Diciembre</option>
+                    </select>
+                </div>
+
+                <!-- Filtro por Fecha -->
+                <div class="col-sm-12 col-md-4 mb-2">
+                    <label for="fecha_inicio">Filtrar por Fecha de Inicio</label>
+                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="{{ request.args.get('fecha_inicio', '') }}" onchange="this.form.submit();">
+                </div>
+
+                <div class="col-sm-12 col-md-4 mb-2">
+                    <label for="fecha_fin">Filtrar por Fecha de Fin</label>
+                    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="{{ request.args.get('fecha_fin', '') }}" onchange="this.form.submit();">
+                </div>
             </div>
         </form>
+
+        <!-- Resumen de Horas -->
+        <div class="row mb-4">
+            <div class="col-12 text-right">
+                <h5><strong>Total Horas Estimadas:</strong> {{ total_horas_estimadas }} horas</h5>
+                <h5><strong>Total Horas de Ejecución:</strong> {{ total_horas_ejecucion }} horas</h5>
+            </div>
+        </div>
 
         <!-- Tabla de Tareas -->
         <div class="row">
@@ -109,62 +158,37 @@
     </div>
 </div>
 
-<!-- Modal para Crear/Editar Tareas -->
-<div class="modal fade modal-fullscreen-xxl-down" id="tareasform" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Registrar tarea</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <!-- Formulario para Crear/Editar tareas -->
-                <form id="formTarea" method="POST">
-                    <input type="hidden" id="tareaId" name="tareaId" />
-
-                    <!-- Formulario -->
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="empresa">Empresa</label>
-                            <select class="form-control" id="Cempresa" name="Cempresa" required>
-                                <option value="" disabled selected>Selecciona la empresa</option>
-                                {% for empresa in empresas %}
-                                <option value="{{ empresa.empresa }}">{{ empresa.empresa }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="codigo_proyecto">Proyecto</label>
-                            <select class="form-control" id="codigo_proyecto" name="codigo_proyecto" required>
-                                <option value="" disabled selected>Selecciona el proyecto</option>
-                                {% for proyecto_item in proyectos %}
-                                <option value="{{ proyecto_item.codigo_proyecto }}">{{ proyecto_item.nombre_proyecto }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <!-- Más campos aquí -->
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="titulo">Título</label>
-                            <input type="text" class="form-control" id="titulo" name="titulo" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="descripcion">Descripción</label>
-                            <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
-                        </div>
-                    </div>
-                    <!-- Resto de campos -->
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <script>
-    // Scripts de la página
+    function excel() {
+      
+        // Obtenemos la URL con el endpoint correcto que incluye la empresa
+        const url = `/Reporte-HorasDownload${empresa}`;
+        
+        // Realizamos la solicitud GET al servidor para descargar el Excel
+        fetch(url, {
+            method: 'GET',
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.blob(); // Convertimos la respuesta en un archivo Blob
+            } else {
+                throw new Error('Error al descargar el archivo');
+            }
+        })
+        .then(blob => {
+            // Creamos un enlace temporal para descargar el archivo
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'reporte_horas.xlsx'; // Nombre del archivo a descargar
+            document.body.appendChild(a);
+            a.click();
+            a.remove(); // Eliminamos el enlace temporal
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 </script>
+
 {% endblock %}

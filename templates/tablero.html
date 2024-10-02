@@ -127,7 +127,7 @@
                         {% endfor %}
                     </div>
                 </div>
-
+                {% if session['username'] == "admin" %} 
                 <!-- Columna de COMPLETADOS -->
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
                     <h4 class="bg-success text-white text-center">COMPLETADOS</h4>
@@ -145,6 +145,7 @@
                         </div>
                         <hr style="border: 1px solid black; width: 80%;">
                         {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -214,16 +215,59 @@
                 </div>
                 <div class="form-group">
                     <label for="estado">Estado</label>
-                    <select class="form-control" id="Cestado" name="Cestado" required>
-                        <option value="PENDIENTE" selected>PENDIENTE</option>
-                        <option value="PROGRESO">PROGRESO</option>
-                        <option value="REVISIÓN">REVISIÓN</option>
-                        <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
-                        {% if session['username'] == "admin" %}
-                        <option value="COMPLETADOS">COMPLETADOS</option>
-                        {% endif %}
-                    </select>
+                    <!-- Botón que cambia de color dinámicamente según el estado seleccionado -->
+                    <div class="input-group">
+                        <button id="estadoButton" class="btn btn-secondary w-100 text-start" type="button" disabled>
+                            Selecciona un estado
+                        </button>
+                        <select class="form-control" id="Cestado" name="Cestado" required onchange="cambiarColorEstado()">
+                            <option value="" disabled selected>Selecciona un estado</option>
+                            <option value="PENDIENTE">PENDIENTE</option>
+                            <option value="PROGRESO">PROGRESO</option>
+                            <option value="REVISIÓN">REVISIÓN</option>
+                            <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
+                            {% if session['username'] == "admin" %} 
+                            <option value="COMPLETADOS">COMPLETADOS</option>
+                            {% endif %}
+                        </select>
+                    </div>
                 </div>
+                
+                <script>
+                    function cambiarColorEstado() {
+                        const estadoSelect = document.getElementById("Cestado");
+                        const estadoButton = document.getElementById("estadoButton");
+                        const selectedEstado = estadoSelect.value;
+                
+                        // Reiniciar clases de botón
+                        estadoButton.className = "btn w-100 text-start";
+                
+                        // Aplicar la clase correcta según el estado seleccionado
+                        switch (selectedEstado) {
+                            case 'PENDIENTE':
+                                estadoButton.classList.add('btn-secondary');
+                                break;
+                            case 'PROGRESO':
+                                estadoButton.classList.add('btn-primary');
+                                break;
+                            case 'REVISIÓN':
+                                estadoButton.classList.add('btn-warning', 'text-dark');
+                                break;
+                            case 'IMPEDIMENTOS':
+                                estadoButton.classList.add('btn-danger');
+                                break;
+                            case 'COMPLETADOS':
+                                estadoButton.classList.add('btn-success');
+                                break;
+                            default:
+                                estadoButton.classList.add('btn-secondary');
+                        }
+                
+                        // Cambiar el texto del botón al estado seleccionado
+                        estadoButton.textContent = selectedEstado;
+                    }
+                </script>
+                
                 <div class="form-group">
                     <label for="responsable">Responsable</label>
                     <select class="form-control" id="Cresponsable" name="Cresponsable" required>
