@@ -1,4 +1,5 @@
-from flask import Flask, flash, redirect, render_template, request, session, url_for,jsonify,session, send_file
+from flask import Flask, flash, redirect, render_template, request, session, url_for,jsonify,session, send_file,abort
+import os
 from models import models  
 import config 
 from datetime import datetime
@@ -22,6 +23,8 @@ from flask_ckeditor import CKEditor
 from sqlalchemy import or_, and_
 from io import BytesIO
 from waitress import serve
+import os
+import shutil
 
 
 
@@ -358,6 +361,7 @@ def empresa():
 
     # Obtener todas las empresas para mostrarlas en la tabla
     empresas = models.Empresas.query.all()
+    
 
     return render_template('empresas.html', empresas=empresas, form=form,host=host)
 
@@ -450,6 +454,7 @@ def vista_usuarios():
    vista de usuarios CRUD para administrsr.
     """
     empresas = models.Empresas.query.all()
+
     return render_template("usuarios.html",host=host,empresas=empresas)
 
 # Reporte de proyectos 
@@ -529,76 +534,63 @@ def logout():
     return redirect(url_for('login'))
 
 
-# Reporte de horas vista 
+# Reporte de horas vista
 @app.route('/Reporte-Horas<empresa>', methods=['GET'])
 @login_required
 def vista_reporte_Horas(empresa):
     """
     Obtener todas las tareas con los filtros seleccionados por empresa.
     """
-    out=empresa
+    out = empresa
+
     # Obtener los filtros seleccionados por el usuario
     estado = request.args.get('estado', '')  # Filtro de estado
     responsable = request.args.get('responsable', '')  # Filtro de responsable
     proyecto = request.args.get('proyecto', '')  # Filtro de proyecto
-    empresa = request.args.get('empresa', '')  # Filtro de empresa
+    mes = request.args.get('mes', '')  # Filtro de mes
+    fecha_inicio = request.args.get('fecha_inicio', '')  # Filtro de fecha de inicio
+    fecha_fin = request.args.get('fecha_fin', '')  # Filtro de fecha de fin
 
     # Consulta base sin filtros
-    query = models.Tareas.query
+    query = models.Tareas.query.filter_by(empresa=out)
 
-    if empresa == "Fofimatic S.A":
-        empresa = request.args.get('empresa', '')
-      
-        # Aplicar filtro de estado si existe
-        if estado:
-            query = query.filter(models.Tareas.estado == estado)
+    # Aplicar los filtros si existen
+    if estado:
+        query = query.filter(models.Tareas.estado == estado)
 
-        # Aplicar filtro de responsable si existe
-        if responsable:
-            query = query.filter(models.Tareas.responsable == responsable)
+    if responsable:
+        query = query.filter(models.Tareas.responsable == responsable)
 
-        # Aplicar filtro de proyecto si existe
-        if proyecto:
-            query = query.filter(models.Tareas.codigo_proyecto == proyecto)
+    if proyecto:
+        query = query.filter(models.Tareas.codigo_proyecto == proyecto)
 
-        # Aplicar filtro de empresa si existe
-        if empresa:
-            query = query.filter(models.Tareas.empresa == out)
+    if mes:
+        query = query.filter(models.Tareas.mes == mes)
 
-            # Obtener los resultados de la consulta filtrada
-            tareas = query.all()
-    
-    else:
-        empresa = request.args.get('empresa', out) 
-        # Aplicar filtro de estado si existe
-        if estado:
-            query = query.filter(models.Tareas.estado == estado)
+    if fecha_inicio and fecha_fin:
+        query = query.filter(models.Tareas.fecha_inicio >= fecha_inicio, models.Tareas.fecha_fin <= fecha_fin)
 
-        # Aplicar filtro de responsable si existe
-        if responsable:
-            query = query.filter(models.Tareas.responsable == responsable)
+    # Obtener los resultados de la consulta filtrada
+    tareas = query.all()
 
-        # Aplicar filtro de proyecto si existe
-        if proyecto:
-            query = query.filter(models.Tareas.codigo_proyecto == proyecto)
-
-        # Aplicar filtro de empresa si existe
-        if empresa:
-            query = query.filter(models.Tareas.empresa == out)
-
-            # Obtener los resultados de la consulta filtrada
-            tareas = query.all()
+    # Calcular las horas estimadas y de ejecución
+    total_horas_estimadas = sum(tarea.horas_estimadas for tarea in tareas)
+    total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in tareas)
 
     # Obtener datos adicionales para el formulario de filtrado
     empresas = models.Empresas.query.all()
     proyectos = models.Proyecto.query.all()
     usuarios = models.Usuarios.query.all()
 
-    return render_template("Reporte de horas.html", tareas=tareas,
-                                        empresas=empresas,
-                                        proyectos=proyectos,
-                                        usuarios=usuarios)
-
+    return render_template("Reporte de horas.html",
+                           tareas=tareas,
+                           empresas=empresas,
+                           proyectos=proyectos,
+                           usuarios=usuarios,
+                           total_horas_estimadas=total_horas_estimadas,
+                           total_horas_ejecucion=total_horas_ejecucion)
+                            
+                           
 #Descarga del excel reporte → /Reporte-HorasDownloadFofimatic S.A
 @app.route('/Reporte-HorasDownload<empresa>', methods=['GET'])
 @login_required
@@ -655,9 +647,113 @@ def reporte_excel_horas(empresa):
     return send_file(output, download_name='reporte.xlsx', as_attachment=True, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 
+@app.route('/download-backup')
+@login_required
+def download_backup():
+
+    # Ruta del archivo original de la base de datos
+    DATABASE_PATH = os.path.join(app.root_path, 'instance', 'Empresas.db')
+
+    # Ruta temporal para almacenar el respaldo de la base de datos
+    BACKUP_PATH = os.path.join(app.root_path, 'instance', 'Empresas_backup.db')
+
+    try:
+        # Generar un respaldo de la base de datos
+        if os.path.exists(DATABASE_PATH):
+            shutil.copy(DATABASE_PATH, BACKUP_PATH)
+        else:
+            abort(404, description="La base de datos no fue encontrada.")
+        
+        # Descargar el archivo de respaldo
+        return send_file(BACKUP_PATH, as_attachment=True)
+
+    except Exception as e:
+        abort(500, description=f"Error al generar el respaldo: {str(e)}")
 
 
+# Página log
+@app.route("/log")  
+@login_required
+def log():
+    import warnings
 
+    # Ignorar advertencias relacionadas con `pd.to_datetime`
+    warnings.filterwarnings("ignore", message="Could not infer format")
+
+    try:
+        # Leer el archivo de log
+        log_df = pd.read_csv('log.log', 
+                            sep=r'\s-\s',  # Expresión regular para manejar separadores con espacios
+                            header=None,   
+                            names=['Fecha', 'Nivel', 'Mensaje'],  # Columnas personalizadas
+                            engine='python', 
+                            encoding='utf-8',  # Codificación para evitar errores
+                            on_bad_lines='skip')  # Ignora líneas mal formadas
+        
+        # Aplicar el icono de acuerdo al nivel de log en la columna Mensaje
+        log_df['Estado'] = log_df.apply(lambda row: """<i class="text-center bi bi-check-circle-fill"></i>""" 
+                                        if row['Nivel'] == 'INFO' else 
+                                        """<i class="text-center bi bi-x-circle-fill"></i>""" 
+                                        if row['Mensaje'] != row['Nivel'] else row['Mensaje'], axis=1)
+        
+        # Convertir la columna 'Fecha' a formato datetime
+        log_df['Fecha'] = pd.to_datetime(log_df['Fecha'], errors='coerce')  # Convierte a NaT las fechas inválidas
+        log_df = log_df[log_df['Fecha'] <= datetime.now()]  # Filtra las fechas válidas
+
+    except Exception as e:
+        logging.error(f"Error al leer o procesar el archivo log.log: {e}")
+        return "Error al procesar el archivo de log"
+
+    # Exportar a HTML, sin escapar los caracteres HTML
+    html_content = log_df.to_html(index=False, escape=False, classes='table table-striped table-hover', table_id='logTable')
+
+    # Agregar Bootstrap, DataTables y el script para manejar la tabla
+    html_full = f"""
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+        <style>
+            th {{
+                text-align: center;  /* Estilo para centrar los encabezados */
+            }}
+        </style>
+        <title>Log</title>
+    </head>
+    <body>
+        <div class="container mt-5">
+            <h2>Log de Eventos</h2>
+            {html_content}
+        </div>
+        
+        <!-- Scripts de DataTables y jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+        <script>
+            $(document).ready(function() {{
+                $('#logTable').DataTable({{
+                    "searching": true,   // Habilita la búsqueda en la tabla
+                    "paging": true,      // Habilita la paginación
+                    "info": true,        // Muestra información de la tabla
+                    "ordering": true     // Habilita la opción de ordenar las columnas
+                }});
+            }});
+        </script>
+    </body>
+    </html>
+    """
+
+    logging.info("Archivo HTML con Bootstrap y DataTables generado correctamente.")
+    
+    # Guardar el HTML en un archivo
+    with open('templates/log.html', 'w', encoding='utf-8') as f:
+        f.write(html_full)
+
+    return render_template("log.html")
 
 #</__________________________________Vista___________________________________________________>
 
@@ -1130,6 +1226,8 @@ def eliminar_usuario(id):
 if __name__ == '__main__':
     # Se obtiene la configuración de debug desde el archivo config.py
     debug = config.config["debug"]
+    v=config.config["version"]
+    logging.info(f"version del desarrollo {v} ")
     
     if debug:
         logging.info("mode de debug esta True ")
@@ -1140,6 +1238,6 @@ if __name__ == '__main__':
     else:
         # Inicia el servidor Flask con debug activado (según configuración) en el puerto 5000
         logging.info("mode de debug esta falso , aplicacion en producciion")
-        print("mode de debug esta falso , aplicacion en producciion")
+        print("mode de debug esta falso , aplicacion en produccion")
         serve(app,host="0.0.0.0", port=5000 , threads=2)
 
