@@ -47,7 +47,9 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 
 # Configuración de la base de datos usando SQLite
 # SQLALCHEMY_DATABASE_URI define la ubicación de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Empresas.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Empresas.db'
+# Configuración de la base de datos Supabase
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.wlvgmwuhfunnpddcgvzu:I0P2EdBGUabioCtA@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
 
 # SQLALCHEMY_TRACK_MODIFICATIONS deshabilita el rastreo de modificaciones de objetos, 
 # ya que es innecesario y consume recursos. Es recomendable establecerlo en False.

@@ -323,22 +323,22 @@
         function allowDrop(event) {
             event.preventDefault();
         }
-
+    
         function drag(event) {
             event.dataTransfer.setData("text", event.target.id);
         }
-
+    
         function drop(event) {
             event.preventDefault();
             var data = event.dataTransfer.getData("text");
             var targetColumn = event.target.closest('.kanban-column');  // Obtener la columna de destino
             var newEstado = targetColumn.getAttribute('data-estado');  // Obtener el nuevo estado
             var taskId = data;  // Obtener el ID de la tarea arrastrada
-
+    
             actualizarEstadoTarea(taskId, newEstado);
             location.reload(); // Recargar toda la página
         }
-
+    
         function editarTarea(id) {
             // Obtener los detalles de la tarea por ID y rellenar el formulario para editar
             fetch(`/tareas/${id}`)
@@ -359,27 +359,35 @@
                 document.getElementById('consumo').value = data.tipo_consumo;
             });
         }
-
+    
         function eliminarTarea(id) {
-            if (confirm('¿Estás seguro de que deseas eliminar esta tarea?')) {
-                fetch(`/tareas/${id}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        location.reload();
-                    }
-                });
-            }
+            Swal.fire({
+                title: '¿Estás seguro de que deseas eliminar esta tarea?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/tareas/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            location.reload();
+                        }
+                    });
+                }
+            });
         }
-
+    
         document.getElementById('formTarea').addEventListener('submit', function(event) {
             event.preventDefault();
-
+    
             const id = document.getElementById('tareaId').value;
             const method = id ? 'PUT' : 'POST';  // Usar PUT si es edición, POST si es creación
             const url = id ? `/tareas/${id}` : '/tareas';
-
+    
             fetch(url, {
                 method: method,
                 headers: {
@@ -406,12 +414,12 @@
                 }
             });
         });
-
+    
         function limpiarFormulario() {
             document.getElementById('formTarea').reset();
             document.getElementById('tareaId').value = '';
         }
-
+    
         function generarCodigoUnico() {
             const now = new Date();
             const timestamp = now.getFullYear().toString() + 
@@ -423,19 +431,19 @@
                               now.getMilliseconds().toString().padStart(3, '0');
             
             const randomPart = Math.random().toString(36).substring(2, 10);
-
+    
             const uniqueCode = `${timestamp}-${randomPart}`;
-
+    
             document.getElementById('codigo_tarea').value = uniqueCode;  // Asignar el código al input de 'codigo'
             return uniqueCode;
         }
-
+    
         async function actualizarEstadoTarea(id, nuevoEstado) {
             const url = `/tareas/${id}/estado`; // La URL del endpoint en Flask
             const data = {
                 estado: nuevoEstado
             };
-
+    
             try {
                 const response = await fetch(url, {
                     method: 'PUT',
@@ -444,22 +452,23 @@
                     },
                     body: JSON.stringify(data) // Convertir los datos a JSON
                 });
-
+    
                 if (response.ok) {
                     const resultado = await response.json();
                     console.log('Tarea actualizada:', resultado);
-                    alert('Estado de la tarea actualizado correctamente');
+                    Swal.fire('Estado actualizado', 'Estado de la tarea actualizado correctamente', 'success');
                     location.reload(); // Recargar toda la página
                 } else {
                     const errorData = await response.json();
                     console.error('Error al actualizar tarea:', errorData);
-                    alert('Error al actualizar la tarea');
+                    Swal.fire('Error', 'Error al actualizar la tarea', 'error');
                 }
             } catch (error) {
                 console.error('Error en la solicitud:', error);
-                alert('Error en la solicitud');
+                Swal.fire('Error', 'Error en la solicitud', 'error');
             }
         }
     </script>
+    
 
 {% endblock %}

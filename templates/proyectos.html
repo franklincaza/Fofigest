@@ -197,7 +197,6 @@
 <script>
     // Función para eliminar un proyecto
    function eliminarProyecto(codigoProyecto) {
-       
        fetch(`/proyectos/${codigoProyecto}`, {
            method: 'DELETE', 
            headers: {
@@ -212,12 +211,12 @@
            }
        })
        .then(data => {
-           alert(data.message);  // Muestra el mensaje de éxito
+           Swal.fire('Eliminado', data.message, 'success');  // Muestra el mensaje de éxito
            window.location.reload(); // Recargar la página tras eliminar el proyecto
        })
        .catch(error => {
            console.error('Error:', error);
-           alert('Ocurrió un error al eliminar el proyecto');
+           Swal.fire('Error', 'Ocurrió un error al eliminar el proyecto', 'error');
        });
    }
    
@@ -240,7 +239,7 @@
 }
 
     function nuevo() {
-        generarCodigoUnico()
+        generarCodigoUnico();
         // Capturando los valores del formulario
         const empresa = document.getElementById('Empresa').value;
         const codigo_proyecto = document.getElementById('codigo').value;
@@ -267,15 +266,15 @@
         })
         .then(data => {
             if (data.message === 'Proyecto creado exitosamente') {
-                alert('Proyecto creado exitosamente');
+                Swal.fire('Creado', 'Proyecto creado exitosamente', 'success');
                 window.location.reload();  // Recargar la página para actualizar la tabla
             } else {
-                alert('Error al crear el proyecto: ' + data.message);
+                Swal.fire('Error', 'Error al crear el proyecto: ' + data.message, 'error');
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Hubo un problema al crear el proyecto.');
+            Swal.fire('Error', 'Hubo un problema al crear el proyecto.', 'error');
         });
     }
 
@@ -305,15 +304,15 @@
     })
     .then(data => {
         if (data.message === 'Proyecto actualizado exitosamente') {
-            alert('Proyecto actualizado exitosamente');
+            Swal.fire('Actualizado', 'Proyecto actualizado exitosamente', 'success');
             window.location.reload();  // Recargar la página para actualizar la tabla
         } else {
-            alert('Error al actualizar el proyecto: ' + data.message);
+            Swal.fire('Error', 'Error al actualizar el proyecto: ' + data.message, 'error');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Hubo un problema al actualizar el proyecto.');
+        Swal.fire('Error', 'Hubo un problema al actualizar el proyecto.', 'error');
     });
 }
 
@@ -343,6 +342,7 @@
         location.reload();  // Recarga la página
     }
 </script>
+
 {% endblock %}
 
 
