@@ -1,0 +1,50 @@
+.logo-container {
+    display: flex;
+    align-items: center;
+    padding-top:  8px;
+}
+
+
+.logo-box {
+    background-color: #00a0e3; /* Color azul */
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Redondea los bordes */
+    padding-top: 10%;
+    padding-block: 15%;
+}
+
+.logo-text {
+    font-size: 35px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none; /* Quita el subrayado del enlace */
+}
+
+.fondo {
+    background: linear-gradient(135deg, #00a0e3, #0077b6, #023e8a); /* Gradiente de azul */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+}
+
+.cu-modal__body {
+    position: relative;
+    min-height: 300px;
+}
+
+ /* Estilo inicial del botón */
+ .btn-expand {
+    width: 100%; /* Tamaño inicial del botón */
+    transition: width 0.5s ease-in-out; /* Transición suave */
+    overflow: hidden; /* Ocultar el texto adicional al reducir el tamaño */
+    white-space: nowrap; /* Evitar que el texto haga salto de línea */
+    text-align: center; /* Alinea el texto en el centro del botón */
+    
+}
+
+/* Cuando el botón se expande al pasar el mouse */
+.btn-expand:hover {
+    width: 300px; /* Tamaño expandido */
+}

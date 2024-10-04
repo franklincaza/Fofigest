@@ -1,0 +1,39 @@
+.buttonIcono{
+    border-radius: 10;
+    color:rgb(2, 5, 5);
+    size: 100p;
+    grid :1;
+}
+
+@media (max-width: 576px) {
+    .btn {
+        font-size: 14px; /* Ajustar el tamaño de la fuente para pantallas pequeñas */
+        padding: 8px 12px; /* Espaciado más compacto en móviles */
+    }
+
+    .bi.bi-funnel-fill {
+        width: 16px;
+        height: 16px; /* Tamaño uniforme del ícono en móviles */
+    }
+
+    .material-icons-outlined {
+        font-size: 18px; /* Ajusta el tamaño del icono de Material Icons para móviles */
+    }
+}
+
+/* Ocultar un elemento en pantallas pequeñas (menos de 576px) */
+@media (max-width: 576px) {
+    .ocultar-en-pequeno {
+        display: none;
+    }
+}
+
+/* Mostrar un elemento solo en pantallas grandes (más de 992px) */
+@media (min-width: 992px) {
+    .mostrar-solo-en-grande {
+        display: block;
+    }
+}
+.min-width {
+    min-width: 150px; /* Ajusta el valor según tus necesidades */
+}

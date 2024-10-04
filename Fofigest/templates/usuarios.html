@@ -1,0 +1,207 @@
+
+{% extends 'Base.html' %}  <!-- Esto se define al principio, si estás en Admin o Base lo defines en la vista -->
+{% block content %}
+{% if session['username'] == "admin" %} 
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container-fluid bg-light py-5">
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-center">USUARIOS</h2>
+            <a type="button" class="btn btn-primary btn-lg" href="Nuevo_Usuario" >
+                <span class="desktop-text"><!--Agregar Usuario--></span>
+                <span class="mobile-icon material-icons-outlined">add</span>
+            </a>
+        </div>
+        
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>NOMBRES</th>
+                            <th>APELLIDOS</th>
+                            <th>EMPRESA</th>
+                            <th>CORREO</th>
+                            <th>PERMISO</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usuarioTableBody">
+                        <!-- Aquí se llenarán los usuarios -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para Crear/Editar Usuarios -->
+<div class="modal fade" id="usuarioForm" tabindex="-1" aria-labelledby="usuarioFormLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="usuarioFormLabel">Registrar Usuario</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Formulario para Crear/Editar usuarios -->
+          <form id="usuarioFormContent">
+              <div class="mb-3">
+                  <label for="nombres" class="form-label">Nombres</label>
+                  <input type="text" class="form-control" id="nombres" required>
+              </div>
+              <div class="mb-3">
+                  <label for="apellidos" class="form-label">Apellidos</label>
+                  <input type="text" class="form-control" id="apellidos" required>
+              </div>
+
+              <div class="form-group">
+                <label for="empresa">Empresa</label>
+            <select class="form-control" id="empresa" name="empresa" required>
+               
+                <option value="" disabled selected>Selecciona la empresa</option>
+                {% for empresa in empresas %}
+                <option value="{{empresa.empresa}}">{{ empresa.empresa }}</option>
+                {% endfor %}
+            </select>
+            </div>
+
+
+              <div class="mb-3">
+                  <label for="correo" class="form-label">Correo</label>
+                  <input type="email" class="form-control" id="correo" required>
+              </div>
+              <div class="mb-3">
+                  <label for="contraseña" class="form-label">Contraseña</label>
+                  <input type="password" class="form-control" id="contraseña" >
+              </div>
+              <div class="mb-3">
+                  <label for="permisos" class="form-label">Permisos</label>
+                  <select class="form-control" id="permisos" required>
+                      <option value="admin">Admin</option>
+                      <option value="dev">Dev</option>
+                      <option value="usuario">Usuario</option>
+                  </select>
+              </div>
+              <button type="submit" class="btn btn-primary">Guardar</button>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+    let usuarioId = null; // Variable global para almacenar el ID del usuario a editar o para un nuevo usuario
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Llamada a la API para obtener los usuarios
+        fetch('/usuarios/json')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('usuarioTableBody');
+                tableBody.innerHTML = ''; // Limpiar la tabla antes de rellenarla
+                data.forEach(usuario => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${usuario.id}</td>
+                        <td>${usuario.nombres}</td>
+                        <td>${usuario.apellidos}</td>
+                        <td>${usuario.empresa}</td>
+                        <td>${usuario.correo}</td>
+                        <td>${usuario.permisos}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editarUsuario(${usuario.id})">Editar</button>
+                            <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error al obtener los usuarios:', error));
+    });
+
+    function limpiarFormulario() {
+        document.getElementById('usuarioFormContent').reset();
+        usuarioId = null; // Reiniciar la variable usuarioId para un nuevo usuario
+    }
+
+    // Función para obtener los datos de un usuario y rellenar el formulario para editar
+    function editarUsuario(id) {
+        usuarioId = id; // Guardar el ID del usuario a editar
+
+        fetch(`/usuario/${id}`)
+            .then(response => response.json())
+            .then(data => {
+                // Rellenar el formulario con los datos obtenidos
+                document.getElementById('nombres').value = data.nombres;
+                document.getElementById('apellidos').value = data.apellidos;
+                document.getElementById('empresa').value = data.empresa;
+                document.getElementById('correo').value = data.correo;
+                document.getElementById('contraseña').value = '';  // No mostrar la contraseña
+                document.getElementById('permisos').value = data.permisos;
+
+                const usuarioModal = new bootstrap.Modal(document.getElementById('usuarioForm'));
+                usuarioModal.show();
+            })
+            .catch(error => console.error('Error al obtener los datos del usuario:', error));
+    }
+
+    // Función para manejar tanto la creación como la edición de usuarios
+    document.getElementById('usuarioFormContent').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const usuarioData = {
+            nombres: document.getElementById('nombres').value,
+            apellidos: document.getElementById('apellidos').value,
+            empresa: document.getElementById('empresa').value,
+            correo: document.getElementById('correo').value,
+            contraseña: document.getElementById('contraseña').value,
+            permisos: document.getElementById('permisos').value
+        };
+
+        const method = usuarioId ? 'PUT' : 'POST';
+        const url = usuarioId ? `/usuario/${usuarioId}` : '/usuario';
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(usuarioData)
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Usuario guardado exitosamente');
+                location.reload(); // Recargar la página para ver los cambios
+            } else {
+                alert('Error al guardar el usuario');
+            }
+        })
+        .catch(error => console.error('Error al guardar el usuario:', error));
+    });
+
+    function eliminarUsuario(id) {
+        if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
+            fetch(`/usuario/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Usuario eliminado exitosamente');
+                    location.reload(); // Recargar la página para ver los cambios
+                } else {
+                    alert('Error al eliminar el usuario');
+                }
+            })
+            .catch(error => console.error('Error al eliminar el usuario:', error));
+        }
+    }
+</script>
+{% else %}           
+<p> No tienes permiso para esta pagina </p>
+{% endif %}
+
+{% endblock %}

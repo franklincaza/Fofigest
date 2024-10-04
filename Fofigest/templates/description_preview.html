@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<form method="POST" action="/submit-description">
+    <label for="description">Descripción en Markdown:</label>
+    <textarea id="description" name="description" rows="10" cols="50"></textarea>
+    <button type="submit">Guardar</button>
+</form>
+<script>
+var simplemde = new SimpleMDE({ element: document.getElementById("description") });
+
+</script>
+
+
+{% endblock %}
