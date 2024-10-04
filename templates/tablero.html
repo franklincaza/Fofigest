@@ -1,51 +1,106 @@
 {% extends 'Base.html' %}
 {% block content %}
-    <!-- BODY-->
-    <div class="container-fluid bg-light py-5">
-        <div class="card p-4">
-            <h2 class="text-center mb-4">TABLERO DE PROYECTOS</h2>
-            
-            <!-- Formulario de filtros -->
-            <form method="GET" action="/tablero">
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <label for="responsable">Filtrar Responsable</label>
-                        <select class="form-control" id="responsable" name="responsable" onchange="this.form.submit();">
-                            <option value="" {% if not responsable %}selected{% endif %}>Todos los responsables</option>
-                            {% for usuario in usuarios %}
-                            <option value="{{ usuario.nombres }} {{ usuario.apellidos }}" {% if responsable == usuario.nombres %}selected{% endif %}>
-                                {{ usuario.nombres }} {{ usuario.apellidos }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
 
-                    <div class="col-md-4">
-                        <label for="proyecto">Filtrar Proyecto</label>
-                        <select class="form-control" id="proyecto" name="proyecto" onchange="this.form.submit();">
-                            <option value="" {% if not proyecto_filtro %}selected{% endif %}>Todos los proyectos</option>
-                            {% for proyecto in proyectos %}
-                            <option value="{{ proyecto.codigo_proyecto }}" {% if proyecto_filtro == proyecto.codigo_proyecto %}selected{% endif %}>
-                                {{ proyecto.nombre_proyecto }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
+   <!-- BODY-->
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+   
+   <div class="container-fluid bg-light py-5">
+       <div class="card p-4">
+           <h2 class="text-center mb-4">TABLERO DE PROYECTOS</h2>
+           
+           <!-- Formulario de filtros -->
+           <div class="d-flex gap-2 mb-3 justify-content-start align-items-center flex-wrap">
+               <!-- Botón de refrescar --> 
+               <a id="refrescar" class="btn btn-outline-primary d-flex align-items-center px-3" href="tablero" onclick="window.location.reload();">
+                   <span class="material-icons-outlined mr-2">refresh</span>
+                   <span class="d-none d-md-inline">Refrescar</span>
+               </a>
+           
+               <!-- Botón de descargar filtro -->
+               <a class="btn btn-outline-secondary d-flex align-items-center px-3" data-toggle="modal" data-target="#filtroModal">
+                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-funnel-fill mr-2" viewBox="0 0 16 16">
+                       <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
+                   </svg>
+                   <span class="d-none d-md-inline">  Formulario   </span>
+               </a>
+           </div>
 
-                    <div class="col-md-4">
-                        <label for="empresa">Filtrar Empresa</label>
-                        <select class="form-control" id="empresa" name="empresa" onchange="this.form.submit();">
-                            <option value="" {% if not empresa_filtro %}selected{% endif %}>Todas las empresas</option>
-                            {% for empresa_item in empresas %}
-                            <option value="{{ empresa_item.empresa }}" {% if empresa_filtro == empresa_item.empresa %}selected{% endif %}>
-                                {{ empresa_item.empresa }}
-                            </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-            </form>
-            
+           <!-- Modal para el formulario de filtros -->
+           <div class="modal fade" id="filtroModal" tabindex="-1" role="dialog" aria-labelledby="filtroModalLabel" aria-hidden="true">
+               <div class="modal-dialog modal-lg" role="document">
+                   <div class="modal-content">
+                       <div class="modal-header">
+                           <h5 class="modal-title" id="filtroModalLabel">Filtros de Reporte</h5>
+                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                               <span aria-hidden="true">&times;</span>
+                           </button>
+                       </div>
+                       <div class="modal-body">
+                           <!-- Formulario de filtros dentro del modal -->
+                           <form method="POST" action="tablero">
+                               <div class="row mb-4">
+                                   <!-- Filtro de Estado -->
+                                   
+                                   <!-- Filtro de Responsable -->
+                                   <div class="col-sm-12 col-md-4 mb-2">
+                                       <label for="responsable">Filtrar Responsable</label>
+                                       <select class="form-control" id="responsable_" name="responsable_">
+                                           <option value="">Todos los responsables</option>
+                                           {% for usuario in usuarios %}
+                                           <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">
+                                               {{ usuario.nombres }} {{ usuario.apellidos }}
+                                           </option>
+                                           {% endfor %}
+                                       </select>
+                                   </div>
+               
+                                   <!-- Filtro de Proyecto -->
+                                   <div class="col-sm-12 col-md-4 mb-2">
+                                       <label for="proyecto">Filtrar Proyecto</label>
+                                       <select class="form-control" id="codigo_proyecto_" name="codigo_proyecto_">
+                                           <option value="">Todos los proyectos</option>
+                                           {% for proyecto_item in proyectos %}
+                                           <option value="{{ proyecto_item.nombre_proyecto }}">
+                                               {{ proyecto_item.nombre_proyecto }}
+                                           </option>
+                                           {% endfor %}
+                                       </select>
+                                   </div>
+
+                                   <!-- Filtro por Mes -->
+                                   <div class="col-sm-12 col-md-4 mb-2">
+                                       <label for="mes">Filtrar por Mes</label>
+                                       <select class="form-control" id="mes_" name="mes_">
+                                           <option value="">Todos los meses</option>
+                                           <option value="Enero">Enero</option>
+                                           <option value="Febrero">Febrero</option>
+                                           <option value="Marzo">Marzo</option>
+                                           <option value="Abril">Abril</option>
+                                           <option value="Mayo">Mayo</option>
+                                           <option value="Junio">Junio</option>
+                                           <option value="Julio">Julio</option>
+                                           <option value="Agosto">Agosto</option>
+                                           <option value="Septiembre">Septiembre</option>
+                                           <option value="Octubre">Octubre</option>
+                                           <option value="Noviembre">Noviembre</option>
+                                           <option value="Diciembre">Diciembre</option>
+                                       </select>
+                                   </div>
+
+                                 
+                               </div>
+                               <div class="modal-footer">
+                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                   <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                               </div>
+                           </form>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           
             <div class="row">
                 <!-- Columna de PENDIENTE -->
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
@@ -158,7 +213,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Registrar tarea</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
             </div>
             <div class="modal-body">
               <!-- Formulario para Crear/Editar tareas -->
@@ -211,7 +266,7 @@
                 </div>
                 <div class="form-group">
                     <label for="horas_dedicadas">Horas Dedicadas</label>
-                    <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas">
+                    <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas" required>
                 </div>
                 <div class="form-group">
                     <label for="estado">Estado</label>
@@ -220,7 +275,7 @@
                         <button id="estadoButton" class="btn btn-secondary w-100 text-start" type="button" disabled>
                             Selecciona un estado
                         </button>
-                        <select class="form-control" id="Cestado" name="Cestado" required onchange="cambiarColorEstado()">
+                        <select class="form-control" id="Cestado" name="Cestado" required onchange="cambiarColorEstado()" required>
                             <option value="" disabled selected>Selecciona un estado</option>
                             <option value="PENDIENTE">PENDIENTE</option>
                             <option value="PROGRESO">PROGRESO</option>
@@ -320,23 +375,12 @@
     </div>
 
     <script>
-        function allowDrop(event) {
-            event.preventDefault();
+        function showDeleteIcon(id) {
+            document.getElementById('delete-icon-' + id).style.display = 'inline';
         }
     
-        function drag(event) {
-            event.dataTransfer.setData("text", event.target.id);
-        }
-    
-        function drop(event) {
-            event.preventDefault();
-            var data = event.dataTransfer.getData("text");
-            var targetColumn = event.target.closest('.kanban-column');  // Obtener la columna de destino
-            var newEstado = targetColumn.getAttribute('data-estado');  // Obtener el nuevo estado
-            var taskId = data;  // Obtener el ID de la tarea arrastrada
-    
-            actualizarEstadoTarea(taskId, newEstado);
-            location.reload(); // Recargar toda la página
+        function hideDeleteIcon(id) {
+            document.getElementById('delete-icon-' + id).style.display = 'none';
         }
     
         function editarTarea(id) {
@@ -350,34 +394,15 @@
                 document.getElementById('codigo_tarea').value = data.codigo_tarea;
                 document.getElementById('titulo').value = data.titulo;
                 document.getElementById('descripcion').value = data.descripcion;
-                document.getElementById('fecha_inicio').value = data.fecha_inicio.split('T')[0];
-                document.getElementById('fecha_fin').value = data.fecha_fin ? data.fecha_fin.split('T')[0] : '';
+                document.getElementById('fecha_inicio').value = data.fecha_inicio;
+                document.getElementById('fecha_fin').value = data.fecha_fin || '';
                 document.getElementById('horas_estimadas').value = data.horas_estimadas;
                 document.getElementById('horas_dedicadas').value = data.horas_dedicadas;
+                document.getElementById('fecha_facturacion').value = data.fecha_facturacion || '';
                 document.getElementById('Cestado').value = data.estado;
                 document.getElementById('Cresponsable').value = data.responsable;
                 document.getElementById('consumo').value = data.tipo_consumo;
-            });
-        }
-    
-        function eliminarTarea(id) {
-            Swal.fire({
-                title: '¿Estás seguro de que deseas eliminar esta tarea?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/tareas/${id}`, {
-                        method: 'DELETE'
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            location.reload();
-                        }
-                    });
-                }
+                document.getElementById('mes').value = data.mes;
             });
         }
     
@@ -386,7 +411,7 @@
     
             const id = document.getElementById('tareaId').value;
             const method = id ? 'PUT' : 'POST';  // Usar PUT si es edición, POST si es creación
-            const url = id ? `/tareas/${id}` : '/tareas';
+            const url = id ? `/tareas/${id}` : '/outtareas';
     
             fetch(url, {
                 method: method,
@@ -405,12 +430,25 @@
                     horas_dedicadas: document.getElementById('horas_dedicadas').value,
                     estado: document.getElementById('Cestado').value,
                     responsable: document.getElementById('Cresponsable').value,
-                    tipo_consumo: document.getElementById('consumo').value
+                    tipo_consumo: document.getElementById('consumo').value,
+                    mes: document.getElementById('mes').value
                 })
             })
             .then(response => {
                 if (response.ok) {
-                    location.reload();
+                    Swal.fire(
+                        '¡Éxito!',
+                        'La tarea ha sido guardada correctamente.',
+                        'success'
+                    ).then(() => {
+                        location.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        'Error',
+                        'Ocurrió un problema al guardar la tarea.',
+                        'error'
+                    );
                 }
             });
         });
@@ -438,37 +476,60 @@
             return uniqueCode;
         }
     
-        async function actualizarEstadoTarea(id, nuevoEstado) {
-            const url = `/tareas/${id}/estado`; // La URL del endpoint en Flask
-            const data = {
-                estado: nuevoEstado
-            };
+        {% if session['username'] == "admin" %}
     
-            try {
-                const response = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data) // Convertir los datos a JSON
-                });
-    
-                if (response.ok) {
-                    const resultado = await response.json();
-                    console.log('Tarea actualizada:', resultado);
-                    Swal.fire('Estado actualizado', 'Estado de la tarea actualizado correctamente', 'success');
-                    location.reload(); // Recargar toda la página
-                } else {
-                    const errorData = await response.json();
-                    console.error('Error al actualizar tarea:', errorData);
-                    Swal.fire('Error', 'Error al actualizar la tarea', 'error');
+        function eliminarTarea(id) {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/tareas/${id}`, {
+                        method: 'DELETE'
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            Swal.fire(
+                                '¡Eliminado!',
+                                'La tarea ha sido eliminada.',
+                                'success'
+                            ).then(() => {
+                                location.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Error',
+                                'Ocurrió un problema al eliminar la tarea.',
+                                'error'
+                            );
+                        }
+                    });
                 }
-            } catch (error) {
-                console.error('Error en la solicitud:', error);
-                Swal.fire('Error', 'Error en la solicitud', 'error');
-            }
+            });
         }
+    
+        {% else %}
+    
+        function eliminarTarea(id) {
+            Swal.fire(
+                'Acceso Denegado',
+                'No tienes permisos para borrar tareas.',
+                'error'
+            );
+        }
+    
+        {% endif %}
     </script>
+    
+     <!-- Scripts de Bootstrap y dependencias -->
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     
 
 {% endblock %}

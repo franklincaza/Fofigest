@@ -1,0 +1,31 @@
+
+{% extends 'Base.html' %}  <!-- Esto se define al principio, si estás en Admin o Base lo defines en la vista -->
+{% block content %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container-fluid bg-light py-5">
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+  
+        </div>
+       
+        <div class="row">
+            <h1>Subir Archivo de Tareas</h1>
+   
+            <form action="/upload" method="post" enctype="multipart/form-data">
+                <label for="file">Selecciona un archivo Excel:</label>
+                <input type="file" name="file" id="file" accept=".xlsx, .xls">
+                <button type="submit">Subir</button>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

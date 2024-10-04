@@ -25,7 +25,7 @@ from io import BytesIO
 from waitress import serve
 import os
 import shutil
-
+from werkzeug.utils import secure_filename
 
 
 # Definimos el endpoint principal
@@ -46,10 +46,16 @@ app.secret_key = 'GDSGODSGFY56D4F8asc8assS6854DCSX85Z13ZXC8478SD94C6XZ1asSDA6F48
 serializer = URLSafeTimedSerializer(app.secret_key)
 
 # Configuración de la base de datos usando SQLite
-# SQLALCHEMY_DATABASE_URI define la ubicación de la base de datos
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Empresas.db'
-# Configuración de la base de datos Supabase
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.wlvgmwuhfunnpddcgvzu:I0P2EdBGUabioCtA@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+
+debug = config.config["debug"]
+
+if debug:
+
+    # SQLALCHEMY_DATABASE_URI define la ubicación de la base de datos
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Empresas.db'
+else:
+    # Configuración de la base de datos Supabase
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.wlvgmwuhfunnpddcgvzu:I0P2EdBGUabioCtA@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
 
 # SQLALCHEMY_TRACK_MODIFICATIONS deshabilita el rastreo de modificaciones de objetos, 
 # ya que es innecesario y consume recursos. Es recomendable establecerlo en False.
@@ -81,9 +87,54 @@ with app.app_context():
 @login_manager.user_loader
 def load_user(user_id):
     return models.Usuarios.query.get(int(user_id))
+    
 
+# Ruta para subir archivos y procesar datos
+@app.route('/upload', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # Verificar si se subió un archivo
+        if 'file' not in request.files:
+            return 'No file part'
+        
+        file = request.files['file']
+        
+        if file.filename == '':
+            return 'No selected file'
+        
+        if file:
+            filename = secure_filename(file.filename)
+            print("------------------------------------------------------------------")
+            print(filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(filepath)
 
+            # Procesar el archivo Excel subido
+            data = pd.read_excel("Task_Fofigest.xlsx")
+            for index, row in data.iterrows():
+                nueva_tarea = models.Tareas(
+                    id=row['id'],
+                    empresa=row['Empresa'],
+                    codigo_proyecto=row['Codigo Proyecto'],
+                    codigo_tarea=row['Codigo Tarea'],
+                    titulo=row['Titulo'],
+                    descripcion=row['Descripcion'],
+                    fecha_inicio=pd.to_datetime(row['Fecha Inicio']),
+                    fecha_fin=pd.to_datetime(row['Fecha Fin']),
+                    responsable=row['Responsable'],
+                    horas_dedicadas=row['Horas Dedicadas'],
+                    horas_estimadas=row['Horas Estimadas'],
+                    fecha_facturacion=pd.to_datetime(row['Fecha Facturacion']),
+                    estado=row['Estado'],
+                    tipo_consumo=row['Tipo Consumo'],
+                    mes=row['Mes']
+                )
+                models.db.session.add(nueva_tarea)
+            
+            models.db.session.commit()
+            return 'Archivo subido y datos cargados con éxito'
 
+    return render_template('subir_datos.html')
 
 #<___________________________________Vista___________________________________________________>
 
@@ -179,37 +230,71 @@ def proyecto():
     """
     Ruta para mostrar el tablero de tareas con las tareas agrupadas por su estado.
     """
-    # Obtener todas las empresas y tareas por estado
-    empresas = models.Empresas.query.all()
-    tareas = models.Tareas.query.all()
-    proyectos = models.Proyecto.query.all()
-    usuarios = models.Usuarios.query.all()
-
-    if request.method == 'POST':
-        # Procesar búsqueda por palabra clave
-        
-        palabra_clave = request.form['searchInput']
-        try:
-            tareas_PENDIENTE=buscar_tareas(palabra_clave)
-        except:
-            tareas_PENDIENTE = models.Tareas.query.filter_by(estado='PENDIENTE').all()
-        print(tareas_PENDIENTE)
-      
-
-    tareas_PENDIENTE = models.Tareas.query.filter_by(estado='PENDIENTE').all()
-    tareas_PROGRESO = models.Tareas.query.filter_by(estado='PROGRESO').all()
-    tareas_REVISIÓN = models.Tareas.query.filter_by(estado='REVISIÓN').all()
-    tareas_IMPEDIMENTOS = models.Tareas.query.filter_by(estado='IMPEDIMENTOS').all()
-    tareas_COMPLETADOS = models.Tareas.query.filter_by(estado='COMPLETADOS').all()
-    
-    
-
-   
-    
-
     # Configuración del host (si es necesario)
     host = config.config.get("host", "localhost")
     
+    # Obtener todas las empresas, proyectos, y usuarios
+    empresas = models.Empresas.query.all()
+    proyectos = models.Proyecto.query.all()
+    usuarios = models.Usuarios.query.all()
+    
+    # Consultar todas las tareas inicialmente
+    tareas_PENDIENTE = models.Tareas.query.filter_by(estado='PENDIENTE')
+    tareas_PROGRESO = models.Tareas.query.filter_by(estado='PROGRESO')
+    tareas_REVISIÓN = models.Tareas.query.filter_by(estado='REVISIÓN')
+    tareas_IMPEDIMENTOS = models.Tareas.query.filter_by(estado='IMPEDIMENTOS')
+    tareas_COMPLETADOS = models.Tareas.query.filter_by(estado='COMPLETADOS')
+
+    # Si se hace un POST (se envía el formulario de filtros)
+    if request.method == 'POST':
+        
+        # Filtro por estado (opcional)
+        estado = request.form.get('estado_')
+        if estado:
+            tareas_PENDIENTE = tareas_PENDIENTE.filter(models.Tareas.estado == estado)
+            tareas_PROGRESO = tareas_PROGRESO.filter(models.Tareas.estado == estado)
+            tareas_REVISIÓN = tareas_REVISIÓN.filter(models.Tareas.estado == estado)
+            tareas_IMPEDIMENTOS = tareas_IMPEDIMENTOS.filter(models.Tareas.estado == estado)
+            tareas_COMPLETADOS = tareas_COMPLETADOS.filter(models.Tareas.estado == estado)
+
+        # Filtro por responsable (opcional)
+        responsable = request.form.get('responsable_')
+        if responsable:
+            tareas_PENDIENTE = tareas_PENDIENTE.filter(models.Tareas.responsable == responsable)
+            tareas_PROGRESO = tareas_PROGRESO.filter(models.Tareas.responsable == responsable)
+            tareas_REVISIÓN = tareas_REVISIÓN.filter(models.Tareas.responsable == responsable)
+            tareas_IMPEDIMENTOS = tareas_IMPEDIMENTOS.filter(models.Tareas.responsable == responsable)
+            tareas_COMPLETADOS = tareas_COMPLETADOS.filter(models.Tareas.responsable == responsable)
+
+        # Filtro por proyecto (opcional)
+        proyecto = request.form.get('codigo_proyecto_')
+        print("proyecto a filtrar: ",proyecto)
+        if proyecto:
+            tareas_PENDIENTE = tareas_PENDIENTE.filter(models.Tareas.codigo_proyecto == proyecto)
+            tareas_PROGRESO = tareas_PROGRESO.filter(models.Tareas.codigo_proyecto == proyecto)
+            tareas_REVISIÓN = tareas_REVISIÓN.filter(models.Tareas.codigo_proyecto == proyecto)
+            tareas_IMPEDIMENTOS = tareas_IMPEDIMENTOS.filter(models.Tareas.codigo_proyecto == proyecto)
+            tareas_COMPLETADOS = tareas_COMPLETADOS.filter(models.Tareas.codigo_proyecto == proyecto)
+
+        # Filtro por mes (opcional)
+        mes = request.form.get('mes_')
+        if mes:
+            tareas_PENDIENTE = tareas_PENDIENTE.filter(models.Tareas.mes == mes)
+            tareas_PROGRESO = tareas_PROGRESO.filter(models.Tareas.mes == mes)
+            tareas_REVISIÓN = tareas_REVISIÓN.filter(models.Tareas.mes == mes)
+            tareas_IMPEDIMENTOS = tareas_IMPEDIMENTOS.filter(models.Tareas.mes == mes)
+            tareas_COMPLETADOS = tareas_COMPLETADOS.filter(models.Tareas.mes == mes)
+
+    # Ejecutar las consultas filtradas y convertirlas en listas
+    tareas_PENDIENTE = tareas_PENDIENTE.all()
+    tareas_PROGRESO = tareas_PROGRESO.all()
+    tareas_REVISIÓN = tareas_REVISIÓN.all()
+    tareas_IMPEDIMENTOS = tareas_IMPEDIMENTOS.all()
+    tareas_COMPLETADOS = tareas_COMPLETADOS.all()
+
+    # Calcular las horas estimadas y de ejecución de todas las tareas
+    total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in models.Tareas.query.all())
+
     # Renderizar la plantilla con los datos obtenidos
     return render_template('tablero.html',
                            empresas=empresas,
@@ -219,9 +304,9 @@ def proyecto():
                            tareas_REVISIÓN=tareas_REVISIÓN,
                            tareas_IMPEDIMENTOS=tareas_IMPEDIMENTOS,
                            tareas_COMPLETADOS=tareas_COMPLETADOS,
-                           tareas=tareas,
                            proyectos=proyectos,
-                           usuarios=usuarios)
+                           usuarios=usuarios,
+                           total_horas_ejecucion=total_horas_ejecucion)
 
 # Nuevo usuario 
 @app.route("/Nuevo_Usuario")
@@ -404,49 +489,64 @@ def render_markdown():
     return render_template('markdown_form.html')
 
 # Tareas vista 
-@app.route('/tareas', methods=['GET'])
+@app.route('/tareas', methods=['GET', 'POST'])
 @login_required
 def vista_tareas():
     """
     Obtener todas las tareas con los filtros seleccionados por el usuario.
     """
-    # Obtener los filtros seleccionados por el usuario
-    estado = request.args.get('estado', '')  # Filtro de estado
-    responsable = request.args.get('responsable', '')  # Filtro de responsable
-    proyecto = request.args.get('proyecto', '')  # Filtro de proyecto
-    empresa = request.args.get('empresa', '')  # Filtro de empresa
-
-    # Consulta base sin filtros
-    query = models.Tareas.query
-
-    # Aplicar filtro de estado si existe
-    if estado:
-        query = query.filter(models.Tareas.estado == estado)
-
-    # Aplicar filtro de responsable si existe
-    if responsable:
-        query = query.filter(models.Tareas.responsable == responsable)
-
-    # Aplicar filtro de proyecto si existe
-    if proyecto:
-        query = query.filter(models.Tareas.codigo_proyecto == proyecto)
-
-    # Aplicar filtro de empresa si existe
-    if empresa:
-        query = query.filter(models.Tareas.empresa == empresa)
-
-    # Obtener los resultados de la consulta filtrada
-    tareas = query.all()
-
-    # Obtener datos adicionales para el formulario de filtrado
-    empresas = models.Empresas.query.all()
     proyectos = models.Proyecto.query.all()
     usuarios = models.Usuarios.query.all()
+    empresas = models.Empresas.query.all()
+    
+    # Inicializa la consulta de tareas
+    tareas_query = models.Tareas.query
+
+    if request.method == 'POST':
+    
+        # Filtro por estado
+        estado = request.form.get('estado_')
+        if estado:
+            tareas_query = tareas_query.filter(models.Tareas.estado == estado)
+
+        # Filtro por responsable
+        responsable = request.form.get('responsable_')
+        if responsable:
+            tareas_query = tareas_query.filter(models.Tareas.responsable == responsable)
+
+        # Filtro por proyecto
+        proyecto = request.form.get('proyecto_')
+        if proyecto:
+            tareas_query = tareas_query.filter(models.Tareas.codigo_proyecto == proyecto)
+
+        # Filtro por mes
+        mes = request.form.get('mes_')
+        if mes:
+            tareas_query = tareas_query.filter(models.Tareas.mes == mes)
+
+        # Filtro por fecha de inicio y fecha de fin
+        fecha_inicio = request.form.get('fecha_inicio_')
+        fecha_fin = request.form.get('fecha_fin_')
+        if fecha_inicio and fecha_fin:
+            tareas_query = tareas_query.filter(models.Tareas.fecha_inicio >= fecha_inicio, 
+                                            models.Tareas.fecha_fin <= fecha_fin)
+
+        # Obtener el resultado final de las tareas filtradas
+        tareas = tareas_query.all()
+
+    else:
+        # Si no se ha enviado POST, muestra todas las tareas
+        tareas = models.Tareas.query.all()
+
+    # Calcular las horas estimadas y de ejecución
+    total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in tareas)
 
     return render_template("tareas.html", tareas=tareas,
                                         empresas=empresas,
                                         proyectos=proyectos,
-                                        usuarios=usuarios)
+                                        usuarios=usuarios,
+                                        total_horas_ejecucion=total_horas_ejecucion)
+
 
 # usuarios vista 
 @app.route('/usuarios_admin', methods=['GET'])
@@ -537,7 +637,7 @@ def logout():
 
 
 # Reporte de horas vista
-@app.route('/Reporte-Horas<empresa>', methods=['GET'])
+@app.route('/Reporte-Horas<empresa>', methods=['GET','POST'])
 @login_required
 def vista_reporte_Horas(empresa):
     """
@@ -545,84 +645,114 @@ def vista_reporte_Horas(empresa):
     """
     out = empresa
 
-    # Obtener los filtros seleccionados por el usuario
-    estado = request.args.get('estado', '')  # Filtro de estado
-    responsable = request.args.get('responsable', '')  # Filtro de responsable
-    proyecto = request.args.get('proyecto', '')  # Filtro de proyecto
-    mes = request.args.get('mes', '')  # Filtro de mes
-    fecha_inicio = request.args.get('fecha_inicio', '')  # Filtro de fecha de inicio
-    fecha_fin = request.args.get('fecha_fin', '')  # Filtro de fecha de fin
 
-    # Consulta base sin filtros
-    query = models.Tareas.query.filter_by(empresa=out)
+    if out == "Fofimatic S.A.S":
+        tareas = models.Tareas.query.filter(
+        models.Tareas.estado == 'COMPLETADOS'
+                                    ).all()
+        proyectos = models.Proyecto.query.all()
+        usuarios = models.Usuarios.query.all()
+            
+    else:
+        tareas = models.Tareas.query.filter(models.Tareas.empresa == out,
+                                            models.Tareas.estado == 'COMPLETADOS').all()
+        proyectos = models.Proyecto.query.filter(models.Proyecto.empresa == out).all()
+        usuarios = models.Usuarios.query.all()
 
-    # Aplicar los filtros si existen
-    if estado:
-        query = query.filter(models.Tareas.estado == estado)
+    if request.method == 'POST':
+        out = session.get('empresa', 'Fofimatic S.A.S')
 
-    if responsable:
-        query = query.filter(models.Tareas.responsable == responsable)
+        # Obtener la consulta base de tareas, proyectos y usuarios según la empresa
+        if out == "Fofimatic S.A.S":
+            tareas_query = models.Tareas.query.filter(models.Tareas.estado == 'COMPLETADOS')
+            proyectos = models.Proyecto.query.all()
+            usuarios = models.Usuarios.query.all()
+        else:
+            tareas_query = models.Tareas.query.filter(models.Tareas.empresa == out, 
+                                                    models.Tareas.estado == 'COMPLETADOS')
+            proyectos = models.Proyecto.query.filter(models.Proyecto.empresa == out).all()
+            usuarios = models.Usuarios.query.all()
 
-    if proyecto:
-        query = query.filter(models.Tareas.codigo_proyecto == proyecto)
+        # Filtro por estado
+        estado = request.form.get('estado')
+        if estado:
+            tareas_query = tareas_query.filter(models.Tareas.estado == estado)
 
-    if mes:
-        query = query.filter(models.Tareas.mes == mes)
+        # Filtro por responsable
+        responsable = request.form.get('responsable')
+        if responsable:
+            tareas_query = tareas_query.filter(models.Tareas.responsable == responsable)
 
-    if fecha_inicio and fecha_fin:
-        query = query.filter(models.Tareas.fecha_inicio >= fecha_inicio, models.Tareas.fecha_fin <= fecha_fin)
+        # Filtro por proyecto
+        proyecto = request.form.get('proyecto')
+        if proyecto:
+            tareas_query = tareas_query.filter(models.Tareas.codigo_proyecto == proyecto)
 
-    # Obtener los resultados de la consulta filtrada
-    tareas = query.all()
+        # Filtro por mes
+        mes = request.form.get('mes')
+        if mes:
+            tareas_query = tareas_query.filter(models.Tareas.mes == mes)
+
+        # Filtro por fecha de inicio y fecha de fin
+        fecha_inicio = request.form.get('fecha_inicio')
+        fecha_fin = request.form.get('fecha_fin')
+        if fecha_inicio and fecha_fin:
+            tareas_query = tareas_query.filter(models.Tareas.fecha_inicio >= fecha_inicio, 
+                                            models.Tareas.fecha_fin <= fecha_fin)
+
+        # Obtener el resultado final de las tareas filtradas
+        tareas = tareas_query.all()
+
+
+            
+        
 
     # Calcular las horas estimadas y de ejecución
-    total_horas_estimadas = sum(tarea.horas_estimadas for tarea in tareas)
+    #total_horas_estimadas = sum(tarea.horas_estimadas for tarea in tareas)
     total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in tareas)
-
-    # Obtener datos adicionales para el formulario de filtrado
-    empresas = models.Empresas.query.all()
-    proyectos = models.Proyecto.query.all()
-    usuarios = models.Usuarios.query.all()
+  
+ 
+    
 
     return render_template("Reporte de horas.html",
                            tareas=tareas,
-                           empresas=empresas,
                            proyectos=proyectos,
                            usuarios=usuarios,
-                           total_horas_estimadas=total_horas_estimadas,
                            total_horas_ejecucion=total_horas_ejecucion)
-                            
-                           
+                                                    
 #Descarga del excel reporte → /Reporte-HorasDownloadFofimatic S.A
-@app.route('/Reporte-HorasDownload<empresa>', methods=['GET'])
-@login_required
-def reporte_excel_horas(empresa):
-    # Obtener los filtros seleccionados por el usuario
-    estado = request.args.get('estado', '')  # Filtro de estado
-    responsable = request.args.get('responsable', '')  # Filtro de responsable
-    proyecto = request.args.get('proyecto', '')  # Filtro de proyecto
-    empresa = request.args.get('empresa', empresa)  # Filtro de empresa
+@app.route('/Reporte-HorasDownload<empresa>', methods=['GET', 'POST'])
+def descargar_reporte_excel(empresa):
+    # Obtener los filtros del formulario
+    estado = request.form.get('estado')
+    responsable = request.form.get('responsable')
+    proyecto = request.form.get('proyecto')
+    mes = request.form.get('mes')
+    fecha_inicio = request.form.get('fecha_inicio')
+    fecha_fin = request.form.get('fecha_fin')
 
-    # Iniciar la consulta base
-    query = models.Tareas.query
+    # Consulta base de las tareas
+    if empresa == "Fofimatic S.A.S":
+        tareas_query = models.Tareas.query.filter(models.Tareas.estado == 'COMPLETADOS')
+    else:
+        tareas_query = models.Tareas.query.filter(models.Tareas.empresa == empresa, models.Tareas.estado == 'COMPLETADOS')
 
-    # Aplicar filtros si existen
+    # Aplicar los filtros si existen
     if estado:
-        query = query.filter(models.Tareas.estado == estado)
-
+        tareas_query = tareas_query.filter(models.Tareas.estado == estado)
     if responsable:
-        query = query.filter(models.Tareas.responsable == responsable)
-
+        tareas_query = tareas_query.filter(models.Tareas.responsable == responsable)
     if proyecto:
-        query = query.filter(models.Tareas.codigo_proyecto == proyecto)
+        tareas_query = tareas_query.filter(models.Tareas.codigo_proyecto == proyecto)
+    if mes:
+        tareas_query = tareas_query.filter(models.Tareas.mes == mes)
+    if fecha_inicio and fecha_fin:
+        tareas_query = tareas_query.filter(models.Tareas.fecha_inicio >= fecha_inicio, models.Tareas.fecha_fin <= fecha_fin)
 
-    if empresa:
-        query = query.filter(models.Tareas.empresa == empresa)
+    # Ejecutar la consulta
+    tareas = tareas_query.all()
 
-    # Obtener los resultados de la consulta filtrada
-    tareas = query.all()
-
-    # Convertir los resultados en una lista de diccionarios
+    # Crear la lista de diccionarios con los datos de las tareas
     data = []
     for tarea in tareas:
         data.append({
@@ -631,23 +761,23 @@ def reporte_excel_horas(empresa):
             'TÍTULO': tarea.titulo,
             'FECHA INICIO': tarea.fecha_inicio,
             'FECHA LIMITE': tarea.fecha_fin,
-            'HORAS REGISTRADOS	': tarea.horas_dedicadas,
+            'HORAS REGISTRADOS': tarea.horas_dedicadas,
             'MES': tarea.mes
-            # Añade otros campos necesarios
+            # Añade otros campos que necesites
         })
 
-    # Crear un DataFrame de pandas
+    # Crear un DataFrame de pandas con los datos
     reporte = pd.DataFrame(data)
 
     # Crear un archivo Excel en memoria
     output = BytesIO()
     with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
         reporte.to_excel(writer, index=False)
+
     output.seek(0)
 
     # Enviar el archivo Excel como respuesta para descarga
-    return send_file(output, download_name='reporte.xlsx', as_attachment=True, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-
+    return send_file(output, download_name='reporte_horas.xlsx', as_attachment=True, mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
 @app.route('/download-backup')
 @login_required
@@ -671,7 +801,6 @@ def download_backup():
 
     except Exception as e:
         abort(500, description=f"Error al generar el respaldo: {str(e)}")
-
 
 # Página log
 @app.route("/log")  
@@ -758,7 +887,6 @@ def log():
     return render_template("log.html")
 
 #</__________________________________Vista___________________________________________________>
-
 #<__________________________________ Tareas___________________________________________________>
 # Tareas 
 @app.route('/actualizar_estado_tarea/<int:tarea_id>', methods=['POST'])
@@ -784,7 +912,6 @@ def actualizar_estado_tarea(tarea_id):
         models.db.session.rollback()
         return jsonify({'message': 'Error al actualizar el estado'}), 500
 
-
 @app.route('/tareas/json', methods=['GET'])
 def obtener_tareas():
     """
@@ -801,7 +928,7 @@ def obtener_tarea(id):
     tarea = models.Tareas.query.get_or_404(id)
     return jsonify(tarea.serialize()), 200
 
-@app.route('/tareas', methods=['POST'])
+@app.route('/outtareas', methods=['POST'])
 def crear_tarea():
     """
     Crear una nueva tarea.
@@ -822,12 +949,15 @@ def crear_tarea():
         horas_estimadas=data['horas_estimadas'],
         estado=data.get('estado', 'PENDIENTE'),
         fecha_fin=datetime.strptime(data['fecha_fin'], '%Y-%m-%d') if 'fecha_fin' in data else None,
-        fecha_facturacion=datetime.strptime(data['fecha_facturacion'], '%Y-%m-%d') if 'fecha_facturacion' in data else None
+        fecha_facturacion=datetime.strptime(data['fecha_facturacion'], '%Y-%m-%d') if 'fecha_facturacion' in data else None,
+        mes=data['mes']
     )
 
     models.db.session.add(nueva_tarea)
     models.db.session.commit()
     return jsonify(nueva_tarea.serialize()), 201
+
+
 
 @app.route('/tareas/<int:id>', methods=['PUT'])
 def actualizar_tarea(id):
@@ -950,10 +1080,7 @@ def obtener_tareasapi():
     # Devolver la respuesta en formato JSON
     return jsonify(resultado)
 
-
-
 #</__________________________________ Tareas___________________________________________________>
-
 #<__________________________________Empresas___________________________________________________>
 # Definición de una ruta GET para obtener todas las empresas.
 @app.route("/json/empresas", methods=['GET'])
@@ -1011,8 +1138,6 @@ def create_empresa():
         # Devolvemos un mensaje de error y el detalle del error
         return jsonify({'message': 'Error al crear la empresa', 'error': str(e)}), 500
   
-    
-
 # Definición de una ruta PUT para actualizar una empresa.
 @app.route('/json/empresas/<int:id>', methods=['PUT'])
 def actualizar_empresa(id):
@@ -1035,7 +1160,6 @@ def actualizar_empresa(id):
         models.db.session.rollback()
         return jsonify({'message': f'Error al actualizar la empresa: {str(e)}'}), 500
 
-
 # Definición de una ruta DELETE para eliminar una empresa por su ID.
 @app.route('/empresas/<int:id>', methods=['DELETE'])
 def delete_empresa(id):
@@ -1053,8 +1177,6 @@ def delete_empresa(id):
         return jsonify({'message': f'Error al eliminar la empresa: {str(e)}'}), 500
 
 #</__________________________________Empresas___________________________________________________>
-
-
 #<__________________________________proyectos___________________________________________________>
 
 # Crear un nuevo proyecto (Create)aa
@@ -1162,7 +1284,6 @@ def delete_proyecto(codigo_proyecto):
         models.db.session.rollback()
         return jsonify({'message': 'Error al eliminar el proyecto', 'error': str(e)}), 500
 #</__________________________________proyecto___________________________________________________>
-
 #<__________________________________usuarios___________________________________________________>
 
 @app.route('/usuario', methods=['POST'])
@@ -1235,6 +1356,8 @@ if __name__ == '__main__':
         logging.info("mode de debug esta True ")
         print("mode de debug esta True ")
         app.run(host="0.0.0.0",debug=debug, port=5000)
+        
+        
         
 
     else:
