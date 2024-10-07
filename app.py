@@ -138,7 +138,6 @@ def upload_file():
 
 #<___________________________________Vista___________________________________________________>
 
-
 @app.context_processor
 def inject_user():
     return dict(username=session.get('username'))
@@ -722,6 +721,7 @@ def vista_reporte_Horas(empresa):
                                                     
 #Descarga del excel reporte → /Reporte-HorasDownloadFofimatic S.A
 @app.route('/Reporte-HorasDownload<empresa>', methods=['GET', 'POST'])
+@login_required
 def descargar_reporte_excel(empresa):
     # Obtener los filtros del formulario
     estado = request.form.get('estado')
@@ -947,6 +947,7 @@ def crear_tarea():
         fecha_inicio=datetime.strptime(data['fecha_inicio'], '%Y-%m-%d'),
         responsable=data['responsable'],
         horas_estimadas=data['horas_estimadas'],
+        horas_dedicadas=data['horas_dedicadas'],
         estado=data.get('estado', 'PENDIENTE'),
         fecha_fin=datetime.strptime(data['fecha_fin'], '%Y-%m-%d') if 'fecha_fin' in data else None,
         fecha_facturacion=datetime.strptime(data['fecha_facturacion'], '%Y-%m-%d') if 'fecha_facturacion' in data else None,
@@ -1346,23 +1347,70 @@ def eliminar_usuario(id):
 #</__________________________________usuarios___________________________________________________>
 
 
-if __name__ == '__main__':
-    # Se obtiene la configuración de debug desde el archivo config.py
-    debug = config.config["debug"]
-    v=config.config["version"]
-    logging.info(f"version del desarrollo {v} ")
-    
-    if debug:
-        logging.info("mode de debug esta True ")
-        print("mode de debug esta True ")
-        app.run(host="0.0.0.0",debug=debug, port=5000)
-        
-        
-        
+def auto_crear_tarea():
 
-    else:
-        # Inicia el servidor Flask con debug activado (según configuración) en el puerto 5000
-        logging.info("mode de debug esta falso , aplicacion en producciion")
-        print("mode de debug esta falso , aplicacion en produccion")
-        serve(app,host="0.0.0.0", port=5000 , threads=2)
+    """
+    Crear una nueva tarea a partir de los datos de un archivo Excel.
+    """
+    import pandas as pd
+    import time
+
+    df = pd.read_excel("Task_Fofigest.xlsx")
+    
+    for i in range(len(df)):
+        print("-----------------------------------------------------------")
+        print("Ingresando datos: ", i)
+       
+        nueva_tarea = models.Tareas(
+            empresa="SULFOQUIMICA SA",
+            codigo_proyecto=df.iloc[i]['codigo_proyecto'],
+            codigo_tarea=df.iloc[i]['codigo_tarea'],
+            titulo=df.iloc[i]['titulo'],
+            descripcion=df.iloc[i]['descripcion'],
+            fecha_inicio=datetime.strptime(df.iloc[i]['fecha_inicio'], '%Y-%m-%d'),
+            responsable=df.iloc[i]['responsable'],
+            horas_estimadas=df.iloc[i]['horas_estimadas'],
+            estado=df.iloc[i]['estado'],
+            fecha_fin=datetime.strptime(df.iloc[i]['fecha_fin'], '%Y-%m-%d') if not pd.isna(df.iloc[i]['fecha_fin']) else None,
+            fecha_facturacion=datetime.strptime(df.iloc[i]['fecha_facturacion'], '%Y-%m-%d') if not pd.isna(df.iloc[i]['fecha_facturacion']) else None,
+            mes=df.iloc[i]['mes']
+        )
+        
+        models.db.session.add(nueva_tarea)
+        time.sleep(2)  # Espera de 2 segundos
+        models.db.session.commit()
+        time.sleep(2)  # Espera de 2 segundos
+        
+        print("Tarea creada para el registro: ", i)
+        print("-----------------------------------------------------------")
+    
+    # Respuesta final después de crear todas las tareas
+    return jsonify({"message": "Todas las tareas han sido creadas exitosamente"}), 201
+
+@app.route('/auto_crear_tarea', methods=['POST'])
+def ejecutar_auto_crear_tarea():
+    return auto_crear_tarea()
+
+
+if __name__ == '__main__':
+        # Se obtiene la configuración de debug desde el archivo config.py
+        debug = config.config["debug"]
+        v=config.config["version"]
+        logging.info(f"version del desarrollo {v} ")
+    
+        if debug:
+                logging.info("mode de debug esta True ")
+                print("mode de debug esta True ")
+                app.run(host="0.0.0.0",debug=debug, port=5000)
+                
+                
+                
+                
+
+        else:
+                # Inicia el servidor Flask con debug activado (según configuración) en el puerto 5000
+                logging.info("mode de debug esta falso , aplicacion en producciion")
+                print("mode de debug esta falso , aplicacion en produccion")
+                serve(app,host="0.0.0.0", port=5000 , threads=2)
+                
 
