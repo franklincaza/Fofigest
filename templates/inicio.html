@@ -5,7 +5,26 @@
     <title>Fofigest - Gestión de Proyectos por Horas</title>
     <meta name="description" content="Fofigest es un software que permite llevar la gestión de proyectos por horas de manera eficiente y sencilla.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+     <!--pwa-->
+  <!-- Favicon para navegadores -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}">
+
+  <!-- Icono para PWA y dispositivos Apple -->
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.png') }}" type="image/png">
+
+  <meta name="theme-color" content="#317EFB"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{{url_for('static', filename='img/ilogo_F-Photoroom.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="manifest" href="manifest.json">
+
     <!-- Enlace a estilos CSS externos si los tienes -->
+
     <style>
         /* Estilos básicos para la landing page */
         body {
@@ -125,4 +144,16 @@
         -->
     </footer>
 </body>
+<!--pwa-->
+<script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register("/sw.js").then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
 </html>

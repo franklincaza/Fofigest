@@ -5,6 +5,12 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- Google Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
 
 <div class="container-fluid bg-light py-5">
     <div class="card p-4 shadow">
@@ -14,28 +20,26 @@
             </div>
             <div class="d-flex gap-2 mb-3 justify-content-start align-items-center flex-wrap">
                 <!-- Botón de refrescar --> 
-                <a id="refrescar" class="btn btn-outline-primary d-flex align-items-center px-3" href="/tareas" onclick="window.location.reload();">
-                    <span class="material-icons-outlined mr-2">refresh</span>
+                <a id="refrescar" class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" href="/tareas" onclick="window.location.reload();">
+                    <span class="material-icons-outlined me-2">refresh</span>
                     <span class="d-none d-md-inline">Refrescar</span>
                 </a>
-            
- 
+                
                 <!-- Botón de filtro -->
-                <a class="btn btn-outline-secondary d-flex align-items-center px-3" data-toggle="modal" data-target="#filtroModal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-funnel-fill mr-2" viewBox="0 0 16 16">
-                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
-                    </svg>
+                <a class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" data-bs-toggle="modal" data-bs-target="#filtroModal">
+                    <i class="bi bi-funnel-fill me-2"></i>
                     <span class="d-none d-md-inline">Formulario</span>
                 </a>
-
+            
                 <!-- Botón de agregar tarea -->
                 {% if session['username'] == "admin" %}
-                <button class="btn btn-outline-primary d-flex align-items-center px-3" data-toggle="modal" data-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico();">
-                    <span class="material-icons-outlined mr-2">add</span>
+                <button class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico();">
+                    <span class="material-icons-outlined me-2">add</span>
                     <span class="d-none d-md-inline">Agregar Tarea</span>
                 </button>
                 {% endif %}
             </div>
+            
 
         
                    
@@ -82,7 +86,7 @@
                                     <!-- Filtro de Proyecto -->
                                     <div class="col-sm-12 col-md-4 mb-2">
                                         <label for="proyecto">Filtrar Proyecto</label>
-                                        <select class="form-control" id="proyecto" name="proyecto">
+                                        <select class="form-control" id="proyecto_" name="proyecto_">
                                             <option value="">Todos los proyectos</option>
                                             {% for proyecto_item in proyectos %}
                                             <option value="{{ proyecto_item.nombre_proyecto }}">
@@ -202,30 +206,44 @@
                                     <span class=" delete-icon material-icons-outlined position-absolute text-danger" id="delete-icon-{{ tarea.id }}" style="display: none; right: 5px; cursor: pointer;" onclick="event.stopPropagation(); eliminarTarea({{ tarea.id }})">delete</span>
                                 </td>
                                 {% endif %}
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.tipo_consumo }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>                          
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_estimadas }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.estado }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.responsable }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.mes }}</td>
+                                {% set estado_class = '' %}
+                                {% if tarea.estado == 'PENDIENTE' %}
+                                    {% set estado_class = 'bg-secondary' %}
+                                {% elif tarea.estado == 'PROGRESO' %}
+                                    {% set estado_class = 'bg-primary text-white' %}
+                                {% elif tarea.estado == 'REVISIÓN' %}
+                                    {% set estado_class = 'bg-warning text-dark' %}
+                                {% elif tarea.estado == 'IMPEDIMENTOS' %}
+                                    {% set estado_class = 'bg-danger text-white' %}
+                                {% elif tarea.estado == 'COMPLETADOS' %}
+                                    {% set estado_class = 'bg-success text-white' %}
+                                {% endif %}
+                                
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.tipo_consumo }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>                          
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_estimadas }}</td>
+                                <td class="d-none d-sm-table-cell text-center {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.estado }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.responsable }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.mes }}</td>
+                                
 
                                 <!-- Vista compacta para móviles -->
-                                <td class="d-table-cell d-sm-none text-truncate">
-                                    <h5><strong>{{ tarea.titulo }}</strong></h5>
-                                    <p><strong>EMPRESA:</strong> {{ tarea.empresa }}</p>
-                                    <p><strong>PROYECTO:</strong> {{ tarea.codigo_proyecto }}</p>
-                                    <p><strong>TIPO DE CONSUMO:</strong> {{ tarea.tipo_consumo }}</p>
-                                    <p><strong>DESCRIPCIÓN:</strong> {{ tarea.descripcion }}</p>
-                                    <p><strong>FECHA INICIO Y FIN:</strong> {{ tarea.fecha_inicio }} - {{ tarea.fecha_fin }}</p>
-                                    <p><strong>HORAS DEDICADAS:</strong> {{ tarea.horas_dedicadas }}</p>
-                                    <p><strong>HORAS ESTIMADAS:</strong> {{ tarea.horas_estimadas }}</p>
-                                    <p class="center btn 
+                                <td class="d-table-cell d-sm-none  "  >
+                                    <h5 onclick="editarTarea({{ tarea.id }}) " ><strong>{{ tarea.titulo }}</strong></h5>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>EMPRESA:</strong> {{ tarea.empresa }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>PROYECTO:</strong> {{ tarea.codigo_proyecto }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>TIPO DE CONSUMO:</strong> {{ tarea.tipo_consumo }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>DESCRIPCIÓN:</strong> {{ tarea.descripcion }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>FECHA INICIO Y FIN:</strong> {{ tarea.fecha_inicio }} - {{ tarea.fecha_fin }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>HORAS DEDICADAS:</strong> {{ tarea.horas_dedicadas }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>HORAS ESTIMADAS:</strong> {{ tarea.horas_estimadas }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})" class="center btn 
                                         {% if tarea.estado == 'PENDIENTE' %}
                                             btn-secondary
                                         {% elif tarea.estado == 'PROGRESO' %}

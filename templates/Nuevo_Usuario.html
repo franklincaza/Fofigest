@@ -7,6 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Página de inicio de sesión para la aplicación web">
     <meta name="author" content="Franklin Ramirez Herazo">
+    <!--pwa-->
+  <meta name="theme-color" content="#317EFB"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{{url_for('static', filename='img/ilogo_F-Photoroom.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+
 
     <title>FOFIGEST</title>
 
@@ -164,5 +175,30 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
 </body>
+<!--pwa-->
+<script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register("/sw.js").then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("{{ url_for('static', filename='js/sw.js') }}")
+            .then(function(registration) {
+                console.log('Service Worker registrado con éxito:', registration.scope);
+            })
+            .catch(function(error) {
+                console.log('Error en el registro del Service Worker:', error);
+            });
+        } else {
+            console.log('Service Worker no es compatible con este navegador.');
+        }
+    </script>
 
 </html>

@@ -138,6 +138,15 @@ def upload_file():
 
 #<___________________________________Vista___________________________________________________>
 
+@app.route('/manifest.json')
+def serve_manifest():
+    return send_file('manifest.json', mimetype='application/manifest+json')
+
+
+@app.route('/sw.js')
+def serve_sw():
+    return send_file('sw.js', mimetype='application/javascript')
+
 @app.context_processor
 def inject_user():
     return dict(username=session.get('username'))
@@ -267,7 +276,7 @@ def proyecto():
 
         # Filtro por proyecto (opcional)
         proyecto = request.form.get('codigo_proyecto_')
-        print("proyecto a filtrar: ",proyecto)
+        
         if proyecto:
             tareas_PENDIENTE = tareas_PENDIENTE.filter(models.Tareas.codigo_proyecto == proyecto)
             tareas_PROGRESO = tareas_PROGRESO.filter(models.Tareas.codigo_proyecto == proyecto)
@@ -517,6 +526,7 @@ def vista_tareas():
         proyecto = request.form.get('proyecto_')
         if proyecto:
             tareas_query = tareas_query.filter(models.Tareas.codigo_proyecto == proyecto)
+            print("filtrando =",proyecto)
 
         # Filtro por mes
         mes = request.form.get('mes_')
@@ -683,7 +693,7 @@ def vista_reporte_Horas(empresa):
             tareas_query = tareas_query.filter(models.Tareas.responsable == responsable)
 
         # Filtro por proyecto
-        proyecto = request.form.get('proyecto')
+        proyecto = request.form.get('proyecto_')
         if proyecto:
             tareas_query = tareas_query.filter(models.Tareas.codigo_proyecto == proyecto)
 

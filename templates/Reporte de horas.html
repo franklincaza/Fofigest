@@ -13,19 +13,19 @@
             </div>
             <div class="d-flex gap-2 mb-3 justify-content-start align-items-center flex-wrap">
                 <!-- Botón de refrescar --> 
-                <a id="refrescar" class="btn btn-outline-primary d-flex align-items-center px-3" href="/Reporte-Horas{{ session['empresa'] }}" onclick="window.location.reload();">
+                <a id="refrescar" class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" href="/Reporte-Horas{{ session['empresa'] }}" onclick="window.location.reload();">
                     <span class="material-icons-outlined mr-2">refresh</span>
                     <span class="d-none d-md-inline">Refrescar</span>
                 </a>
             
                 <!-- Botón de descargar Excel -->
-                <a class="btn btn-outline-success d-flex align-items-center px-3" href="/Reporte-HorasDownload{{ session['empresa'] }}">
+                <a class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" href="/Reporte-HorasDownload{{ session['empresa'] }}">
                     <span class="material-icons-outlined mr-2">download</span>
                     <span class="d-none d-md-inline">Descargar Excel</span>
                 </a>
             
                 <!-- Botón de descargar filtro -->
-                <a class="btn btn-outline-secondary d-flex align-items-center px-3" data-toggle="modal" data-target="#filtroModal">
+                <a class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" data-toggle="modal" data-target="#filtroModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-funnel-fill mr-2" viewBox="0 0 16 16">
                         <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
                     </svg>
@@ -77,10 +77,10 @@
                         <!-- Filtro de Proyecto -->
                         <div class="col-sm-12 col-md-4 mb-2">
                             <label for="proyecto">Filtrar Proyecto</label>
-                            <select class="form-control" id="proyecto" name="proyecto">
+                            <select class="form-control" id="proyecto_" name="proyecto_">
                                 <option value="">Todos los proyectos</option>
                                 {% for proyecto_item in proyectos %}
-                                <option value="{{ proyecto_item.codigo_proyecto }}">
+                                <option value="{{ proyecto_item.nombre_proyecto }}">
                                     {{ proyecto_item.nombre_proyecto }}
                                 </option>
                                 {% endfor %}

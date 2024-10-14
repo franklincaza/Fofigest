@@ -1,0 +1,30 @@
+{
+    "name": "Fofigest",
+    "short_name": "Fofigest",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "theme_color": "#317EFB",
+    "background_color": "#317EFB",
+    "icons": [
+      {
+        "src": "/static/img/logo_F.png",
+        
+        "sizes": "144x144",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "//static/img/logo_F.png",
+        "sizes": "192x192",
+        "type": "image/png",
+        "purpose": "any maskable"
+      },
+      {
+        "src": "//static/img/logo_F.png",
+        "sizes": "512x512",
+        "type": "image/png",
+        "purpose": "any maskable"
+      }
+    ]
+  }
