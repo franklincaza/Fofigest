@@ -206,37 +206,36 @@
                                     <span class=" delete-icon material-icons-outlined position-absolute text-danger" id="delete-icon-{{ tarea.id }}" style="display: none; right: 5px; cursor: pointer;" onclick="event.stopPropagation(); eliminarTarea({{ tarea.id }})">delete</span>
                                 </td>
                                 {% endif %}
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.tipo_consumo }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>                          
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
-                                <td class="d-none d-sm-table-cell" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
-                                <td class="d-none d-sm-table-cell" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
-                                <td class="d-none d-sm-table-cell" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_estimadas }}</td>
-                                <td class="d-none d-sm-table-cell text-center
-                                    {% if tarea.estado == 'PENDIENTE' %}
-                                        bg-secondary
-                                    {% elif tarea.estado == 'PROGRESO' %}
-                                        bg-primary text-white
-                                    {% elif tarea.estado == 'REVISIÓN' %}
-                                        bg-warning text-dark
-                                    {% elif tarea.estado == 'IMPEDIMENTOS' %}
-                                        bg-danger text-white
-                                    {% elif tarea.estado == 'COMPLETADOS' %}
-                                        bg-success text-white
-                                    {% endif %}
-                                    text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">
-                                    {{ tarea.estado }}
-                                </td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.responsable }}</td>
-                                <td class="d-none d-sm-table-cell text-truncate" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.mes }}</td>
-
+                                {% set estado_class = '' %}
+                                {% if tarea.estado == 'PENDIENTE' %}
+                                    {% set estado_class = 'bg-secondary' %}
+                                {% elif tarea.estado == 'PROGRESO' %}
+                                    {% set estado_class = 'bg-primary text-white' %}
+                                {% elif tarea.estado == 'REVISIÓN' %}
+                                    {% set estado_class = 'bg-warning text-dark' %}
+                                {% elif tarea.estado == 'IMPEDIMENTOS' %}
+                                    {% set estado_class = 'bg-danger text-white' %}
+                                {% elif tarea.estado == 'COMPLETADOS' %}
+                                    {% set estado_class = 'bg-success text-white' %}
+                                {% endif %}
+                                
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.tipo_consumo }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>                          
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_estimadas }}</td>
+                                <td class="d-none d-sm-table-cell text-center {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.estado }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.responsable }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.mes }}</td>
+                                
 
                                 <!-- Vista compacta para móviles -->
-                                <td class="d-table-cell d-sm-none text-truncate"  >
-                                    <h5 onclick="editarTarea({{ tarea.id }})" ><strong>{{ tarea.titulo }}</strong></h5>
+                                <td class="d-table-cell d-sm-none  "  >
+                                    <h5 onclick="editarTarea({{ tarea.id }}) " ><strong>{{ tarea.titulo }}</strong></h5>
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>EMPRESA:</strong> {{ tarea.empresa }}</p>
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>PROYECTO:</strong> {{ tarea.codigo_proyecto }}</p>
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>TIPO DE CONSUMO:</strong> {{ tarea.tipo_consumo }}</p>
