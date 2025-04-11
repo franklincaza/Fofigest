@@ -1,0 +1,28 @@
+
+{% extends 'Base.html' %}  <!-- Esto se define al principio, si estás en Admin o Base lo defines en la vista -->
+{% block content %}
+
+<h2>Registrar Empresa</h2>
+<form class="cu-modal__body" method="POST" action="{{ url_for('empresa') }}">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+        {{ form.nit.label(class="form-label") }}
+        {{ form.nit(class="form-control", placeholder="Ingrese el NIT") }}
+        {% for error in form.nit.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+
+    <div class="form-group">
+        {{ form.empresa.label(class="form-label") }}
+        {{ form.empresa(class="form-control", placeholder="Ingrese el nombre de la empresa") }}
+        {% for error in form.empresa.errors %}
+            <div class="text-danger">{{ error }}</div>
+        {% endfor %}
+    </div>
+    <br>
+
+    <button type="submit" class="btn btn-primary">{{ form.submit.label }}</button>
+</form>
+{% endblock %}

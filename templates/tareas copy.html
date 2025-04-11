@@ -1,0 +1,671 @@
+<!-- tareas.html -->
+{% extends 'Base.html' %}
+{% block content %}
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- Google Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+
+<div class="container-fluid bg-light py-5">
+    <div class="card p-4 shadow">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="mb-3">TAREAS</h2>
+            </div>
+            <div class="d-flex gap-2 mb-3 justify-content-start align-items-center flex-wrap">
+                <!-- Botón de refrescar --> 
+                <a id="refrescar" class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" href="/tareas" onclick="window.location.reload();">
+                    <span class="material-icons-outlined me-2">refresh</span>
+                    <span class="d-none d-md-inline">Refrescar</span>
+                </a>
+                
+                <!-- Botón de filtro -->
+                <a class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" data-bs-toggle="modal" data-bs-target="#filtroModal">
+                    <i class="bi bi-funnel-fill me-2"></i>
+                    <span class="d-none d-md-inline">Filtros</span>
+                </a>
+            
+                <!-- Botón de agregar tarea -->
+                {% if session['username'] == "admin" %}
+               
+                <button class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico();">
+                    <span class="material-icons-outlined me-2">add</span>
+                    <span class="d-none d-md-inline">Agregar Tarea</span>
+                </button>
+                {% else %}
+
+                <button class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="limpiarFormulario();generarCodigoUnico();">
+                    <span class="material-icons-outlined me-2">add</span>
+                    <span class="d-none d-md-inline">Agregar Tarea</span>
+                </button>
+
+                {% endif %}
+
+       
+                
+            </div>
+                            
+            <!-- Modal para el formulario de filtros -->
+            <div class="modal fade" id="filtroModal" tabindex="-1" role="dialog" aria-labelledby="filtroModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="filtroModalLabel">Filtros de Reporte</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+                                
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- Formulario de filtros dentro del modal -->
+                            <form method="POST" action="/tareas">
+                                <div class="row mb-4">
+                                    <!-- Filtro de Estado -->
+                                    <div class="col-sm-12 col-md-4 mb-2">
+                                        <label for="estado">Filtrar Estado</label>
+                                        <select class="form-control" id="estado_" name="estado_">
+                                            <option value="">Todos los estados</option>
+                                            <option value="PENDIENTE">PENDIENTE</option>
+                                            <option value="PROGRESO">PROGRESO</option>
+                                            <option value="REVISIÓN">REVISIÓN</option>
+                                            <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
+                                            <option value="COMPLETADOS">COMPLETADOS</option>
+                                        </select>
+                                    </div>
+                    
+                                    <!-- Filtro de Responsable -->
+                                    <div class="col-sm-12 col-md-4 mb-2">
+                                        <label for="responsable">Filtrar Responsable</label>
+                                        <select class="form-control" id="responsable_" name="responsable_">
+                                            <option value="">Todos los responsables</option>
+                                            {% for usuario in usuarios %}
+                                            <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">
+                                                {{ usuario.nombres }} {{ usuario.apellidos }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                    
+                                    <!-- Filtro de Proyecto -->
+                                    <div class="col-sm-12 col-md-4 mb-2">
+                                        <label for="proyecto">Filtrar Proyecto</label>
+                                        <select class="form-control" id="proyecto_" name="proyecto_">
+                                            <option value="">Todos los proyectos</option>
+                                            {% for proyecto_item in proyectos %}
+                                            <option value="{{ proyecto_item.nombre_proyecto }}">
+                                                {{ proyecto_item.nombre_proyecto }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+
+                                 <!-- Filtro de empresa -->
+                                 <div class="col-sm-12 col-md-4 mb-2">
+                                    <label for="empresa_">Filtrar empresa</label>
+                                    <select class="form-control" id="empresa_" name="empresa_">
+                                        <option value="">Todos los empresas</option>
+                                        {% for proyecto_item in empresas %}
+                                        <option value="{{ proyecto_item.empresa }}">
+                                            {{ proyecto_item.empresa }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    </div>
+
+
+                         
+                                    <!-- Filtro por Mes -->
+                                    <div class="col-sm-12 col-md-4 mb-2">
+                                        <label for="mes">Filtrar por Mes</label>
+                                        <select class="form-control" id="mes_" name="mes_">
+                                            <option value="">Todos los meses</option>
+                                            <option value="Enero">Enero</option>
+                                            <option value="Febrero">Febrero</option>
+                                            <option value="Marzo">Marzo</option>
+                                            <option value="Abril">Abril</option>
+                                            <option value="Mayo">Mayo</option>
+                                            <option value="Junio">Junio</option>
+                                            <option value="Julio">Julio</option>
+                                            <option value="Agosto">Agosto</option>
+                                            <option value="Septiembre">Septiembre</option>
+                                            <option value="Octubre">Octubre</option>
+                                            <option value="Noviembre">Noviembre</option>
+                                            <option value="Diciembre">Diciembre</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Filtro por Fecha de Inicio -->
+                                    <div class="col-sm-12 col-md-4 mb-2">
+                                        <label for="fecha_inicio_">Filtrar por Fecha de Inicio</label>
+                                        <input type="date" class="form-control" id="fecha_inicio_" name="fecha_inicio_">
+                                    </div>
+
+                                    <!-- Filtro por Fecha de Fin -->
+                                    <div class="col-sm-12 col-md-4 mb-2">
+                                        <label for="fecha_fin_">Filtrar por Fecha de Fin</label>
+                                        <input type="date" class="form-control" id="fecha_fin_" name="fecha_fin_">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close" >Cerrar</button>
+                                    <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                /* Ocultar elementos cuando el ancho de la pantalla sea menor o igual a 600px (pantallas de celulares) */
+                @media only screen and (max-width: 600px) {
+                    .elemento-para-ocultar {
+                        display: none;
+                    }
+                }
+                
+                /* Ocultar en tabletas (pantallas entre 601px y 1024px) */
+                @media only screen and (min-width: 601px) and (max-width: 1024px) {
+                    .elemento-para-ocultar-en-tabletas {
+                        display: none;
+                    }
+                }
+                
+                /* Ocultar el elemento por defecto */
+                .elemento-solo-movil {
+                    display: none;
+                }
+                
+                /* Mostrar el elemento solo en pantallas pequeñas (menores a 600px) */
+                @media only screen and (max-width: 600px) {
+                    .elemento-solo-movil {
+                        display: block; /* O también 'flex' si se usa Flexbox */
+                    }
+                }
+
+                @media (max-width: 576px) {
+                .btn {
+                    padding: 0.25rem 0.5rem; /* Reduce el padding en móviles */
+                    font-size: 0.875rem; /* Reduce el tamaño de la fuente */
+                }
+            }
+                
+
+    /* Evita que el texto se desborde horizontalmente */
+    table td, table th {
+      white-space: normal !important;
+      word-wrap: break-word;
+      word-break: break-word;
+      vertical-align: top;
+    }
+    
+    /* Opcional: limita el ancho de las columnas si hay muchas */
+    table th, table td {
+      max-width: 200px; /* ajusta según tu diseño */
+    }
+            </style>
+
+           <!-- Tabla de Tareas -->
+            <div class="row">
+                <div class="table-responsive" style="overflow-x: auto; max-height: 800px;">
+                    <table class="table table-bordered table-striped table-hover w-100" id="dataTable" cellspacing="0">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% if session['username'] == "admin" %}
+                                <th class="d-none d-sm-table-cell text-truncate">ID</th>
+                                {% else %}
+                                <th class="d-none d-sm-table-cell text-truncate">ID</th>
+                                 {% endif %} 
+                                <th class="d-none d-sm-table-cell text-truncate">TIPO DE CONSUMO</th>
+                                <th class="d-none d-sm-table-cell text-truncate">EMPRESA</th>
+                                <th class="d-none d-sm-table-cell text-truncate">PROYECTO</th>         
+                                <th class="d-none d-sm-table-cell text-truncate">TÍTULO</th>
+                                <th class="d-none d-sm-table-cell text-truncate">DESCRIPCIÓN</th>
+                                <th class="d-none d-sm-table-cell text-truncate">FECHA INICIO</th>
+                                <th class="d-none d-sm-table-cell text-truncate">FECHA FIN</th>
+                                <th class="d-none d-sm-table-cell text-truncate">HORAS DEDICADAS</th>
+                                <th class="d-none d-sm-table-cell text-truncate">HORAS ESTIMADAS</th>
+                                <th class="d-none d-sm-table-cell text-truncate">ESTADO</th>
+                                <th class="d-none d-sm-table-cell text-truncate">RESPONSABLE</th>
+                                <th class="d-none d-sm-table-cell text-truncate">MES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tarea in tareas %}
+                            <tr>
+                                {% if session['username'] == "admin" %}
+                                <td class="d-none d-sm-table-cell text-truncate position-relative" data-bs-toggle="modal" data-bs-target="#tareasform" onmouseover="showDeleteIcon({{ tarea.id }})" onmouseout="hideDeleteIcon({{ tarea.id }})">
+                                {{ tarea.id }}
+                                    <span class="delete-icon material-icons-outlined position-absolute text-danger" id="delete-icon-{{ tarea.id }}" style="display: none; right: 5px; cursor: pointer;" onclick="event.stopPropagation(); eliminarTarea({{ tarea.id }})">delete</span>
+                                </td>
+                                {% else %}
+
+                                <td class="d-none d-sm-table-cell text-truncate position-relative" data-bs-toggle="modal" data-bs-target="#tareasform" onmouseover="editarTarea({{ tarea.id }})" onmouseout="hideDeleteIcon({{ tarea.id }})">
+                                    {{ tarea.id }}
+
+                                    </td>
+                                {% endif %}
+
+                                {% set estado_class = '' %}
+                                {% if tarea.estado == 'PENDIENTE' %}
+                                    {% set estado_class = 'bg-secondary text-white' %}
+                                {% elif tarea.estado == 'PROGRESO' %}
+                                    {% set estado_class = 'bg-primary text-white' %}
+                                {% elif tarea.estado == 'REVISIÓN' %}
+                                    {% set estado_class = 'bg-warning text-dark' %}
+                                {% elif tarea.estado == 'IMPEDIMENTOS' %}
+                                    {% set estado_class = 'bg-danger text-white' %}
+                                {% elif tarea.estado == 'COMPLETADOS' %}
+                                    {% set estado_class = 'bg-success text-white' %}
+                                {% endif %}
+                                
+                                <td class="d-none d-sm-table-cell  {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.tipo_consumo }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>
+                                <td class="d-none d-sm-table-cell  {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>                          
+                                <td class="d-none d-sm-table-cell  {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
+                                <td class="d-none d-sm-table-cell  text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
+                                <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_estimadas }}</td>
+                                <td class="d-none d-sm-table-cell text-center {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.estado }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.responsable }}</td>
+                                <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.mes }}</td>
+
+                                 <!-- Vista compacta para móviles -->
+                                <td class="d-table-cell d-sm-none  "  >
+                                    <button      
+                                    onclick="editarTarea({{ tarea.id }})" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#tareasform"
+                                    class="btn w-100 text-start">
+
+                                    <h5 onclick="editarTarea({{ tarea.id }}) " ><strong>{{ tarea.titulo }}</strong></h5>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>EMPRESA:</strong> {{ tarea.empresa }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>PROYECTO:</strong> {{ tarea.codigo_proyecto }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>TIPO DE CONSUMO:</strong> {{ tarea.tipo_consumo }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>DESCRIPCIÓN:</strong> {{ tarea.descripcion }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>FECHA INICIO Y FIN:</strong> {{ tarea.fecha_inicio }} - {{ tarea.fecha_fin }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>HORAS DEDICADAS:</strong> {{ tarea.horas_dedicadas }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})"><strong>HORAS ESTIMADAS:</strong> {{ tarea.horas_estimadas }}</p>
+                                    <p onclick="editarTarea({{ tarea.id }})" class="center btn 
+                                        {% if tarea.estado == 'PENDIENTE' %}
+                                            btn-secondary
+                                        {% elif tarea.estado == 'PROGRESO' %}
+                                            btn-primary
+                                        {% elif tarea.estado == 'REVISIÓN' %}
+                                            btn-warning text-dark
+                                        {% elif tarea.estado == 'IMPEDIMENTOS' %}
+                                            btn-danger
+                                        {% elif tarea.estado == 'COMPLETADOS' %}
+                                            btn-success
+                                        {% endif %} 
+                                        btn-sm w-auto text-center">
+                                        {{ tarea.estado }}
+                                    </p>
+                                </button>
+                                </td>
+                            </tr>
+                            
+                                {% endfor %}
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            
+                            <td class="d-none d-sm-table-cell text-truncate">Total de horas : {{ total_horas_ejecucion }} </td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <td class="d-table-cell d-sm-none text-truncate">Total de horas : {{ total_horas_ejecucion }}</td>
+                           
+                            
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+            <!-- Modal para Crear/Editar Tareas -->
+<div class="modal fade modal-fullscreen-xxl-down" id="tareasform" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario para Crear/Editar tareas -->
+                <form id="formTarea" method="POST">
+                    <input type="hidden" id="tareaId" name="tareaId" />
+
+                    <div class="form-group">
+                        <label for="empresa">Empresa</label>
+                        <select class="form-control" id="Cempresa" name="Cempresa" required>
+                            <option value="" disabled selected>Selecciona la empresa</option>
+                            {% for empresa in empresas %}
+                            <option value="{{ empresa.empresa }}">{{ empresa.empresa }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codigo_proyecto">Proyecto</label>
+                        <select class="form-control" id="codigo_proyecto" name="codigo_proyecto" required>
+                            <option value="" disabled selected>Selecciona el proyecto</option>
+                            {% for proyecto_item in proyectos %}
+                            <option value="{{ proyecto_item.nombre_proyecto }}">{{ proyecto_item.nombre_proyecto }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="codigo_tarea">Código Tarea</label>
+                        <input type="text" class="form-control" id="codigo_tarea" name="codigo_tarea" onclick="generarCodigoUnico()" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="titulo">Título</label>
+                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcion">Descripción</label>
+                        <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_inicio">Fecha Inicio</label>
+                        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_fin">Fecha Fin</label>
+                        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_estimadas">Horas Estimadas</label>
+                        <input type="number" class="form-control" id="horas_estimadas" name="horas_estimadas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horas_dedicadas">Horas Dedicadas</label>
+                        <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas" value="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="fecha_facturacion">Fecha Facturación</label>
+                        <input type="date" class="form-control" id="fecha_facturacion" name="fecha_facturacion">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <!-- Botón que cambia de color dinámicamente según el estado seleccionado -->
+                        <div class="input-group">
+                            <button id="estadoButton" class="btn btn-secondary w-100 text-start" type="button" disabled>
+                                Selecciona un estado
+                            </button>
+                            <select class="form-control" id="Cestado" name="Cestado" required onchange="cambiarColorEstado()">
+                                <option value="" disabled selected>Selecciona un estado</option>
+                                <option value="PENDIENTE">PENDIENTE</option>
+                                <option value="PROGRESO">PROGRESO</option>
+                                <option value="REVISIÓN">REVISIÓN</option>
+                                <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
+                                {% if session['username'] == "admin" %}
+                                <option value="COMPLETADOS">COMPLETADOS</option>
+                                {% endif %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <script>
+                        function cambiarColorEstado() {
+                            const estadoSelect = document.getElementById("Cestado");
+                            const estadoButton = document.getElementById("estadoButton");
+                            const selectedEstado = estadoSelect.value;
+                    
+                            // Reiniciar clases de botón
+                            estadoButton.className = "btn w-100 text-start";
+                    
+                            // Aplicar la clase correcta según el estado seleccionado
+                            switch (selectedEstado) {
+                                case 'PENDIENTE':
+                                    estadoButton.classList.add('btn-secondary');
+                                    break;
+                                case 'PROGRESO':
+                                    estadoButton.classList.add('btn-primary');
+                                    break;
+                                case 'REVISIÓN':
+                                    estadoButton.classList.add('btn-warning', 'text-dark');
+                                    break;
+                                case 'IMPEDIMENTOS':
+                                    estadoButton.classList.add('btn-danger');
+                                    break;
+                                case 'COMPLETADOS':
+                                    estadoButton.classList.add('btn-success');
+                                    break;
+                                default:
+                                    estadoButton.classList.add('btn-secondary');
+                            }
+                    
+                            // Cambiar el texto del botón al estado seleccionado
+                            estadoButton.textContent = selectedEstado;
+                        }
+                    </script>
+                    
+
+                    <div class="form-group">
+                        <label for="responsable">Responsable</label>
+                        <select class="form-control" id="Cresponsable" name="Cresponsable" required>
+                            <option value="" disabled selected>Selecciona el responsable</option>
+                            {% for usuario in usuarios %}
+                            <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">{{ usuario.nombres }} {{ usuario.apellidos }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="responsable">Tipo de consumo</label>
+                        <select class="form-control" id="consumo" name="consumo" required>
+                            <option value="" disabled selected>Selecciona el tipo de consumo</option>
+                            <option value="Reuniones" selected>Reuniones</option>
+                            <option value="Desarrollo">Desarrollo</option>
+                            <option value="Desarrollo por control de cambio">Desarrollo por control de cambio</option>
+                            <option value="Soporte">Soporte</option>
+                            <option value="Oportunidad de mejora">Oportunidad de mejora</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mes">Mes</label>
+                        <select class="form-control" id="mes" name="mes" required>
+                            <option value="" disabled selected>Selecciona el mes</option>
+                            <option value="Enero">Enero</option>
+                            <option value="Febrero">Febrero</option>
+                            <option value="Marzo">Marzo</option>
+                            <option value="Abril">Abril</option>
+                            <option value="Mayo">Mayo</option>
+                            <option value="Junio">Junio</option>
+                            <option value="Julio">Julio</option>
+                            <option value="Agosto">Agosto</option>
+                            <option value="Septiembre">Septiembre</option>
+                            <option value="Octubre">Octubre</option>
+                            <option value="Noviembre">Noviembre</option>
+                            <option value="Diciembre">Diciembre</option>
+                        </select>
+                        
+                   
+
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showDeleteIcon(id) {
+        document.getElementById('delete-icon-' + id).style.display = 'inline';
+    }
+
+    function hideDeleteIcon(id) {
+        document.getElementById('delete-icon-' + id).style.display = 'none';
+    }
+
+    function editarTarea(id) {
+        // Obtener los detalles de la tarea por ID y rellenar el formulario para editar
+        fetch(`/tareas/${id}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('tareaId').value = data.id;
+            document.getElementById('Cempresa').value = data.empresa;
+            document.getElementById('codigo_proyecto').value = data.codigo_proyecto;
+            document.getElementById('codigo_tarea').value = data.codigo_tarea;
+            document.getElementById('titulo').value = data.titulo;
+            document.getElementById('descripcion').value = data.descripcion;
+            document.getElementById('fecha_inicio').value = data.fecha_inicio;
+            document.getElementById('fecha_fin').value = data.fecha_fin || '';
+            document.getElementById('horas_estimadas').value = data.horas_estimadas;
+            document.getElementById('horas_dedicadas').value = data.horas_dedicadas;
+            document.getElementById('fecha_facturacion').value = data.fecha_facturacion || '';
+            document.getElementById('Cestado').value = data.estado;
+            document.getElementById('Cresponsable').value = data.responsable;
+            document.getElementById('consumo').value = data.tipo_consumo;
+            document.getElementById('mes').value = data.mes;
+        });
+    }
+
+    document.getElementById('formTarea').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('tareaId').value;
+    const method = id ? 'PUT' : 'POST';  // Usar PUT si es edición, POST si es creación
+    const url = id ? `/tareas/${id}` : '/outtareas';
+
+    fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json'  // Asegúrate de enviar JSON
+        },
+        body: JSON.stringify({
+            empresa: document.getElementById('Cempresa').value,
+                    codigo_proyecto: document.getElementById('codigo_proyecto').value,
+                    codigo_tarea: document.getElementById('codigo_tarea').value,
+                    titulo: document.getElementById('titulo').value,
+                    descripcion: document.getElementById('descripcion').value,
+                    fecha_inicio: document.getElementById('fecha_inicio').value,
+                    fecha_fin: document.getElementById('fecha_fin').value,
+                    horas_estimadas: document.getElementById('horas_estimadas').value,
+                    horas_dedicadas: document.getElementById('horas_dedicadas').value,
+                    estado: document.getElementById('Cestado').value,
+                    responsable: document.getElementById('Cresponsable').value,
+                    tipo_consumo: document.getElementById('consumo').value,
+                    mes: document.getElementById('mes').value
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            Swal.fire(
+                '¡Éxito!',
+                'La tarea ha sido guardada correctamente.',
+                'success'
+            ).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire(
+                'Error',
+                'Ocurrió un problema al guardar la tarea.',
+                'error'
+            );
+        }
+    });
+});
+
+    function limpiarFormulario() {
+        document.getElementById('formTarea').reset();
+        document.getElementById('tareaId').value = '';
+    }
+
+    function generarCodigoUnico() {
+        const now = new Date();
+        const timestamp = now.getFullYear().toString() + 
+                          (now.getMonth() + 1).toString().padStart(2, '0') + 
+                          now.getDate().toString().padStart(2, '0') + 
+                          now.getHours().toString().padStart(2, '0') + 
+                          now.getMinutes().toString().padStart(2, '0') + 
+                          now.getSeconds().toString().padStart(2, '0') + 
+                          now.getMilliseconds().toString().padStart(3, '0');
+        
+        const randomPart = Math.random().toString(36).substring(2, 10);
+
+        const uniqueCode = `${timestamp}-${randomPart}`;
+
+        document.getElementById('codigo_tarea').value = uniqueCode;  // Asignar el código al input de 'codigo'
+        return uniqueCode;
+    }
+
+    {% if session['username'] == "admin" %}
+
+    function eliminarTarea(id) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¡No podrás revertir esto!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`/tareas/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire(
+                            '¡Eliminado!',
+                            'La tarea ha sido eliminada.',
+                            'success'
+                        ).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        Swal.fire(
+                            'Error',
+                            'Ocurrió un problema al eliminar la tarea.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    }
+
+    {% else %}
+
+    function eliminarTarea(id) {
+        Swal.fire(
+            'Acceso Denegado',
+            'No tienes permisos para borrar tareas.',
+            'error'
+        );
+    }
+
+    {% endif %}
+</script>
+<!-- Scripts de JavaScript de Bootstrap y jQuery -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}

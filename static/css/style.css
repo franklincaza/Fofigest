@@ -1,0 +1,152 @@
+.logo-container {
+    display: flex;
+    align-items: center;
+    padding-top:  8px;
+}
+
+
+.logo-box {
+    background-color: #00a0e3; /* Color azul */
+    background-color: #090909; /* Colo rblanco */
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%; /* Redondea los bordes */
+    padding-top: 15%;
+    padding-block: 15%;
+}
+
+.logo-text {
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none; /* Quita el subrayado del enlace */
+}
+
+
+.logo-text {
+    font-family: 'NombreDeLaFuente', sans-serif;
+    font-size: 25px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none; /* Quita el subrayado del enlace */
+}
+
+.fondo {
+    background: linear-gradient(135deg, #00a0e3, #0077b6, #023e8a); /* Gradiente de azul */
+    background: linear-gradient(135deg, #fbfeff, #ffffff, #ffffff); /* Gradiente de azul */
+    height: 100vh; /* Ocupa toda la altura de la ventana */
+}
+
+.cu-modal__body {
+    position: relative;
+    min-height: 300px;
+}
+
+ /* Estilo inicial del botón */
+ .btn-expand {
+    width: 100%; /* Tamaño inicial del botón */
+    transition: width 0.5s ease-in-out; /* Transición suave */
+    overflow: hidden; /* Ocultar el texto adicional al reducir el tamaño */
+    white-space: nowrap; /* Evitar que el texto haga salto de línea */
+    text-align: center; /* Alinea el texto en el centro del botón */
+    
+}
+
+/* Cuando el botón se expande al pasar el mouse */
+.btn-expand:hover {
+    width: 300px; /* Tamaño expandido */
+}
+
+.nav-link svg {
+    fill: #000;
+  }
+
+  <style>
+    /* Modo oscuro */
+    .modo-oscuro {
+        background-color: #121212 !important;
+        color: #e0e0e0 !important;
+    }
+
+    .modo-oscuro .card,
+    .modo-oscuro .modal-content,
+    .modo-oscuro .table {
+        background-color: #1e1e1e !important;
+        color: #e0e0e0;
+    }
+
+    .modo-oscuro th,
+    .modo-oscuro td {
+        background-color: #2a2a2a !important;
+        color: #e0e0e0 !important;
+    }
+
+    .modo-oscuro .form-control,
+    .modo-oscuro .btn {
+        background-color: #333 !important;
+        color: #fff !important;
+        border-color: #555 !important;
+    }
+
+    .modo-oscuro .btn-outline-secondary {
+        border-color: #888 !important;
+        color: #ccc !important;
+    }
+
+    .modo-oscuro select,
+    .modo-oscuro textarea,
+    .modo-oscuro input {
+        background-color: #2e2e2e !important;
+        color: #fff !important;
+    }
+
+/* Aplicar solo en pantallas pequeñas y orientación horizontal */
+@media screen and (max-width: 768px) and (orientation: landscape) {
+    body::before {
+      content: "Por favor gira tu dispositivo a modo vertical 📱";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #ffffff;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      z-index: 9999;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    #contenido-principal {
+      display: none; /* Oculta el contenido principal solo en móvil landscape */
+    }
+  }
+    
+  #gantt {
+    width: 100%;
+    min-height: 400px;
+    max-height: 600px;
+    overflow-x: auto;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+  }
+
+  .gantt-card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  }
+
+  .gantt-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #343a40;
+    margin-bottom: 1rem;
+  }

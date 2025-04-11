@@ -1,0 +1,49 @@
+<!-- templates/tareas.html -->
+{% extends 'Base.html' %}
+
+{% block head %}
+  <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
+  <style>
+    #gantt {
+      width: 100%;
+      height: 500px;
+      margin-top: 20px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <h2>Ejemplo de Diagrama de Gantt con Frappe Gantt</h2>
+  <div id="gantt"></div>
+
+  <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.umd.js"></script>
+  <script>
+    let tasks = [
+      {
+        id: '1',
+        name: 'Rediseñar sitio web',
+        start: '2025-04-10',
+        end: '2025-04-13',
+        progress: 20
+      },
+      {
+        id: '2',
+        name: 'Crear API',
+        start: '2025-04-14',
+        end: '2025-04-20',
+        progress: 0,
+        dependencies: '1'
+      },
+      {
+        id: '3',
+        name: 'Pruebas',
+        start: '2025-04-21',
+        end: '2025-04-24',
+        progress: 0,
+        dependencies: '2'
+      }
+    ];
+
+    let gantt = new Gantt("#gantt", tasks);
+  </script>
+{% endblock %}
