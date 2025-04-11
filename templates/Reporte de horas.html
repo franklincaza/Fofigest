@@ -1,0 +1,289 @@
+{% extends 'Base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<!-- Google Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<!-- Bootstrap Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+
+<div class="container-fluid bg-light py-5">
+    <div class="card p-4 shadow">
+        <div class="row mb-4">
+            <div class="col-12 text-center">
+                <h2 class="mb-3">REPORTE DE HORAS</h2>
+            </div>
+            <div class="d-flex gap-2 mb-3 justify-content-start align-items-center flex-wrap">
+                <!-- Botón de refrescar 
+                <a id="refrescar" class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" href="/Reporte-Horas{{ session['empresa'] }}" onclick="window.location.reload();">
+                    <span class="material-icons-outlined mr-2">refresh</span>
+                    <span class="d-none d-md-inline">Refrescar</span>
+                </a>--> 
+
+                  <!-- 🔄 Refrescar -->
+                  <a id="refrescar" class="btn btn-outline-info btn-sm d-flex align-items-center" href="/Reporte-Horas{{ session['empresa'] }}" onclick="window.location.reload();">
+                    <i class="bi bi-arrow-clockwise me-1"></i>
+                    Refrescar
+                </a>
+            
+                <!-- Botón de descargar Excel 
+                <a class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" onclick="exportarSoloTablaVisible()">
+                    <span class="material-icons-outlined mr-2">download</span>
+                    <span class="d-none d-md-inline">Descargar Excel</span>
+                </a>-->
+
+                <!-- Botón de Descargar Excel -->
+                <button class="btn btn-outline-info btn-sm d-flex align-items-center" onclick="exportarSoloTablaVisible()">
+                    <i class="bi bi-file-earmark-excel me-1"></i>
+                    Descargar Excel
+                </button>
+
+
+                <!-- Botón de descargar filtro 
+                <a class="btn btn-outline-secondary d-flex align-items-center px-3 border-0" data-toggle="modal" data-target="#filtroModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-funnel-fill mr-2" viewBox="0 0 16 16">
+                        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5z"/>
+                    </svg>
+                    <span class="d-none d-md-inline">  Filtros   </span>
+                </a>-->
+
+                <!-- Botón de Filtros -->
+                <button class="btn btn-outline-info btn-sm d-flex align-items-center" data-toggle="modal" data-target="#filtroModal">
+                    <i class="bi bi-funnel-fill me-1"></i>
+                 Filtros
+                </button>
+
+                <!-- 🌙 Modo Oscuro -->
+                <button id="modoToggle" class="btn btn-outline-info btn-sm" onclick="alternarModo()">
+                    <i class="bi bi-moon-stars me-1"></i> Noche
+                </button>
+
+               
+                <!-- 🔍 Buscador -->
+                <div class="input-group input-group-sm w-auto">
+                    <input type="text" id="buscador" class="form-control" placeholder="Buscar..." onkeyup="filtrarTabla()">
+                    <div class="input-group-append">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    </div>
+                </div>
+                
+            </div>
+            </div>
+
+            <!-- Modal para el formulario de filtros -->
+         <!-- Modal para el formulario de filtros -->
+<div class="modal fade" id="filtroModal" tabindex="-1" role="dialog" aria-labelledby="filtroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="filtroModalLabel">Filtros de Reporte</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Formulario de filtros dentro del modal -->
+                <form method="POST" action="/Reporte-Horas{{ session['empresa'] }}">
+                    <div class="row mb-4">
+                        <!-- Filtro de Estado -->
+                        <div class="col-sm-12 col-md-4 mb-2">
+                            <label for="estado">Filtrar Estado</label>
+                            <select class="form-control" id="estado" name="estado">
+                                <option value="">Todos los estados</option>
+                                <option value="PENDIENTE">PENDIENTE</option>
+                                <option value="PROGRESO">PROGRESO</option>
+                                <option value="REVISIÓN">REVISIÓN</option>
+                                <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
+                                <option value="COMPLETADOS">COMPLETADOS</option>
+                            </select>
+                        </div>
+        
+                        <!-- Filtro de Responsable -->
+                        <div class="col-sm-12 col-md-4 mb-2">
+                            <label for="responsable">Filtrar Responsable</label>
+                            <select class="form-control" id="responsable" name="responsable">
+                                <option value="">Todos los responsables</option>
+                                {% for usuario in usuarios %}
+                                <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">
+                                    {{ usuario.nombres }} {{ usuario.apellidos }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Filtro de empresa -->
+                        <div class="col-sm-12 col-md-4 mb-2">
+                            <label for="empresa_">Filtrar empresa</label>
+                            <select class="form-control" id="empresa_" name="empresa_">
+                                <option value="">Todos los empresas</option>
+                                {% for proyecto_item in empresas %}
+                                <option value="{{ proyecto_item.empresa }}">
+                                    {{ proyecto_item.empresa }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            </div>
+
+        
+                        <!-- Filtro de Proyecto -->
+                        <div class="col-sm-12 col-md-4 mb-2">
+                            <label for="proyecto">Filtrar Proyecto</label>
+                            <select class="form-control" id="proyecto_" name="proyecto_">
+                                <option value="">Todos los proyectos</option>
+                                {% for proyecto_item in proyectos %}
+                                <option value="{{ proyecto_item.nombre_proyecto }}">
+                                    {{ proyecto_item.nombre_proyecto }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Mes -->
+                        <div class="col-sm-12 col-md-4 mb-2">
+                            <label for="mes">Filtrar por Mes</label>
+                            <select class="form-control" id="mes" name="mes">
+                                <option value="">Todos los meses</option>
+                                <option value="Enero">Enero</option>
+                                <option value="Febrero">Febrero</option>
+                                <option value="Marzo">Marzo</option>
+                                <option value="Abril">Abril</option>
+                                <option value="Mayo">Mayo</option>
+                                <option value="Junio">Junio</option>
+                                <option value="Julio">Julio</option>
+                                <option value="Agosto">Agosto</option>
+                                <option value="Septiembre">Septiembre</option>
+                                <option value="Octubre">Octubre</option>
+                                <option value="Noviembre">Noviembre</option>
+                                <option value="Diciembre">Diciembre</option>
+                            </select>
+                        </div>
+
+                        <!-- Filtro por Fecha de Inicio -->
+                        <div class="col-sm-12 col-md-4 mb-2">
+                            <label for="fecha_inicio">Filtrar por Fecha de Inicio</label>
+                            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio">
+                        </div>
+
+                        <!-- Filtro por Fecha de Fin -->
+                        <div class="col-sm-12 col-md-4 mb-2">
+                            <label for="fecha_fin">Filtrar por Fecha de Fin</label>
+                            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Ocultar elementos cuando el ancho de la pantalla sea menor o igual a 600px (pantallas de celulares) */
+@media only screen and (max-width: 600px) {
+    .elemento-para-ocultar {
+        display: none;
+    }
+}
+
+/* Ocultar en tabletas (pantallas entre 601px y 1024px) */
+@media only screen and (min-width: 601px) and (max-width: 1024px) {
+    .elemento-para-ocultar-en-tabletas {
+        display: none;
+    }
+}
+
+/* Ocultar el elemento por defecto */
+.elemento-solo-movil {
+    display: none;
+}
+
+/* Mostrar el elemento solo en pantallas pequeñas (menores a 600px) */
+@media only screen and (max-width: 600px) {
+    .elemento-solo-movil {
+        display: block; /* O también 'flex' si se usa Flexbox */
+    }
+}
+
+</style>
+            <!-- Tabla de Tareas -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th class="elemento-para-ocultar">TIPO DE CONSUMO</th>
+                                    <th class="elemento-para-ocultar">PROYECTO</th>
+                                    <th class="elemento-para-ocultar">TÍTULO</th>
+                                    <th class="elemento-para-ocultar">FECHA INICIO</th>
+                                    <th class="elemento-para-ocultar">FECHA LIMITE</th>
+                                    <th class="elemento-para-ocultar">HORAS REGISTRADOS</th>
+                                    <th class="elemento-para-ocultar">MES</th>
+                                    <th class="elemento-para-ocultar">EMPRESA</th>
+                                          
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tarea in tareas %}
+                                <tr>
+                                    <td class="elemento-para-ocultar">{{ tarea.tipo_consumo }}</td>
+                                    <td class="elemento-para-ocultar">{{ tarea.codigo_proyecto }}</td>
+                                    <td class="elemento-para-ocultar">{{ tarea.titulo }}</td>
+                                    <td class="elemento-para-ocultar">{{ tarea.fecha_inicio }}</td>
+                                    <td class="elemento-para-ocultar">{{ tarea.fecha_fin }}</td>
+                                    <td class="elemento-para-ocultar">{{ tarea.horas_dedicadas }}</td>
+                                    <td class="elemento-para-ocultar">{{ tarea.mes }}</td>
+                                    <td class="elemento-para-ocultar">{{ tarea.empresa }}</td>
+                                    <td class="elemento-solo-movil">
+                                        
+                                        <div class=" " style="width: 18rem;">
+                                            <div class="card-body">
+                                              <h5 class="card-title">{{ tarea.titulo }}</h5>
+                                              <br>
+                                              <h6 class="card-subtitle mb-2 text-body-secondary"><STRong>TIPO DE CONSUMO :</STRong> <br> {{ tarea.tipo_consumo }}</h6>
+                                              <p class="card-text"> <STRong>CONSUMO :</STRong> <br> {{ tarea.codigo_proyecto }}</p>
+                                              <p class="card-text"><STRong> FECHA INICIO Y FINAL : </STRong> <br>{{ tarea.fecha_inicio }} - {{ tarea.fecha_fin }}</p>
+                                              <p class="card-text"><STRong>MES :</STRong> {{ tarea.mes }}</p>
+                                              <p class="card-text"><STRong>HORAS :</STRong> {{ tarea.horas_dedicadas }}</p>
+                                              <p class="card-text"><STRong>EMPRESA :</STRong> {{ tarea.empresa }}</p>
+        
+                                            </div>
+                                        
+                                    
+                                    </td>
+
+                                </tr>
+                               
+                                  </div>
+                                {% endfor %}
+                                <tr>
+                                    <td class="elemento-para-ocultar"></td>
+                                    <td class="elemento-para-ocultar"></td>
+                                    <td class="elemento-para-ocultar"></td>
+                                    <td class="elemento-para-ocultar"></td>
+                                    <td class="elemento-para-ocultar"></td>
+                                    <td class="elemento-para-ocultar">Total de horas : {{ total_horas_ejecucion }}</td>
+                                    <td class="elemento-para-ocultar"></td>
+                                    <td class="elemento-solo-movil">Total de horas : {{ total_horas_ejecucion }}</td>
+                                    <td class="elemento-para-ocultar"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'Base.html' %}
+{% block content %}
+
+<!-- Estilos y scripts de Frappe Gantt -->
+<link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
+<script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.min.js"></script>
+
+<h2>Reporte Gantt</h2>
+
+<!-- Formulario de filtro por fechas -->
+
+<!-- Contenedor del Gantt -->
+<div id="gantt"></div>
+
+<script>
+  const tasks = [
+    {% for tarea in tareas_jsons %}
+      {
+        id: '{{ tarea.id }}',
+        name: '{{ tarea.name }}',
+        start: '{{ tarea.start }}',
+        end: '{{ tarea.end }}',
+        progress: {{ tarea.progress }},
+        dependencies: '{{ tarea.dependencies }}'
+      }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ];
+
+  const gantt = new Gantt("#gantt", tasks, {
+    view_mode: 'Day', // Puedes cambiar a 'Week', 'Month' o 'Year'
+    language: 'es'
+  });
+</script>
+
+{% endblock %}

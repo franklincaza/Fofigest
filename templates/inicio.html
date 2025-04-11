@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fofigest - Gestión de Proyectos por Horas</title>
+    <meta name="description" content="Fofigest es un software que permite llevar la gestión de proyectos por horas de manera eficiente y sencilla.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+     <!--pwa-->
+  <!-- Favicon para navegadores -->
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}">
+
+  <!-- Icono para PWA y dispositivos Apple -->
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.png') }}" type="image/png">
+
+  <meta name="theme-color" content="#317EFB"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{{url_for('static', filename='img/ilogo_F-Photoroom.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <link rel="manifest" href="{{url_for('static', filename='js/manifest.json')}}">
+
+    <!-- Enlace a estilos CSS externos si los tienes -->
+
+    <style>
+        /* Estilos básicos para la landing page */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #0056b3;
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.5em;
+        }
+        section {
+            padding: 40px 20px;
+            text-align: center;
+        }
+        section h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        section p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .features {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .feature {
+            flex: 1 1 30%;
+            padding: 20px;
+            box-sizing: border-box;
+            max-width: 300px;
+            text-align: left;
+        }
+        .feature h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .cta-button {
+            padding: 15px 30px;
+            font-size: 1em;
+            background-color: #0056b3;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        footer {
+            background-color: #f2f2f2;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        footer p {
+            margin: 5px;
+        }
+        footer a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        /* Diseño responsivo */
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            .feature {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Fofigest</h1>
+        <p>Gestión eficiente de proyectos por horas</p>
+    </header>
+    <section>
+        <h2>¿Qué es Fofigest?</h2>
+        <p>Fofigest es un software diseñado para facilitar la gestión de proyectos por horas, permitiendo un seguimiento detallado y eficiente del tiempo invertido en cada tarea.</p>
+        <div class="features">
+            <div class="feature">
+                <h3>Control de Horas</h3>
+                <p>Registra y monitorea las horas dedicadas a cada proyecto y tarea específica, mejorando la planificación y asignación de recursos.</p>
+            </div>
+            <div class="feature">
+                <h3>Reportes Personalizados</h3>
+                <p>Genera informes detallados para analizar el rendimiento y la productividad de tu equipo, facilitando la toma de decisiones.</p>
+            </div>
+            <div class="feature">
+                <h3>Gestión de Equipos</h3>
+                <p>Asigna tareas a los miembros del equipo y supervisa el progreso en tiempo real, optimizando la colaboración y eficiencia.</p>
+            </div>
+        </div>
+        <a href="/Reporte-Horas{{ session['empresa'] }}" class="cta-button">Consulta tu reporte de horas</a>
+    </section>
+    <footer id="contacto">
+        <p>&copy; 2024 Fofigest. Todos los derechos reservados fofimatic S.A</p>
+        <!--
+        <p><a href="mailto:info@fofigest.com">info@fofigest.com</a></p>
+        -->
+    </footer>
+</body>
+<!--pwa-->
+<script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register("/sw.js").then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
+</html>

@@ -1,0 +1,279 @@
+
+{% extends 'Base.html' %}  <!-- Esto se define al principio, si estás en Admin o Base lo defines en la vista -->
+{% block content %}
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<div class="container-fluid bg-light py-5">
+    <div class="card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-center">EMPRESAS CLIENTES</h2> 
+            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#Nueva_empresas">
+                <span class="material-icons-outlined">add</span> <!--Agregar Empresa-->
+            </button>
+        </div>
+       
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="id-column">ID</th>
+                            <th>NIT</th>
+                            <th>EMPRESA</th>
+                            <th>ACCIONES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for empresa in empresas %}
+                        <tr>
+                            <td class="id-column">{{ empresa.id }}</td>
+                            <td>{{ empresa.nit }}</td>
+                            <td>{{ empresa.empresa }}</td>
+                            <td>
+                                <!-- Botón de editar -->
+                              <!--  <button type="button" class="btn btn-sm btn-outline-warning editar-btn" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#Editar_empresas" 
+                                        onclick="getEmpresa('{{ empresa.id }}')">
+                                    <span class="desktop-text">Editar</span>
+                                    <span class="material-icons-outlined mobile-icon">edit</span>
+                                </button>-->
+                                <!-- Botón de eliminar -->
+                                <button type="button" onclick="deleteEmpresa({{ empresa.id }})" class="btn btn-sm btn-outline-danger eliminar-btn">
+                                    <span class="desktop-text">Eliminar</span>
+                                    <span class="material-icons-outlined mobile-icon">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal para agregar nueva empresa -->
+<div class="modal fade" id="Nueva_empresas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Registrar Empresa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Formulario para agregar empresa -->
+          <form method="POST" action="{{ url_for('empresa') }}">
+            {{ form.hidden_tag() }}
+
+            <div class="form-group mb-3">
+                {{ form.nit.label(class="form-label") }}
+                {{ form.nit(class="form-control", placeholder="Ingrese el NIT") }}
+                {% for error in form.nit.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <div class="form-group mb-3">
+                {{ form.empresa.label(class="form-label") }}
+                {{ form.empresa(class="form-control", placeholder="Ingrese el nombre de la empresa") }}
+                {% for error in form.empresa.errors %}
+                    <div class="text-danger">{{ error }}</div>
+                {% endfor %}
+            </div>
+        
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<!-- Modal para editar empresa -->
+<div class="modal fade" id="Editar_empresas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Editar Empresa</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Formulario para editar empresa -->
+          <form method="POST" id="editEmpresaForm">
+            <input type="hidden" id="empresa_id" name="empresa_id">
+            <div class="form-group mb-3">
+                <label for="nit" class="form-label">NIT</label>
+                <input type="text" id="nit" class="form-control" placeholder="Ingrese el NIT" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <label for="empresa" class="form-label">Empresa</label>
+                <input type="text" id="empresa" class="form-control" placeholder="Ingrese el nombre de la empresa" required>
+            </div>
+        
+            <div class="modal-footer">
+                <button type="button" id="guardarCambiosBtn" class="btn btn-primary">Guardar Cambios</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<style>
+    /* Ajustes adicionales para pantallas pequeñas */
+    @media (max-width: 768px) {
+        table {
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+        }
+
+        th, td {
+            white-space: nowrap;
+        }
+
+        .d-flex h2 {
+            font-size: 1.5rem;
+        }
+
+        .id-column {
+            display: none;
+        }
+
+        .desktop-text {
+            display: none;
+        }
+
+        .mobile-icon {
+            display: inline;
+            font-size: 1.2rem;
+        }
+    }
+
+    @media (min-width: 769px) {
+        .mobile-icon {
+            display: none;
+        }
+
+        .desktop-text {
+            display: inline;
+        }
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-primary .material-icons-outlined {
+        font-size: 1.2rem;
+        margin-right: 5px;
+    }
+</style>
+
+<script>
+    // Función para eliminar una empresa
+    function deleteEmpresa(id) {
+        if (confirm(`¿Estás seguro de que deseas eliminar la empresa con ID ${id}?`)) {
+            fetch(`/empresas/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Error al eliminar la empresa');
+            })
+            .then(data => {
+                alert(`Empresa con ID ${id} eliminada exitosamente`);
+                location.reload();  // Recargar la página para reflejar los cambios
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al eliminar la empresa');
+            });
+        }
+    }
+
+    // Función para obtener una empresa por su ID y llenar el formulario
+    function getEmpresa(id) {
+        fetch(`http://192.168.1.2:5000/json/empresa/${id}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener la empresa');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Llenar los campos del formulario con los datos obtenidos
+            document.getElementById('nit').value = data.nit;
+            document.getElementById('empresa').value = data.empresa;
+
+            // Asignar el ID de la empresa al botón de guardar cambios
+            document.getElementById('guardarCambiosBtn').onclick = function() {
+                modEmpresa(id);  // Pasar el ID a la función de modificación
+            };
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Función para modificar la empresa
+    function modEmpresa(id) {
+        const nit = document.getElementById('nit').value;
+        const nombreEmpresa = document.getElementById('empresa').value;
+
+        const empresa = {
+            nit: nit,
+            empresa: nombreEmpresa
+        };
+
+        fetch(`/json/empresas/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(empresa),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Error al actualizar la empresa');
+        })
+        .then(data => {
+            alert('Empresa actualizada exitosamente');
+            location.reload();  // Recargar la página para reflejar los cambios
+        })
+        .catch(error => {
+            console.error('Error al actualizar la empresa:', error);
+            alert('Error al actualizar la empresa');
+        });
+    }
+</script>
+
+{% endblock %}
