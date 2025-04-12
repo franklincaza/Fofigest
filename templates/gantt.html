@@ -5,13 +5,43 @@
 <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
 <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.min.js"></script>
 
-<h2>Reporte Gantt</h2>
+<div class="container py-4">
+  <div class="card shadow-lg p-4">
+    <h2 class="text-center mb-4">📊 Reporte Gantt</h2>
 
-<!-- Formulario de filtro por fechas -->
+    <!-- Formulario de filtros -->
+    <form method="POST" action="/gannt">
+      <div class="row g-3 align-items-center justify-content-center">
+        <!-- Selector de proyecto -->
+        <div class="col-md-6">
+          <label for="proyecto_i" class="form-label fw-bold">Filtrar por Proyecto</label>
+          <select class="form-select" id="proyecto_i" name="proyecto_i">
+            <option value="">Todos los proyectos</option>
+            {% for proyecto_item in proyectos_ %}
+              <option value="{{ proyecto_item.nombre_proyecto }}">{{ proyecto_item.nombre_proyecto }}</option>
+            {% endfor %}
+          </select>
+        </div>
+    
+        <!-- Botón de aplicar -->
+        <div class="col-md-3 d-flex align-items-center pt-md-4">
+          <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-filter"></i> Aplicar Filtros
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
 
-<!-- Contenedor del Gantt -->
-<div id="gantt"></div>
+  <!-- Contenedor del Gantt -->
+  <div class="card mt-4 shadow">
+    <div class="card-body">
+      <div id="gantt" style="overflow-x: auto;"></div>
+    </div>
+  </div>
+</div>
 
+<!-- Script Gantt -->
 <script>
   const tasks = [
     {% for tarea in tareas_jsons %}
@@ -21,15 +51,19 @@
         start: '{{ tarea.start }}',
         end: '{{ tarea.end }}',
         progress: {{ tarea.progress }},
-        dependencies: '{{ tarea.dependencies }}'
+        dependencies: '{{ tarea.dependencies | default("") }}'
       }{% if not loop.last %},{% endif %}
     {% endfor %}
   ];
 
   const gantt = new Gantt("#gantt", tasks, {
-    view_mode: 'Day', // Puedes cambiar a 'Week', 'Month' o 'Year'
-    language: 'es'
+    view_mode: 'Day',
+    language: 'es',
+    custom_popup_html: null
   });
 </script>
+
+<!-- Íconos Bootstrap (opcional) -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 
 {% endblock %}
