@@ -33,6 +33,7 @@ from sqlalchemy import and_
 from datetime import datetime
 from flask import render_template
 from sqlalchemy import extract
+from sqlalchemy import desc  # Asegúrate de importar esto
 
 
 # Definimos el endpoint principal
@@ -204,6 +205,7 @@ def buscar_tareas(clave_busqueda):
 
 # Reporte Gantt principal
 @app.route('/gannt', methods=['GET', 'POST'])
+@login_required
 def gannt():
     try:
         hoy = datetime.today()
@@ -236,7 +238,9 @@ def gannt():
             return redirect(f'/gannt/{proyecto_id}')
 
         # Obtener tareas
-        tareas = models.Tareas.query.filter(and_(*filtros)).all()
+        #tareas = models.Tareas.query.filter(and_(*filtros)).all()
+        tareas = models.Tareas.query.filter(and_(*filtros)).order_by(desc(models.Tareas.fecha_inicio)).all()
+
 
         # Construir data
         tareas_data = [{
@@ -256,6 +260,7 @@ def gannt():
 
 
 # Reporte Gantt por proyecto
+@login_required
 @app.route('/gannt/<project>', methods=['GET', 'POST'])
 def gannt_project(project):
     try:
@@ -277,7 +282,9 @@ def gannt_project(project):
             filtros.append(models.Tareas.empresa == empresa_usuario)
 
         proyectos_ = models.Proyecto.query.all()
-        tareas = models.Tareas.query.filter(and_(*filtros)).all()
+        #tareas = models.Tareas.query.filter(and_(*filtros)).all()
+        tareas = models.Tareas.query.filter(and_(*filtros)).order_by(desc(models.Tareas.fecha_inicio)).all()
+
 
         tareas_data = [{
             "id": str(tarea.codigo_proyecto),
