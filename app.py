@@ -210,37 +210,45 @@ def gannt():
         hoy = datetime.today()
         hace_tres_meses = hoy - relativedelta(months=3)
 
-        tareas = models.Tareas.query.filter(
-            and_(
-                models.Tareas.fecha_inicio >= hace_tres_meses,
-                models.Tareas.fecha_inicio <= hoy,
-                models.Tareas.fecha_inicio.isnot(None),
-                models.Tareas.fecha_fin.isnot(None)
-            )
-        ).all()
+        filtros = [
+            models.Tareas.fecha_inicio >= hace_tres_meses,
+            models.Tareas.fecha_inicio <= hoy,
+            models.Tareas.fecha_inicio.isnot(None),
+            models.Tareas.fecha_fin.isnot(None)
+        ]
+
+        # Aplicar reglas según el tipo de usuario
+        permisos = session.get('username')
+        empresa_usuario = session.get('empresa')
+        correo_usuario = session.get('correo')
+
+        if permisos == 'dev':
+            filtros.append(models.Tareas.responsable == correo_usuario)
+
+        if empresa_usuario != "Fofimatic S.A":
+            filtros.append(models.Tareas.empresa == empresa_usuario)
+
+        tareas = models.Tareas.query.filter(and_(*filtros)).all()
 
         tareas_data = [{
             "id": str(tarea.codigo_proyecto),
             "name": tarea.titulo,
             "start": tarea.fecha_inicio.strftime("%Y-%m-%d") if tarea.fecha_inicio else "2024-01-01",
-            "end": tarea.fecha_fin.strftime("%Y-%m-%d") if tarea.fecha_fin else "2024-01-02",   
+            "end": tarea.fecha_fin.strftime("%Y-%m-%d") if tarea.fecha_fin else "2024-01-02",
             "progress": (tarea.horas_dedicadas / tarea.horas_estimadas) * 100 if tarea.horas_estimadas else 0,
             # Descomenta si los necesitas en el frontend:
             # "estado": tarea.estado,
             # "responsable": tarea.responsable,
             # "codigo_proyecto": tarea.codigo_proyecto,
             # "empresa": tarea.empresa
-            } for tarea in tareas]
+        } for tarea in tareas]
 
         return render_template('gantt.html', tareas_jsons=tareas_data)
-        
+
     except Exception as e:
-        print(f"Error en /gannt: {e}")
-        #return render_template('gantt.html', tareas_jsons=[])
-
-
-
-
+        logging.error(f"Error en /gannt: {str(e)}")
+        flash("Hubo un error al cargar el gráfico de Gantt.", "danger")
+        return render_template('gantt.html', tareas_jsons=[])
     
 # login 
 @app.route("/")
@@ -785,8 +793,6 @@ def vista_reporte_Horas(empresa):
     # Calcular las horas estimadas y de ejecución
     #total_horas_estimadas = sum(tarea.horas_estimadas for tarea in tareas)
     total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in tareas)
-  
- 
     
 
     return render_template("Reporte de horas.html",

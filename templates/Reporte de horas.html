@@ -284,6 +284,108 @@
         </div>
     </div>
 </div>
+<script>
+    function exportarSoloTablaVisible() {
+        const tabla = document.getElementById("dataTable");
+        let tablaHTML = "<table><thead><tr>";
+        
+        // Tomar solo los encabezados visibles
+        tabla.querySelectorAll("thead th.elemento-para-ocultar").forEach(th => {
+            tablaHTML += `<th>${th.innerText}</th>`;
+        });
+        tablaHTML += "</tr></thead><tbody>";
+    
+        // Recorrer las filas visibles del tbody
+        tabla.querySelectorAll("tbody tr").forEach(fila => {
+            const estilo = window.getComputedStyle(fila);
+            if (estilo.display !== "none") {
+                tablaHTML += "<tr>";
+                fila.querySelectorAll("td.elemento-para-ocultar").forEach(td => {
+                    tablaHTML += `<td>${td.innerText}</td>`;
+                });
+                tablaHTML += "</tr>";
+            }
+        });
+    
+        tablaHTML += "</tbody></table>";
+    
+        // Crear archivo .xls con Blob
+        const blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
+        const url = URL.createObjectURL(blob);
+    
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "Reporte_de_horas.xls";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
 
+
+    function filtrarTabla() {
+    const input = document.getElementById('buscador');
+    const filtro = input.value.toLowerCase();
+    const filas = document.querySelectorAll('#dataTable tbody tr');
+
+    filas.forEach(fila => {
+        const texto = fila.innerText.toLowerCase();
+        if (texto.includes(filtro)) {
+            fila.style.display = '';
+        } else {
+            fila.style.display = 'none';
+        }
+    });
+
+
+
+
+}
+
+
+    function ordenarPorMes() {
+        const ordenMeses = {
+            "Enero": 1,
+            "Febrero": 2,
+            "Marzo": 3,
+            "Abril": 4,
+            "Mayo": 5,
+            "Junio": 6,
+            "Julio": 7,
+            "Agosto": 8,
+            "Septiembre": 9,
+            "Octubre": 10,
+            "Noviembre": 11,
+            "Diciembre": 12
+        };
+
+        const tabla = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+        const filas = Array.from(tabla.rows);
+
+        const filasOrdenadas = filas.sort((a, b) => {
+            const mesA = a.innerText.match(/(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)/gi)?.pop() || "";
+            const mesB = b.innerText.match(/(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)/gi)?.pop() || "";
+
+            return (ordenMeses[mesB] || 0) - (ordenMeses[mesA] || 0);
+        });
+
+        // Limpiar y reinsertar en orden
+        filasOrdenadas.forEach(fila => tabla.appendChild(fila));
+    }
+
+
+    function alternarModo() {
+    const body = document.body;
+    const toggle = document.getElementById("modoToggle");
+
+    body.classList.toggle("modo-oscuro");
+
+    if (body.classList.contains("modo-oscuro")) {
+        toggle.innerHTML = '<i class="bi bi-sun"></i> Día';
+    } else {
+        toggle.innerHTML = '<i class="bi bi-moon-stars"></i> Noche';
+    }
+}
+
+    </script>
 
 {% endblock %}
