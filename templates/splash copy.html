@@ -4,20 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-
-    <!-- Metadatos para dispositivos móviles -->
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <title>Fofigest</title>
 
     <!-- Fuentes e iconos personalizados -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,900" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="manifest" href="{{ url_for('static', filename='js/manifest.json') }}">
     <script src="{{ url_for('static', filename='js/sw.js') }}"></script>
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -62,15 +61,25 @@
 
     <!-- Estilos personalizados -->
     <style>
-        body {
+        body, html {
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-family: 'Nunito', sans-serif;
             background: linear-gradient(to right, rgba(93, 173, 226, 0.8), rgba(52, 152, 219, 0.8)),
                 url('https://cdn.pixabay.com/photo/2017/08/30/11/36/background-2698595_1280.jpg');
             background-size: cover;
             background-position: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+        }
+
+        .splash-content h1 {
+            width: 100%;
+            text-align: center;
+            font-size: 2.5rem;
+            margin: 0 auto;
         }
 
         .splash-content {
@@ -83,7 +92,7 @@
             text-align: center;
             padding: 0 2rem;
             opacity: 0;
-            animation: fadeIn 2s forwards;
+            animation: fadeIn 1s forwards;
         }
 
         .splash-content img {
@@ -92,8 +101,8 @@
             background-color: white;
             border-radius: 10%;
             padding: 1rem;
-            animation: zoomIn 2s forwards;
-            animation-delay: 0.5s;
+            animation: zoomIn 1s forwards;
+            animation-delay: 0.2s;
         }
 
         .progress-bar {
@@ -103,8 +112,8 @@
             border-radius: 5px;
             overflow: hidden;
             margin-top: 20px;
-            animation: progressBarAppear 1s forwards;
-            animation-delay: 2.5s;
+            animation: progressBarAppear 0.5s forwards;
+            animation-delay: 1.5s;
             opacity: 0;
         }
 
@@ -112,8 +121,8 @@
             width: 0%;
             height: 100%;
             background-color: white;
-            animation: progressFill 3s linear forwards;
-            animation-delay: 3.5s;
+            animation: progressFill 5s linear forwards;
+            animation-delay: 2s;
         }
 
         @keyframes fadeIn {
@@ -139,36 +148,103 @@
                 width: 100%;
             }
         }
+
+        .spinnerContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .spinner {
+            width: 56px;
+            height: 56px;
+            display: grid;
+            border: 4px solid #0000;
+            border-radius: 50%;
+            border-right-color: #299fff;
+            animation: tri-spinner 1s infinite linear;
+        }
+
+        .spinner::before,
+        .spinner::after {
+            content: "";
+            grid-area: 1/1;
+            margin: 2px;
+            border: inherit;
+            border-radius: 50%;
+            animation: tri-spinner 2s infinite;
+        }
+
+        .spinner::after {
+            margin: 8px;
+            animation-duration: 3s;
+        }
+
+        @keyframes tri-spinner {
+            100% {
+                transform: rotate(1turn);
+            }
+        }
+
+        .loader {
+            color: #4a4a4a;
+            font-family: "Poppins", sans-serif;
+            font-weight: 500;
+            font-size: 25px;
+            box-sizing: content-box;
+            height: 40px;
+            padding: 10px 10px;
+            display: flex;
+            border-radius: 8px;
+        }
+
+        .words {
+            overflow: hidden;
+        }
+
+        .word {
+            display: block;
+            height: 100%;
+            padding-left: 6px;
+            color: #e7ebee;
+            animation: cycle-words 10s infinite;
+        }
+
+        @keyframes cycle-words {
+            0%, 20% { transform: translateY(0); }
+            25%, 45% { transform: translateY(-100%); }
+            50%, 70% { transform: translateY(-200%); }
+            75%, 95% { transform: translateY(-300%); }
+            100% { transform: translateY(-400%); }
+        }
     </style>
-    <!--pwa-->
-  <!-- Favicon para navegadores -->
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}">
-
-  <!-- Icono para PWA y dispositivos Apple -->
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.png') }}" type="image/png">
-
-  <meta name="theme-color" content="#317EFB"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="{{url_for('static', filename='img/ilogo_F-Photoroom.png')}}" type="image/png">
-  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="manifest" href="{{ url_for('static', filename='js/manifest.json') }}">
-  <script src="{{ url_for('static', filename='js/sw.js') }}"></script>
 </head>
 
 <body>
-    <div class="container d-flex justify-content-center align-items-center h-100">
-        <div class="card text-white bg-dark shadow-lg" style="width: 20rem;">
-            <div class="card-body text-center splash-content">
-                <img src="static/img/Logo.png" alt="Logo" class="card-img-top">
-                <h1 class="card-title">Bienvenido a FOFIGEST</h1>
-                <p class="card-text">Gestión eficiente y sencilla de tus proyectos</p> <!-- "/Reporte-Horas{{ session['empresa'] }}"-->
-                <p class="card-text"><small class="text-muted">versión 1.0</small></p>
-                <div class="progress-bar">
-                    <div class="progress"></div>
+    <div class="">
+        <div class="card-body text-center splash-content">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <h2 class="card-title animate__animated animate__bounce">FOFIMATIC</h2>
+            <h2 class="card-title">Bienvenido a FOFIGEST</h2>
+            <p class="card-text">Gestión eficiente y sencilla de tus proyectos</p>
+            <p class="card-text"><small class="text-muted">Versión 3.0</small></p>
+            <div class="progress-bar">
+                <div class="progress"></div>
+            </div>
+            <br>
+            <div class="spinnerContainer">
+                <div class="spinner"></div>
+                <div class="loader">
+                    <p>Gestiona</p>
+                    <div class="words">
+                        <span class="word">tus proyectos</span>
+                        <span class="word">bolsa de horas</span>
+                        <span class="word">estados</span>
+                        <span class="word">avances</span>
+                        <span class="word">todo con FOFIGEST</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -178,43 +254,30 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Redirigir después de que terminen las animaciones
         document.addEventListener("DOMContentLoaded", function () {
             const redirectTo = "/Reporte-Horas{{ session['empresa'] }}";
-
-            // Seleccionamos el elemento de progreso
             const progressElement = document.querySelector('.progress-bar .progress');
 
-            // Escuchamos el evento 'animationend' de la barra de progreso
             progressElement.addEventListener('animationend', function () {
                 window.location.href = redirectTo;
             });
         });
     </script>
-</body>
-<!--pwa-->
-<script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register("/sw.js").then(function(registration) {
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function(err) {
-          console.log('ServiceWorker registration failed: ', err);
-        });
-      });
-    }
-  </script>
+
+    <!-- Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register("{{ url_for('static', filename='js/sw.js') }}")
-            .then(function(registration) {
-                console.log('Service Worker registrado con éxito:', registration.scope);
-            })
-            .catch(function(error) {
-                console.log('Error en el registro del Service Worker:', error);
+            window.addEventListener('load', function () {
+                navigator.serviceWorker.register("{{ url_for('static', filename='js/sw.js') }}").then(function (registration) {
+                    console.log('Service Worker registrado con éxito:', registration.scope);
+                }).catch(function (error) {
+                    console.log('Error en el registro del Service Worker:', error);
+                });
             });
         } else {
             console.log('Service Worker no es compatible con este navegador.');
         }
     </script>
+</body>
+
 </html>
