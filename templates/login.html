@@ -19,7 +19,7 @@
   <link rel="manifest" href="{{ url_for('static', filename='js/manifest.json') }}">
   <script src="{{ url_for('static', filename='js/sw.js') }}"></script>
 
-    <title>FOFIGEST</title>
+    <title>Fofigest</title>
 
     <!-- Fuentes e iconos personalizados para esta plantilla -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -27,9 +27,17 @@
     <link href="{{ url_for('static', filename='css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}" rel="stylesheet">
 
+      <!-- Color de la barra del navegador en móviles Android (Chrome) -->
+        <meta name="theme-color" content="#000000">
 
-    <!-- Estilos personalizados para esta plantilla -->
-    <style>
+        <!-- Safari/iOS: color de la barra superior cuando está anclado como app web -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+        <!-- Windows (Internet Explorer/Edge) -->
+        <meta name="msapplication-TileColor" content="#000000">
+            <!-- Estilos personalizados para esta plantilla -->
+            <style>
         body {
             font-family: 'Nunito', sans-serif;
             background: linear-gradient(to right, rgba(93, 173, 226, 0.8), rgba(52, 152, 219, 0.8)), 
