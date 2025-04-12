@@ -202,54 +202,99 @@ def buscar_tareas(clave_busqueda):
 
     return tareas
 
-# Reporte gannt 
-
-@app.route('/gannt')
+# Reporte Gantt principal
+@app.route('/gannt', methods=['GET', 'POST'])
 def gannt():
     try:
         hoy = datetime.today()
-        hace_tres_meses = hoy - relativedelta(months=3)
+        hace_doce_meses = hoy - relativedelta(months=12)
 
+        permisos = session.get('username')
+        empresa_usuario = session.get('empresa')
+
+        # Obtener los proyectos según el tipo de usuario
+        if permisos == 'usuario':
+            proyectos_ = models.Proyecto.query.filter_by(empresa=empresa_usuario).all()
+        else:
+            proyectos_ = models.Proyecto.query.all()
+
+        # Filtros base
         filtros = [
-            models.Tareas.fecha_inicio >= hace_tres_meses,
+            models.Tareas.fecha_inicio >= hace_doce_meses,
             models.Tareas.fecha_inicio <= hoy,
             models.Tareas.fecha_inicio.isnot(None),
             models.Tareas.fecha_fin.isnot(None)
         ]
 
-        # Aplicar reglas según el tipo de usuario
-        permisos = session.get('username')
-        empresa_usuario = session.get('empresa')
-        correo_usuario = session.get('correo')
-
-        if permisos == 'dev':
-            filtros.append(models.Tareas.responsable == correo_usuario)
-
-        if empresa_usuario != "Fofimatic S.A":
+        # Aplicar filtro de empresa si es usuario
+        if permisos == 'usuario':
             filtros.append(models.Tareas.empresa == empresa_usuario)
 
+        # Si es POST, redirigir al proyecto seleccionado
+        if request.method == 'POST':
+            proyecto_id = request.form.get('proyecto_i')
+            return redirect(f'/gannt/{proyecto_id}')
+
+        # Obtener tareas
+        tareas = models.Tareas.query.filter(and_(*filtros)).all()
+
+        # Construir data
+        tareas_data = [{
+            "id": str(tarea.codigo_proyecto),
+            "name": tarea.titulo,
+            "start": tarea.fecha_inicio.strftime("%Y-%m-%d"),
+            "end": tarea.fecha_fin.strftime("%Y-%m-%d"),
+            "progress": (tarea.horas_dedicadas / tarea.horas_estimadas) * 100 if tarea.horas_estimadas else 0
+        } for tarea in tareas]
+
+        return render_template('gantt.html', tareas_jsons=tareas_data, proyectos_=proyectos_)
+
+    except Exception as e:
+        logging.error(f"Error en /gannt: {str(e)}")
+        flash("Hubo un error al cargar el gráfico de Gantt.", "danger")
+        return render_template('gantt.html', tareas_jsons=[], proyectos_=[])
+
+
+# Reporte Gantt por proyecto
+@app.route('/gannt/<project>', methods=['GET', 'POST'])
+def gannt_project(project):
+    try:
+        hoy = datetime.today()
+        hace_doce_meses = hoy - relativedelta(months=12)
+
+        filtros = [
+            models.Tareas.fecha_inicio >= hace_doce_meses,
+            models.Tareas.fecha_inicio <= hoy,
+            models.Tareas.fecha_inicio.isnot(None),
+            models.Tareas.fecha_fin.isnot(None),
+            models.Tareas.codigo_proyecto == project
+        ]
+
+        permisos = session.get('username')
+        empresa_usuario = session.get('empresa')
+
+        if permisos == 'usuario':
+            filtros.append(models.Tareas.empresa == empresa_usuario)
+
+        proyectos_ = models.Proyecto.query.all()
         tareas = models.Tareas.query.filter(and_(*filtros)).all()
 
         tareas_data = [{
             "id": str(tarea.codigo_proyecto),
             "name": tarea.titulo,
-            "start": tarea.fecha_inicio.strftime("%Y-%m-%d") if tarea.fecha_inicio else "2024-01-01",
-            "end": tarea.fecha_fin.strftime("%Y-%m-%d") if tarea.fecha_fin else "2024-01-02",
-            "progress": (tarea.horas_dedicadas / tarea.horas_estimadas) * 100 if tarea.horas_estimadas else 0,
-            # Descomenta si los necesitas en el frontend:
-            # "estado": tarea.estado,
-            # "responsable": tarea.responsable,
-            # "codigo_proyecto": tarea.codigo_proyecto,
-            # "empresa": tarea.empresa
+            "start": tarea.fecha_inicio.strftime("%Y-%m-%d"),
+            "end": tarea.fecha_fin.strftime("%Y-%m-%d"),
+            "progress": (tarea.horas_dedicadas / tarea.horas_estimadas) * 100 if tarea.horas_estimadas else 0
         } for tarea in tareas]
 
-        return render_template('gantt.html', tareas_jsons=tareas_data)
+        return render_template('gantt.html', tareas_jsons=tareas_data, proyectos_=proyectos_)
 
     except Exception as e:
-        logging.error(f"Error en /gannt: {str(e)}")
+        logging.error(f"Error en /gannt/<project>: {str(e)}")
         flash("Hubo un error al cargar el gráfico de Gantt.", "danger")
-        return render_template('gantt.html', tareas_jsons=[])
-    
+        return render_template('gantt.html', tareas_jsons=[], proyectos_=[])
+
+
 # login 
 @app.route("/")
 def login():
