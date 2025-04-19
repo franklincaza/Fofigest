@@ -34,6 +34,7 @@ from datetime import datetime
 from flask import render_template
 from sqlalchemy import extract
 from sqlalchemy import desc  # Asegúrate de importar esto
+import flask_monitoringdashboard as dashboard
 
 
 # Definimos el endpoint principal
@@ -49,6 +50,7 @@ logging.basicConfig(
 
 # Inicialización de la aplicación Flask
 app = Flask(__name__)
+dashboard.bind(app)
 app.secret_key = 'GDSGODSGFY56D4F8asc8assS6854DCSX85Z13ZXC8478SD94C6XZ1asSDA6F48V4D615SVGZDS4ZV1_65CXZ<3F4'
 # Generador de tokens seguros
 serializer = URLSafeTimedSerializer(app.secret_key)
@@ -143,6 +145,10 @@ def upload_file():
             return 'Archivo subido y datos cargados con éxito'
 
     return render_template('subir_datos.html')
+
+
+
+
 
 #<___________________________________Vista___________________________________________________>
 
