@@ -138,4 +138,16 @@ class ReporteSulfoquimica:
             logging.critical("No se han cargado datos. Ejecuta 'obtener_datos()' primero.")
             raise ValueError("No se han cargado datos. Ejecuta 'obtener_datos()' primero.")
 
+# como ejemplo de como se ejecuta la clase
+"""
+# Supabase reportes
+api_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indsdmdtd3VoZnVubnBkZGNndnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc4MzU3MzAsImV4cCI6MjA0MzQxMTczMH0.3kA18sH3ywz4B9TRHSkQ11kEqhk-l8fRa1Epq5UasVg'
+bearer_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indsdmdtd3VoZnVubnBkZGNndnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc4MzU3MzAsImV4cCI6MjA0MzQxMTczMH0.3kA18sH3ywz4B9TRHSkQ11kEqhk-l8fRa1Epq5UasVg'
 
+reporte = ReporteSulfoquimica(api_key=api_key, bearer_token=bearer_token)
+
+reporte.obtener_datos()
+reporte.limpiar_fechas()
+tabla_responsable = reporte.generar_tabla_por_responsable()
+print(tabla_responsable)
+"""

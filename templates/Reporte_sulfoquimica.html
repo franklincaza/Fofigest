@@ -1,4 +1,5 @@
 {% extends 'Base.html' %}
+
 {% block content %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
@@ -83,7 +84,7 @@
     <select id="filtroResponsable" class="form-select mb-3"></select>
 
     <label for="filtroProyecto" class="form-label fw-bold">Proyecto:</label>
-    <select id="filtroProyecto" class="form-select"></select>
+    <select id="filtroProyecto" class="form-select" multiple></select>
   </div>
 
   <div class="analisis bg-white p-3 rounded shadow">
@@ -105,7 +106,7 @@
 
   async function cargarDatos() {
     try {
-      const response = await fetch("/reporte_horas_chart_dev");
+      const response = await fetch("/reporte_horas_chart");
       datosOriginales = await response.json();
       cargarFiltros();
       renderizarDashboard();
@@ -116,17 +117,17 @@
 
   function cargarFiltros() {
     const anios = [...new Set(datosOriginales.map(d => d.anio))];
-    const responsables = [...new Set(datosOriginales.map(d => d.responsable))];
-    const proyectos = [...new Map(datosOriginales.map(d => [d.codigo_proyecto, d.nombre_proyecto])).entries()];
+    const responsables = [...new Set(datosOriginales.map(d => d.responsable).filter(r => r))];
+    const proyectos = [...new Map(datosOriginales.map(d => [d.codigo_proyecto, d.codigo_proyecto])).keys()];
 
     const filtroAnio = document.getElementById("filtroAnio");
     filtroAnio.innerHTML = '<option value="">Todos</option>' + anios.map(a => `<option value="${a}">${a}</option>`).join("");
 
     const filtroResponsable = document.getElementById("filtroResponsable");
     filtroResponsable.innerHTML = '<option value="">Todos</option>' + responsables.map(r => `<option value="${r}">${r}</option>`).join("");
-
+   
     const filtroProyecto = document.getElementById("filtroProyecto");
-    filtroProyecto.innerHTML = '<option value="">Todos</option>' + proyectos.map(([codigo, nombre]) => `<option value="${codigo}">${nombre}</option>`).join("");
+    filtroProyecto.innerHTML = '<option value="">Todos</option>' + proyectos.map(p => `<option value="${p}">${p}</option>`).join("");
 
     filtroAnio.addEventListener("change", renderizarDashboard);
     filtroResponsable.addEventListener("change", renderizarDashboard);
@@ -135,40 +136,40 @@
 
   function renderizarDashboard() {
     const anioSeleccionado = document.getElementById("filtroAnio").value;
+    const proyectosSeleccionados = Array.from(document.getElementById("filtroProyecto").selectedOptions).map(option => option.value);
     const responsableSeleccionado = document.getElementById("filtroResponsable").value;
-    const proyectoSeleccionado = document.getElementById("filtroProyecto").value;
 
     let datosFiltrados = [...datosOriginales];
 
     if (anioSeleccionado) {
       datosFiltrados = datosFiltrados.filter(d => d.anio == anioSeleccionado);
     }
-    if (responsableSeleccionado) {
-      datosFiltrados = datosFiltrados.filter(d => d.responsable == responsableSeleccionado);
+    if (proyectosSeleccionados.length > 0) {
+      datosFiltrados = datosFiltrados.filter(d => proyectosSeleccionados.includes(d.codigo_proyecto));
     }
-    if (proyectoSeleccionado) {
-      datosFiltrados = datosFiltrados.filter(d => d.codigo_proyecto == proyectoSeleccionado);
+    if (responsableSeleccionado) {
+      datosFiltrados = datosFiltrados.filter(d => d.responsable === responsableSeleccionado);
     }
 
     // === Gráfico: total horas por mes ===
     const resumenPorMes = {};
     datosFiltrados.forEach(d => {
       if (!resumenPorMes[d.mes]) resumenPorMes[d.mes] = 0;
-      resumenPorMes[d.mes] += d.total_horas_dedicadas;
+      resumenPorMes[d.mes] += d.horas_dedicadas;
     });
 
-    const labels = Object.keys(resumenPorMes).sort((a, b) => a - b);
-    const data = labels.map(mes => resumenPorMes[mes]);
+    const labelsMes = Object.keys(resumenPorMes);
+    const dataMes = labelsMes.map(mes => resumenPorMes[mes]);
 
-    const ctx = document.getElementById('graficoHoras').getContext('2d');
-    if (window.miGrafico) window.miGrafico.destroy();
-    window.miGrafico = new Chart(ctx, {
+    const ctxMes = document.getElementById('graficoHoras').getContext('2d');
+    if (window.miGraficoMes) window.miGraficoMes.destroy();
+    window.miGraficoMes = new Chart(ctxMes, {
       type: 'bar',
       data: {
-        labels: labels,
+        labels: labelsMes,
         datasets: [{
           label: 'Total de Horas',
-          data: data,
+          data: dataMes,
           backgroundColor: '#498205'
         }]
       },
@@ -197,23 +198,22 @@
     // === Gráfico: total horas por proyecto ===
     const resumenPorProyecto = {};
     datosFiltrados.forEach(d => {
-      const nombreProyecto = d.nombre_proyecto || d.codigo_proyecto;
-      if (!resumenPorProyecto[nombreProyecto]) resumenPorProyecto[nombreProyecto] = 0;
-      resumenPorProyecto[nombreProyecto] += d.total_horas_dedicadas;
+      if (!resumenPorProyecto[d.codigo_proyecto]) resumenPorProyecto[d.codigo_proyecto] = 0;
+      resumenPorProyecto[d.codigo_proyecto] += d.horas_dedicadas;
     });
 
-    const etiquetasProyectos = Object.keys(resumenPorProyecto);
-    const datosProyectos = etiquetasProyectos.map(p => resumenPorProyecto[p]);
+    const labelsProyecto = Object.keys(resumenPorProyecto);
+    const dataProyecto = labelsProyecto.map(p => resumenPorProyecto[p]);
 
-    const ctxProyectos = document.getElementById('graficoProyectos').getContext('2d');
-    if (window.miGraficoProyectos) window.miGraficoProyectos.destroy();
-    window.miGraficoProyectos = new Chart(ctxProyectos, {
+    const ctxProyecto = document.getElementById('graficoProyectos').getContext('2d');
+    if (window.miGraficoProyecto) window.miGraficoProyecto.destroy();
+    window.miGraficoProyecto = new Chart(ctxProyecto, {
       type: 'bar',
       data: {
-        labels: etiquetasProyectos,
+        labels: labelsProyecto,
         datasets: [{
           label: 'Total de Horas',
-          data: datosProyectos,
+          data: dataProyecto,
           backgroundColor: '#2C6E49'
         }]
       },
@@ -239,11 +239,12 @@
       }
     });
 
-    // === Tabla de análisis por responsable ===
+    // === Tabla: análisis por responsable ===
     const resumenPorResponsable = {};
     datosFiltrados.forEach(d => {
-      if (!resumenPorResponsable[d.responsable]) resumenPorResponsable[d.responsable] = 0;
-      resumenPorResponsable[d.responsable] += d.total_horas_dedicadas;
+      const responsable = d.responsable && d.responsable.trim() !== "" ? d.responsable : "Sin Responsable";
+      if (!resumenPorResponsable[responsable]) resumenPorResponsable[responsable] = 0;
+      resumenPorResponsable[responsable] += d.horas_dedicadas;
     });
 
     const cuerpoTabla = document.querySelector("#tablaHoras tbody");
@@ -260,4 +261,52 @@
 
   cargarDatos();
 </script>
+
+<script>
+  async function cargarTablaResponsables() {
+    try {
+      const response = await fetch("/reporte_horas_chart_dev");
+      const datos = await response.json();
+
+      const filtroAnio = document.getElementById("filtroAnio").value;
+      const filtroResponsable = document.getElementById("filtroResponsable").value;
+
+      let datosFiltrados = [...datos];
+
+      if (filtroAnio) {
+        datosFiltrados = datosFiltrados.filter(d => d.anio == filtroAnio);
+      }
+
+      if (filtroResponsable) {
+        datosFiltrados = datosFiltrados.filter(d => d.responsable === filtroResponsable);
+      }
+
+      const resumen = {};
+      datosFiltrados.forEach(d => {
+        const responsable = d.responsable && d.responsable.trim() !== "" ? d.responsable : "Sin Responsable";
+        if (!resumen[responsable]) resumen[responsable] = 0;
+        resumen[responsable] += d.total_horas_dedicadas;
+      });
+
+      const tbody = document.querySelector("#tablaHoras tbody");
+      tbody.innerHTML = "";
+      Object.entries(resumen).forEach(([responsable, horas]) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${responsable}</td>
+            <td>${horas}</td>
+          </tr>
+        `;
+      });
+    } catch (error) {
+      console.error("Error cargando análisis por responsable:", error);
+    }
+  }
+
+  document.getElementById("filtroAnio").addEventListener("change", cargarTablaResponsables);
+  document.getElementById("filtroResponsable").addEventListener("change", cargarTablaResponsables);
+
+  cargarTablaResponsables();
+</script>
+
 {% endblock %}

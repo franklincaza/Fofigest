@@ -315,6 +315,9 @@ def reportes_dev_consumo_horas():
 
         # Generar la tabla por responsable
         tabla_responsable = reporte.generar_tabla_por_responsable()
+        
+
+        reporte = ReporteSulfoquimica(api_key=api_key, bearer_token=bearer_token)
 
         if tabla_responsable.empty:
             return jsonify({'message': 'No se encontraron datos para el reporte'}), 404
