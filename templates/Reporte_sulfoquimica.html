@@ -1,0 +1,263 @@
+{% extends 'Base.html' %}
+{% block content %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  .container {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      grid-template-columns: 3fr 2fr;
+      grid-template-areas:
+        "encabezados encabezados"
+        "graficos filtros"
+        "graficosProyecto filtros"
+        "analisis analisis";
+    }
+  }
+
+  .encabezados {
+    grid-area: encabezados;
+  }
+
+  .graficos {
+    grid-area: graficos;
+  }
+
+  .graficosProyecto {
+    grid-area: graficosProyecto;
+  }
+
+  .filtros {
+    grid-area: filtros;
+  }
+
+  .analisis {
+    grid-area: analisis;
+  }
+
+  .fondo_sulfo {
+    background: #498205;
+    color: white;
+  }
+
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100%;
+  }
+
+  table th, table td {
+    vertical-align: middle;
+    text-align: center;
+  }
+</style>
+
+<div class="container">
+  <div class="encabezados d-flex align-items-center gap-3 p-3 rounded shadow fondo_sulfo">
+    <img src="https://www.sulfoquimica.com/images/logo.png" alt="logo" style="width: 60px; height: 60px; border-radius: 50%;">
+    <div>
+      <h2 class="mb-0 fw-bold">Dashboard de Horas</h2>
+      <p class="mb-0">Sulfoquímica S.A.S</p>
+    </div>
+  </div>
+
+  <div class="graficos bg-white p-3 rounded shadow">
+    <canvas id="graficoHoras"></canvas>
+  </div>
+
+  <div class="graficosProyecto bg-white p-3 rounded shadow">
+    <canvas id="graficoProyectos"></canvas>
+  </div>
+
+  <div class="filtros bg-light p-3 rounded shadow">
+    <label for="filtroAnio" class="form-label fw-bold">Año:</label>
+    <select id="filtroAnio" class="form-select mb-3"></select>
+
+    <label for="filtroResponsable" class="form-label fw-bold">Responsable:</label>
+    <select id="filtroResponsable" class="form-select mb-3"></select>
+
+    <label for="filtroProyecto" class="form-label fw-bold">Proyecto:</label>
+    <select id="filtroProyecto" class="form-select"></select>
+  </div>
+
+  <div class="analisis bg-white p-3 rounded shadow">
+    <h4 class="fw-bold mb-3">Análisis por Responsable</h4>
+    <table id="tablaHoras" class="table table-bordered table-hover">
+      <thead class="table-success">
+        <tr>
+          <th>Responsable</th>
+          <th>Total Horas</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  let datosOriginales = [];
+
+  async function cargarDatos() {
+    try {
+      const response = await fetch("/reporte_horas_chart_dev");
+      datosOriginales = await response.json();
+      cargarFiltros();
+      renderizarDashboard();
+    } catch (error) {
+      console.error("Error cargando datos:", error);
+    }
+  }
+
+  function cargarFiltros() {
+    const anios = [...new Set(datosOriginales.map(d => d.anio))];
+    const responsables = [...new Set(datosOriginales.map(d => d.responsable))];
+    const proyectos = [...new Map(datosOriginales.map(d => [d.codigo_proyecto, d.nombre_proyecto])).entries()];
+
+    const filtroAnio = document.getElementById("filtroAnio");
+    filtroAnio.innerHTML = '<option value="">Todos</option>' + anios.map(a => `<option value="${a}">${a}</option>`).join("");
+
+    const filtroResponsable = document.getElementById("filtroResponsable");
+    filtroResponsable.innerHTML = '<option value="">Todos</option>' + responsables.map(r => `<option value="${r}">${r}</option>`).join("");
+
+    const filtroProyecto = document.getElementById("filtroProyecto");
+    filtroProyecto.innerHTML = '<option value="">Todos</option>' + proyectos.map(([codigo, nombre]) => `<option value="${codigo}">${nombre}</option>`).join("");
+
+    filtroAnio.addEventListener("change", renderizarDashboard);
+    filtroResponsable.addEventListener("change", renderizarDashboard);
+    filtroProyecto.addEventListener("change", renderizarDashboard);
+  }
+
+  function renderizarDashboard() {
+    const anioSeleccionado = document.getElementById("filtroAnio").value;
+    const responsableSeleccionado = document.getElementById("filtroResponsable").value;
+    const proyectoSeleccionado = document.getElementById("filtroProyecto").value;
+
+    let datosFiltrados = [...datosOriginales];
+
+    if (anioSeleccionado) {
+      datosFiltrados = datosFiltrados.filter(d => d.anio == anioSeleccionado);
+    }
+    if (responsableSeleccionado) {
+      datosFiltrados = datosFiltrados.filter(d => d.responsable == responsableSeleccionado);
+    }
+    if (proyectoSeleccionado) {
+      datosFiltrados = datosFiltrados.filter(d => d.codigo_proyecto == proyectoSeleccionado);
+    }
+
+    // === Gráfico: total horas por mes ===
+    const resumenPorMes = {};
+    datosFiltrados.forEach(d => {
+      if (!resumenPorMes[d.mes]) resumenPorMes[d.mes] = 0;
+      resumenPorMes[d.mes] += d.total_horas_dedicadas;
+    });
+
+    const labels = Object.keys(resumenPorMes).sort((a, b) => a - b);
+    const data = labels.map(mes => resumenPorMes[mes]);
+
+    const ctx = document.getElementById('graficoHoras').getContext('2d');
+    if (window.miGrafico) window.miGrafico.destroy();
+    window.miGrafico = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Total de Horas',
+          data: data,
+          backgroundColor: '#498205'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Total de Horas por Mes'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Horas' }
+          },
+          x: {
+            title: { display: true, text: 'Mes' }
+          }
+        }
+      }
+    });
+
+    // === Gráfico: total horas por proyecto ===
+    const resumenPorProyecto = {};
+    datosFiltrados.forEach(d => {
+      const nombreProyecto = d.nombre_proyecto || d.codigo_proyecto;
+      if (!resumenPorProyecto[nombreProyecto]) resumenPorProyecto[nombreProyecto] = 0;
+      resumenPorProyecto[nombreProyecto] += d.total_horas_dedicadas;
+    });
+
+    const etiquetasProyectos = Object.keys(resumenPorProyecto);
+    const datosProyectos = etiquetasProyectos.map(p => resumenPorProyecto[p]);
+
+    const ctxProyectos = document.getElementById('graficoProyectos').getContext('2d');
+    if (window.miGraficoProyectos) window.miGraficoProyectos.destroy();
+    window.miGraficoProyectos = new Chart(ctxProyectos, {
+      type: 'bar',
+      data: {
+        labels: etiquetasProyectos,
+        datasets: [{
+          label: 'Total de Horas',
+          data: datosProyectos,
+          backgroundColor: '#2C6E49'
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          title: {
+            display: true,
+            text: 'Total de Horas por Proyecto'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            title: { display: true, text: 'Horas' }
+          },
+          x: {
+            title: { display: true, text: 'Proyecto' }
+          }
+        }
+      }
+    });
+
+    // === Tabla de análisis por responsable ===
+    const resumenPorResponsable = {};
+    datosFiltrados.forEach(d => {
+      if (!resumenPorResponsable[d.responsable]) resumenPorResponsable[d.responsable] = 0;
+      resumenPorResponsable[d.responsable] += d.total_horas_dedicadas;
+    });
+
+    const cuerpoTabla = document.querySelector("#tablaHoras tbody");
+    cuerpoTabla.innerHTML = "";
+    Object.entries(resumenPorResponsable).forEach(([responsable, totalHoras]) => {
+      cuerpoTabla.innerHTML += `
+        <tr>
+          <td>${responsable}</td>
+          <td>${totalHoras}</td>
+        </tr>
+      `;
+    });
+  }
+
+  cargarDatos();
+</script>
+{% endblock %}
