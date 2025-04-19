@@ -2,6 +2,8 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from flask_sqlalchemy import SQLAlchemy
+
 
 # Initialize the SQLAlchemy instance
 db = SQLAlchemy()

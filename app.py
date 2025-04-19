@@ -35,7 +35,12 @@ from flask import render_template
 from sqlalchemy import extract
 from sqlalchemy import desc  # Asegúrate de importar esto
 import flask_monitoringdashboard as dashboard
-
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
+from models import models  # <- aquí viene db
+from models.models import db  # importa directamente la instancia db
+from feature.Reporte_sulfoquimica import ReporteSulfoquimica  # Importar la clase
+db = SQLAlchemy()
 
 # Definimos el endpoint principal
 host = config.config["host"]
@@ -47,6 +52,12 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s - %(filename)s - %(lineno)d',
     encoding='utf-8' # Formato del mensaje
 )
+
+# supabase reportes
+api_key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indsdmdtd3VoZnVubnBkZGNndnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc4MzU3MzAsImV4cCI6MjA0MzQxMTczMH0.3kA18sH3ywz4B9TRHSkQ11kEqhk-l8fRa1Epq5UasVg'  # Reemplaza con tu clave de Supabase
+bearer_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indsdmdtd3VoZnVubnBkZGNndnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjc4MzU3MzAsImV4cCI6MjA0MzQxMTczMH0.3kA18sH3ywz4B9TRHSkQ11kEqhk-l8fRa1Epq5UasVg'  # Reemplaza con tu Bearer Token
+
+
 
 # Inicialización de la aplicación Flask
 app = Flask(__name__)
@@ -263,6 +274,66 @@ def gannt():
         logging.error(f"Error en /gannt: {str(e)}")
         flash("Hubo un error al cargar el gráfico de Gantt.", "danger")
         return render_template('gantt.html', tareas_jsons=[], proyectos_=[])
+
+
+@app.route('/reporte_horas_chart', methods=['GET'])
+def reportes_horas_dev():
+    # Definir las claves de la API y el token
+   
+    # Crear una instancia de la clase
+    reporte = ReporteSulfoquimica(api_key, bearer_token)
+
+    # Obtener los datos de la API
+    reporte.obtener_datos()
+
+    # Limpiar las fechas
+    reporte.limpiar_fechas()
+
+    # Filtrar los datos
+    reporte.filtrar_datos()
+
+    # Generar el reporte
+    resultado_reporte = reporte.generar_reporte()
+
+    # Retornar el reporte como JSON
+    return jsonify(resultado_reporte)
+
+
+
+
+@app.route('/reporte_horas_chart_dev', methods=['GET'])
+def reportes_dev_consumo_horas():
+    try:
+        # Crear una instancia de la clase
+        reporte = ReporteSulfoquimica(api_key, bearer_token)
+        
+        # Obtener los datos de la API
+        reporte.obtener_datos()
+        
+        # Limpiar las fechas
+        reporte.limpiar_fechas()
+
+        # Generar la tabla por responsable
+        tabla_responsable = reporte.generar_tabla_por_responsable()
+
+        if tabla_responsable.empty:
+            return jsonify({'message': 'No se encontraron datos para el reporte'}), 404
+
+        # Convertir el DataFrame a lista de diccionarios
+        resultado = tabla_responsable.to_dict(orient='records')
+
+        # Retornar el reporte como JSON
+        return jsonify(resultado)
+    
+    except Exception as e:
+        # Manejar excepciones si algo falla
+        logging.error(f"Error al generar el reporte: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/reporte_horas_sulfoquimica')
+def ver_reporte_horas():
+    return render_template('Reporte_sulfoquimica.html')  
+
 
 
 # Reporte Gantt por proyecto
