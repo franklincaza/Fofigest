@@ -29781,3 +29781,300 @@ FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especif
 2025-05-07 11:48:51,186 - INFO - 127.0.0.1 - - [07/May/2025 11:48:51] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
 2025-05-07 11:49:59,718 - INFO - Scheduler has been shut down - base.py - 212
 2025-05-07 11:50:00,016 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:57:54,380 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:57:54,429 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:57:54,429 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:57:54,496 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-05-07 11:57:54,496 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-05-07 11:57:54,499 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 11:57:56,737 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:57:56,786 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:57:56,787 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:57:56,847 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 11:57:56,858 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 11:58:05,067 - INFO - 127.0.0.1 - - [07/May/2025 11:58:05] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:58:05,202 - INFO - 127.0.0.1 - - [07/May/2025 11:58:05] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:05,236 - INFO - 127.0.0.1 - - [07/May/2025 11:58:05] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,076 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:58:06,076 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,076 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,089 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:58:06,199 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,401 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,403 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,509 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,727 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,784 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:58:06,801 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:58:06,814 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:58:06,818 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:58:06,828 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:58:06,833 - INFO - 127.0.0.1 - - [07/May/2025 11:58:06] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:58:11,289 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:58:11,291 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:58:11,304 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:58:11,312 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:58:11,312 - INFO - 127.0.0.1 - - [07/May/2025 11:58:11] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:59:45,249 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:59:45,251 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:59:45,258 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:59:45,264 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:59:45,265 - INFO - 127.0.0.1 - - [07/May/2025 11:59:45] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:07,703 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 12:03:08,138 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 12:03:13,939 - INFO - Scheduler started - base.py - 181
+2025-05-07 12:03:13,985 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 12:03:13,985 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 12:03:14,070 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-05-07 12:03:14,070 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-05-07 12:03:14,071 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 12:03:16,595 - INFO - Scheduler started - base.py - 181
+2025-05-07 12:03:16,647 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 12:03:16,647 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 12:03:16,703 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 12:03:16,707 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 12:03:21,225 - INFO - 127.0.0.1 - - [07/May/2025 12:03:21] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:21,626 - INFO - 127.0.0.1 - - [07/May/2025 12:03:21] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 12:03:21,638 - INFO - 127.0.0.1 - - [07/May/2025 12:03:21] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 12:03:22,014 - INFO - 127.0.0.1 - - [07/May/2025 12:03:22] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 12:03:22,340 - INFO - 127.0.0.1 - - [07/May/2025 12:03:22] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 12:03:24,787 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:24,806 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:24,820 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:24,834 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:24,836 - INFO - 127.0.0.1 - - [07/May/2025 12:03:24] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:26,803 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:26,805 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:26,817 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:26,822 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:26,823 - INFO - 127.0.0.1 - - [07/May/2025 12:03:26] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:27,874 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:27,876 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:27,885 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:27,890 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:27,890 - INFO - 127.0.0.1 - - [07/May/2025 12:03:27] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:30,308 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:30,312 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:30,322 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:30,329 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:30,329 - INFO - 127.0.0.1 - - [07/May/2025 12:03:30] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:32,020 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:32,021 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:32,030 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:32,036 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:32,038 - INFO - 127.0.0.1 - - [07/May/2025 12:03:32] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:38,780 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:38,783 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:38,790 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:38,796 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:38,797 - INFO - 127.0.0.1 - - [07/May/2025 12:03:38] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:39,805 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:39,809 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:39,820 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:39,827 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:39,827 - INFO - 127.0.0.1 - - [07/May/2025 12:03:39] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:41,746 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:41,748 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:41,759 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:41,763 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:41,764 - INFO - 127.0.0.1 - - [07/May/2025 12:03:41] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:45,022 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:45,024 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:45,032 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:45,037 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:45,038 - INFO - 127.0.0.1 - - [07/May/2025 12:03:45] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:03:48,442 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 12:03:48,444 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 12:03:48,453 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 12:03:48,458 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 12:03:48,459 - INFO - 127.0.0.1 - - [07/May/2025 12:03:48] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 12:04:51,381 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 12:04:51,633 - INFO - Scheduler has been shut down - base.py - 212
