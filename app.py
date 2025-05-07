@@ -158,9 +158,6 @@ def upload_file():
     return render_template('subir_datos.html')
 
 
-
-
-
 #<___________________________________Vista___________________________________________________>
 
 @app.route('/manifest.json')
@@ -298,9 +295,6 @@ def reportes_horas_dev():
     # Retornar el reporte como JSON
     return jsonify(resultado_reporte)
 
-
-
-
 @app.route('/reporte_horas_chart_dev', methods=['GET'])
 def reportes_dev_consumo_horas():
     try:
@@ -336,8 +330,6 @@ def reportes_dev_consumo_horas():
 @app.route('/reporte_horas_sulfoquimica')
 def ver_reporte_horas():
     return render_template('Reporte_sulfoquimica.html')  
-
-
 
 # Reporte Gantt por proyecto
 @login_required
