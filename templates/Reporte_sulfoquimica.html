@@ -112,30 +112,49 @@
     try {
       const response = await fetch("/reporte_horas_chart");
       datosOriginales = await response.json();
-      cargarFiltros();
+      await cargarFiltros(); // Espera a que los filtros estén listos
       renderizarDashboard();
     } catch (error) {
       console.error("Error cargando datos:", error);
     }
   }
 
-  function cargarFiltros() {
+  async function cargarFiltros() {
     const anios = [...new Set(datosOriginales.map(d => d.anio))];
-    const responsables = [...new Set(datosOriginales.map(d => d.responsable).filter(r => r))];
     const proyectos = [...new Map(datosOriginales.map(d => [d.codigo_proyecto, d.codigo_proyecto])).keys()];
 
     const filtroAnio = document.getElementById("filtroAnio");
     filtroAnio.innerHTML = '<option value="">Todos</option>' + anios.map(a => `<option value="${a}">${a}</option>`).join("");
-    
-    const filtroResponsable = document.getElementById("filtroResponsable");
-    filtroResponsable.innerHTML = '<option value="">Todos</option>' + responsables.map(r => `<option value="${r}">${r}</option>`).join("");
-    
+
     const filtroProyecto = document.getElementById("filtroProyecto");
     filtroProyecto.innerHTML = proyectos.map(p => `<option value="${p}">${p}</option>`).join("");
 
-    filtroAnio.addEventListener("change", renderizarDashboard);
-    filtroResponsable.addEventListener("change", renderizarDashboard);
+    await cargarFiltroResponsablesDesdeDev(); // ← Carga los responsables desde el endpoint correcto
+
+    filtroAnio.addEventListener("change", () => {
+      renderizarDashboard();
+      cargarTablaResponsables();
+    });
+
+    document.getElementById("filtroResponsable").addEventListener("change", () => {
+      renderizarDashboard();
+      cargarTablaResponsables();
+    });
+
     filtroProyecto.addEventListener("change", renderizarDashboard);
+  }
+
+  async function cargarFiltroResponsablesDesdeDev() {
+    try {
+      const response = await fetch("/reporte_horas_chart_dev");
+      const datos = await response.json();
+      const responsables = [...new Set(datos.map(d => d.responsable).filter(r => r && r.trim() !== ""))];
+
+      const filtroResponsable = document.getElementById("filtroResponsable");
+      filtroResponsable.innerHTML = '<option value="">Todos</option>' + responsables.map(r => `<option value="${r}">${r}</option>`).join("");
+    } catch (error) {
+      console.error("Error cargando responsables desde /reporte_horas_chart_dev:", error);
+    }
   }
 
   function renderizarDashboard() {
@@ -240,30 +259,8 @@
         }
       }
     });
-
-    const resumenPorResponsable = {};
-    datosFiltrados.forEach(d => {
-      const responsable = d.responsable && d.responsable.trim() !== "" ? d.responsable : "Sin Responsable";
-      if (!resumenPorResponsable[responsable]) resumenPorResponsable[responsable] = 0;
-      resumenPorResponsable[responsable] += d.horas_dedicadas;
-    });
-
-    const cuerpoTabla = document.querySelector("#tablaHoras tbody");
-    cuerpoTabla.innerHTML = "";
-    Object.entries(resumenPorResponsable).forEach(([responsable, totalHoras]) => {
-      cuerpoTabla.innerHTML += `
-        <tr>
-          <td>${responsable}</td>
-          <td>${totalHoras}</td>
-        </tr>
-      `;
-    });
   }
 
-  cargarDatos();
-</script>
-
-<script>
   async function cargarTablaResponsables() {
     try {
       const response = await fetch("/reporte_horas_chart_dev");
@@ -304,10 +301,7 @@
     }
   }
 
-  document.getElementById("filtroAnio").addEventListener("change", cargarTablaResponsables);
-  document.getElementById("filtroResponsable").addEventListener("change", cargarTablaResponsables);
-
-  cargarTablaResponsables();
+  cargarDatos();
 </script>
 
 {% endblock %}
