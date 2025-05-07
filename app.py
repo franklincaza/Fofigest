@@ -1645,6 +1645,6 @@ if __name__ == '__main__':
                 # Inicia el servidor Flask con debug activado (según configuración) en el puerto 5000
                 logging.info("mode de debug esta falso , aplicacion en producciion")
                 print("mode de debug esta falso , aplicacion en produccion")
-                serve(app,host="0.0.0.0", port=5000 , threads=4)
+                serve(app,host="0.0.0.0", port=5000 , threads=2)
                 
 
