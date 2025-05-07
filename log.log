@@ -28647,3 +28647,1137 @@ FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especif
 2025-04-19 14:05:58,510 - INFO -  * Debugger PIN: 135-859-286 - _internal.py - 97
 2025-04-19 14:06:01,013 - INFO - Scheduler has been shut down - base.py - 212
 2025-04-19 14:06:01,257 - INFO - Scheduler has been shut down - base.py - 212
+2025-04-24 08:30:37,559 - INFO - Scheduler started - base.py - 181
+2025-04-24 08:30:37,634 - INFO - version del desarrollo 3.0  - app.py - 1643
+2025-04-24 08:30:37,634 - INFO - mode de debug esta True  - app.py - 1646
+2025-04-24 08:30:37,734 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-04-24 08:30:37,734 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-04-24 08:30:37,737 - INFO -  * Restarting with stat - _internal.py - 97
+2025-04-24 08:30:40,381 - INFO - Scheduler started - base.py - 181
+2025-04-24 08:30:40,431 - INFO - version del desarrollo 3.0  - app.py - 1643
+2025-04-24 08:30:40,431 - INFO - mode de debug esta True  - app.py - 1646
+2025-04-24 08:30:40,498 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-04-24 08:30:40,502 - INFO -  * Debugger PIN: 135-859-286 - _internal.py - 97
+2025-04-24 08:31:06,736 - INFO - Inicio de pagina  - app.py - 388
+2025-04-24 08:31:06,935 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:06] "GET / HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:31:07,286 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:07] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:07,424 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:07] "[33mGET /static/css/all.min.css HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-04-24 08:31:07,458 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:07] "[36mGET /static/css/sb-admin-2.min.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:07,467 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:07] "[36mGET /static/img/Logo.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:13,071 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-04-24 08:31:13,103 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-04-24 08:31:13,125 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-04-24 08:31:13,130 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-04-24 08:31:13,147 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:13] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:31:13,430 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-04-24 08:31:32,722 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:32] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:31:32,960 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:32] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:33,278 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:33] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:33,740 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:33] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:33,838 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:33] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-04-24 08:31:33,839 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:33] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:33,852 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:33] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:33,855 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:33] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-04-24 08:31:34,057 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:34] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:34,158 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:34] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:34,160 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:34] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:34,366 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-04-24 08:31:34,370 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-04-24 08:31:34,378 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-04-24 08:31:34,380 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-04-24 08:31:34,382 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:34] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:34,387 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:34] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:31:34,475 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:34] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:31:34,505 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-04-24 08:31:34,507 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-04-24 08:31:34,516 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-04-24 08:31:34,522 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-04-24 08:31:34,523 - INFO - 127.0.0.1 - - [24/Apr/2025 08:31:34] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:48:50,812 - INFO - Inicio de pagina  - app.py - 388
+2025-04-24 08:48:50,826 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:50] "GET / HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:48:50,973 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:50] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:51,013 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:51] "[33mGET /static/css/all.min.css HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-04-24 08:48:51,314 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:51] "[36mGET /static/css/sb-admin-2.min.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:51,329 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:51] "[36mGET /static/img/Logo.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:52,341 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:52] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:52,367 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:52] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-04-24 08:48:52,367 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:52] "GET /static/img/logo_F-Photoroom.png HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:48:52,606 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:52] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:52,668 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:52] "[36mGET /static/img/logo_F-Photoroom.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:52,683 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:52] "[33mGET /static/img/ilogo_F-Photoroom.png HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-04-24 08:48:57,078 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 403
+2025-04-24 08:48:57,259 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:57] "POST / HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:48:57,368 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:57] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:57,368 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:57] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:58,319 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:58] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-04-24 08:48:58,320 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:58] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:48:58,332 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:58] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-04-24 08:48:58,578 - INFO - 127.0.0.1 - - [24/Apr/2025 08:48:58] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:49:02,133 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:02] "GET /tareas HTTP/1.1" 200 - - _internal.py - 97
+2025-04-24 08:49:02,290 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:02] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:49:02,552 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:02] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:49:02,571 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:02] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:49:02,693 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:02] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:49:03,005 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:03] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-04-24 08:49:03,005 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:03] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-04-24 08:49:03,015 - INFO - 127.0.0.1 - - [24/Apr/2025 08:49:03] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:16:56,231 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:16:56,292 - INFO - version del desarrollo 3.0  - app.py - 1643
+2025-05-07 11:16:56,292 - INFO - mode de debug esta True  - app.py - 1646
+2025-05-07 11:16:56,415 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-05-07 11:16:56,415 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-05-07 11:16:56,417 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 11:16:58,900 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:16:58,946 - INFO - version del desarrollo 3.0  - app.py - 1643
+2025-05-07 11:16:58,946 - INFO - mode de debug esta True  - app.py - 1646
+2025-05-07 11:16:59,006 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 11:16:59,011 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 11:17:13,401 - INFO - Inicio de pagina  - app.py - 388
+2025-05-07 11:17:13,517 - INFO - 127.0.0.1 - - [07/May/2025 11:17:13] "GET / HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:17:13,651 - INFO - 127.0.0.1 - - [07/May/2025 11:17:13] "[33mGET /static/css/all.min.css HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:17:13,733 - INFO - 127.0.0.1 - - [07/May/2025 11:17:13] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:13,929 - INFO - 127.0.0.1 - - [07/May/2025 11:17:13] "[36mGET /static/img/Logo.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:13,945 - INFO - 127.0.0.1 - - [07/May/2025 11:17:13] "[36mGET /static/css/sb-admin-2.min.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:14,674 - INFO - 127.0.0.1 - - [07/May/2025 11:17:14] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:14,691 - INFO - 127.0.0.1 - - [07/May/2025 11:17:14] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:17:14,693 - INFO - 127.0.0.1 - - [07/May/2025 11:17:14] "GET /static/img/logo_F-Photoroom.png HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:17:14,941 - INFO - 127.0.0.1 - - [07/May/2025 11:17:14] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:14,990 - INFO - 127.0.0.1 - - [07/May/2025 11:17:14] "[36mGET /static/img/logo_F-Photoroom.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:15,005 - INFO - 127.0.0.1 - - [07/May/2025 11:17:15] "[33mGET /static/img/ilogo_F-Photoroom.png HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:17:38,116 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 403
+2025-05-07 11:17:38,177 - INFO - 127.0.0.1 - - [07/May/2025 11:17:38] "POST / HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:17:38,230 - INFO - 127.0.0.1 - - [07/May/2025 11:17:38] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:38,368 - INFO - 127.0.0.1 - - [07/May/2025 11:17:38] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:38,955 - INFO - 127.0.0.1 - - [07/May/2025 11:17:38] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:17:38,956 - INFO - 127.0.0.1 - - [07/May/2025 11:17:38] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:38,970 - INFO - 127.0.0.1 - - [07/May/2025 11:17:38] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:38,973 - INFO - 127.0.0.1 - - [07/May/2025 11:17:38] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:17:39,218 - INFO - 127.0.0.1 - - [07/May/2025 11:17:39] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:39,279 - INFO - 127.0.0.1 - - [07/May/2025 11:17:39] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:39,287 - INFO - 127.0.0.1 - - [07/May/2025 11:17:39] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:39,603 - INFO - 127.0.0.1 - - [07/May/2025 11:17:39] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:39,869 - INFO - 127.0.0.1 - - [07/May/2025 11:17:39] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:39,916 - INFO - 127.0.0.1 - - [07/May/2025 11:17:39] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:46,022 - INFO - 127.0.0.1 - - [07/May/2025 11:17:46] "GET /Reporte-HorasFofimatic%20S.A HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:17:46,080 - INFO - 127.0.0.1 - - [07/May/2025 11:17:46] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:46,187 - INFO - 127.0.0.1 - - [07/May/2025 11:17:46] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:46,399 - INFO - 127.0.0.1 - - [07/May/2025 11:17:46] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:46,779 - INFO - 127.0.0.1 - - [07/May/2025 11:17:46] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:17:46,780 - INFO - 127.0.0.1 - - [07/May/2025 11:17:46] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:46,787 - INFO - 127.0.0.1 - - [07/May/2025 11:17:46] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:17:47,046 - INFO - 127.0.0.1 - - [07/May/2025 11:17:47] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:56,681 - INFO - 127.0.0.1 - - [07/May/2025 11:17:56] "GET /tablero HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:17:56,732 - INFO - 127.0.0.1 - - [07/May/2025 11:17:56] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:56,854 - INFO - 127.0.0.1 - - [07/May/2025 11:17:56] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:57,049 - INFO - 127.0.0.1 - - [07/May/2025 11:17:57] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:57,419 - INFO - 127.0.0.1 - - [07/May/2025 11:17:57] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:17:57,421 - INFO - 127.0.0.1 - - [07/May/2025 11:17:57] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:17:57,432 - INFO - 127.0.0.1 - - [07/May/2025 11:17:57] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:17:57,684 - INFO - 127.0.0.1 - - [07/May/2025 11:17:57] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:12,104 - INFO - 127.0.0.1 - - [07/May/2025 11:18:12] "GET /tareas HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:18:12,179 - INFO - 127.0.0.1 - - [07/May/2025 11:18:12] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:12,295 - INFO - 127.0.0.1 - - [07/May/2025 11:18:12] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:12,471 - INFO - 127.0.0.1 - - [07/May/2025 11:18:12] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:12,524 - INFO - 127.0.0.1 - - [07/May/2025 11:18:12] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:18:12,831 - INFO - 127.0.0.1 - - [07/May/2025 11:18:12] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:12,839 - INFO - 127.0.0.1 - - [07/May/2025 11:18:12] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:18:13,145 - INFO - 127.0.0.1 - - [07/May/2025 11:18:13] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:16,601 - INFO - 127.0.0.1 - - [07/May/2025 11:18:16] "GET /empresa HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:18:16,672 - INFO - 127.0.0.1 - - [07/May/2025 11:18:16] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:16,796 - INFO - 127.0.0.1 - - [07/May/2025 11:18:16] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:16,963 - INFO - 127.0.0.1 - - [07/May/2025 11:18:16] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:18:17,149 - INFO - 127.0.0.1 - - [07/May/2025 11:18:17] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:17,155 - INFO - 127.0.0.1 - - [07/May/2025 11:18:17] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:17,160 - INFO - 127.0.0.1 - - [07/May/2025 11:18:17] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:18:20,601 - INFO - 127.0.0.1 - - [07/May/2025 11:18:20] "GET /proyectos HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:18:20,662 - INFO - 127.0.0.1 - - [07/May/2025 11:18:20] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:20,801 - INFO - 127.0.0.1 - - [07/May/2025 11:18:20] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:20,824 - INFO - 127.0.0.1 - - [07/May/2025 11:18:20] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:21,138 - INFO - 127.0.0.1 - - [07/May/2025 11:18:21] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:18:21,140 - INFO - 127.0.0.1 - - [07/May/2025 11:18:21] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:21,148 - INFO - 127.0.0.1 - - [07/May/2025 11:18:21] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:18:28,026 - INFO - 127.0.0.1 - - [07/May/2025 11:18:28] "GET /gannt HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:18:28,078 - INFO - 127.0.0.1 - - [07/May/2025 11:18:28] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:28,239 - INFO - 127.0.0.1 - - [07/May/2025 11:18:28] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:28,813 - INFO - 127.0.0.1 - - [07/May/2025 11:18:28] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:18:28,814 - INFO - 127.0.0.1 - - [07/May/2025 11:18:28] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:28,821 - INFO - 127.0.0.1 - - [07/May/2025 11:18:28] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:18:29,078 - INFO - 127.0.0.1 - - [07/May/2025 11:18:29] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:59,649 - INFO - 127.0.0.1 - - [07/May/2025 11:18:59] "GET /Reporte-HorasFofimatic%20S.A HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:18:59,785 - INFO - 127.0.0.1 - - [07/May/2025 11:18:59] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:18:59,913 - INFO - 127.0.0.1 - - [07/May/2025 11:18:59] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:19:00,024 - INFO - 127.0.0.1 - - [07/May/2025 11:19:00] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:19:00,100 - INFO - 127.0.0.1 - - [07/May/2025 11:19:00] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:19:00,417 - INFO - 127.0.0.1 - - [07/May/2025 11:19:00] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:19:00,424 - INFO - 127.0.0.1 - - [07/May/2025 11:19:00] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:19:00,729 - INFO - 127.0.0.1 - - [07/May/2025 11:19:00] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:20:12,968 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:20:12,987 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:20:13,005 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:20:13,019 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:20:13,022 - INFO - 127.0.0.1 - - [07/May/2025 11:20:13] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:20:13,142 - INFO - 127.0.0.1 - - [07/May/2025 11:20:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:20:37,350 - INFO - 127.0.0.1 - - [07/May/2025 11:20:37] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:20:37,610 - INFO - 127.0.0.1 - - [07/May/2025 11:20:37] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:20:37,939 - INFO - 127.0.0.1 - - [07/May/2025 11:20:37] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:20:38,260 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:20:38,262 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:20:38,274 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:20:38,282 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:20:38,283 - INFO - 127.0.0.1 - - [07/May/2025 11:20:38] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:20:38,343 - INFO - 127.0.0.1 - - [07/May/2025 11:20:38] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:20:38,481 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:20:38,483 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:20:38,490 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:20:38,491 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:20:38,498 - INFO - 127.0.0.1 - - [07/May/2025 11:20:38] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:20:38,624 - INFO - 127.0.0.1 - - [07/May/2025 11:20:38] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:20:38,656 - INFO - 127.0.0.1 - - [07/May/2025 11:20:38] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:20:38,944 - INFO - 127.0.0.1 - - [07/May/2025 11:20:38] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:21:47,345 - INFO - 127.0.0.1 - - [07/May/2025 11:21:47] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:21:47,402 - INFO - 127.0.0.1 - - [07/May/2025 11:21:47] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:47,853 - INFO - 127.0.0.1 - - [07/May/2025 11:21:47] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:48,177 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:48,179 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:48,180 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:21:48,190 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:21:48,335 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:21:48,336 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:21:48,342 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:21:48,354 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:21:48,356 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:21:48,369 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:21:48,370 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:21:48,379 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:21:48,380 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:21:48,383 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:21:48,487 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:48,488 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:48,800 - INFO - 127.0.0.1 - - [07/May/2025 11:21:48] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:49,063 - INFO - 127.0.0.1 - - [07/May/2025 11:21:49] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:49,111 - INFO - 127.0.0.1 - - [07/May/2025 11:21:49] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:21:49,375 - INFO - 127.0.0.1 - - [07/May/2025 11:21:49] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:40,529 - INFO - 127.0.0.1 - - [07/May/2025 11:22:40] "GET /gannt HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:22:40,639 - INFO - 127.0.0.1 - - [07/May/2025 11:22:40] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:40,755 - INFO - 127.0.0.1 - - [07/May/2025 11:22:40] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:41,023 - INFO - 127.0.0.1 - - [07/May/2025 11:22:41] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:22:41,332 - INFO - 127.0.0.1 - - [07/May/2025 11:22:41] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:22:41,335 - INFO - 127.0.0.1 - - [07/May/2025 11:22:41] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:41,653 - INFO - 127.0.0.1 - - [07/May/2025 11:22:41] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:43,705 - INFO - 127.0.0.1 - - [07/May/2025 11:22:43] "GET /tablero HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:22:44,008 - INFO - 127.0.0.1 - - [07/May/2025 11:22:44] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:44,055 - INFO - 127.0.0.1 - - [07/May/2025 11:22:44] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:44,056 - INFO - 127.0.0.1 - - [07/May/2025 11:22:44] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:44,123 - INFO - 127.0.0.1 - - [07/May/2025 11:22:44] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:44,434 - INFO - 127.0.0.1 - - [07/May/2025 11:22:44] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:22:44,434 - INFO - 127.0.0.1 - - [07/May/2025 11:22:44] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:22:44,468 - INFO - 127.0.0.1 - - [07/May/2025 11:22:44] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:24:01,647 - INFO -  * Detected change in 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\app.py', reloading - _internal.py - 97
+2025-05-07 11:24:01,673 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:24:02,625 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 11:24:06,302 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:24:06,355 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:24:06,355 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:24:06,424 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 11:24:06,429 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 11:24:18,077 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:24:18,364 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:24:28,504 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:24:28,571 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:24:28,571 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:24:28,685 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-05-07 11:24:28,685 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-05-07 11:24:28,688 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 11:24:32,181 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:24:32,229 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:24:32,229 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:24:32,292 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 11:24:32,298 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 11:24:34,008 - INFO - 127.0.0.1 - - [07/May/2025 11:24:34] "GET /tablero HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:24:34,729 - INFO - 127.0.0.1 - - [07/May/2025 11:24:34] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:24:34,733 - INFO - 127.0.0.1 - - [07/May/2025 11:24:34] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:24:34,773 - INFO - 127.0.0.1 - - [07/May/2025 11:24:34] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:24:35,228 - INFO - 127.0.0.1 - - [07/May/2025 11:24:35] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:24:35,229 - INFO - 127.0.0.1 - - [07/May/2025 11:24:35] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:24:35,238 - INFO - 127.0.0.1 - - [07/May/2025 11:24:35] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:24:35,496 - INFO - 127.0.0.1 - - [07/May/2025 11:24:35] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:13,509 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:25:13,800 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:25:19,113 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:25:19,164 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:25:19,164 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:25:19,238 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-05-07 11:25:19,238 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-05-07 11:25:19,239 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 11:25:21,816 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:25:21,926 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:25:21,926 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:25:21,934 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 11:25:21,939 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 11:25:24,599 - INFO - 127.0.0.1 - - [07/May/2025 11:25:24] "GET /tablero HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:25:24,690 - INFO - 127.0.0.1 - - [07/May/2025 11:25:24] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:24,726 - INFO - 127.0.0.1 - - [07/May/2025 11:25:24] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:24,954 - INFO - 127.0.0.1 - - [07/May/2025 11:25:24] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:25,314 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:25:25,316 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:25,317 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:25,332 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:25:25,562 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:25,640 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:25,644 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:25,874 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:25,969 - INFO - 127.0.0.1 - - [07/May/2025 11:25:25] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:26,186 - INFO - 127.0.0.1 - - [07/May/2025 11:25:26] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:28,957 - INFO - 127.0.0.1 - - [07/May/2025 11:25:28] "GET /tablero HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:25:29,260 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:29,322 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:29,324 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:29,376 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:29,697 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:25:29,699 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:29,699 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:29,707 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:25:29,945 - INFO - 127.0.0.1 - - [07/May/2025 11:25:29] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:30,022 - INFO - 127.0.0.1 - - [07/May/2025 11:25:30] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:30,257 - INFO - 127.0.0.1 - - [07/May/2025 11:25:30] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:30,330 - INFO - 127.0.0.1 - - [07/May/2025 11:25:30] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:30,579 - INFO - 127.0.0.1 - - [07/May/2025 11:25:30] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:42,585 - INFO - 127.0.0.1 - - [07/May/2025 11:25:42] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:25:42,646 - INFO - 127.0.0.1 - - [07/May/2025 11:25:42] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:42,835 - INFO - 127.0.0.1 - - [07/May/2025 11:25:42] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:43,173 - INFO - 127.0.0.1 - - [07/May/2025 11:25:43] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:25:43,173 - INFO - 127.0.0.1 - - [07/May/2025 11:25:43] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:43,183 - INFO - 127.0.0.1 - - [07/May/2025 11:25:43] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:25:43,499 - INFO - 127.0.0.1 - - [07/May/2025 11:25:43] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:25:43,753 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:25:43,773 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:25:43,786 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:25:43,789 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:25:43,805 - INFO - 127.0.0.1 - - [07/May/2025 11:25:43] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:25:43,812 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:25:43,814 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:25:43,823 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:25:43,830 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:25:43,830 - INFO - 127.0.0.1 - - [07/May/2025 11:25:43] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:26:05,070 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:26:05,113 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:05,524 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:05,729 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:26:05,732 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:26:05,741 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:26:05,742 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:26:05,749 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:26:05,849 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:26:05,849 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:05,850 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:05,858 - INFO - 127.0.0.1 - - [07/May/2025 11:26:05] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:26:06,129 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:26:06,131 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:26:06,142 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:26:06,148 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:26:06,149 - INFO - 127.0.0.1 - - [07/May/2025 11:26:06] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:26:06,161 - INFO - 127.0.0.1 - - [07/May/2025 11:26:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:06,162 - INFO - 127.0.0.1 - - [07/May/2025 11:26:06] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:06,485 - INFO - 127.0.0.1 - - [07/May/2025 11:26:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:06,732 - INFO - 127.0.0.1 - - [07/May/2025 11:26:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:06,795 - INFO - 127.0.0.1 - - [07/May/2025 11:26:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:26:07,046 - INFO - 127.0.0.1 - - [07/May/2025 11:26:07] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:30:43,074 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:30:43,555 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:30:51,482 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:30:51,531 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:30:51,531 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:30:51,611 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-05-07 11:30:51,611 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-05-07 11:30:51,612 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 11:30:54,291 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:30:54,340 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:30:54,340 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:30:54,405 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 11:30:54,410 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 11:30:59,193 - INFO - 127.0.0.1 - - [07/May/2025 11:30:59] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:30:59,405 - INFO - 127.0.0.1 - - [07/May/2025 11:30:59] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:30:59,440 - INFO - 127.0.0.1 - - [07/May/2025 11:30:59] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,003 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:00,003 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,006 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,019 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:00,155 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,329 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,329 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,468 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,643 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,701 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:31:00,719 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:31:00,764 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:31:00,777 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:31:00,817 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:00,828 - INFO - 127.0.0.1 - - [07/May/2025 11:31:00] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:02,682 - INFO - 127.0.0.1 - - [07/May/2025 11:31:02] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:02,994 - INFO - 127.0.0.1 - - [07/May/2025 11:31:02] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:03,320 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:03,336 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:03,555 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:31:03,557 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:31:03,567 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:31:03,568 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:31:03,573 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:03,649 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:03,650 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:03,651 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:03,666 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:03,974 - INFO - 127.0.0.1 - - [07/May/2025 11:31:03] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:04,288 - INFO - 127.0.0.1 - - [07/May/2025 11:31:04] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:04,555 - INFO - 127.0.0.1 - - [07/May/2025 11:31:04] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:04,601 - INFO - 127.0.0.1 - - [07/May/2025 11:31:04] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:04,865 - INFO - 127.0.0.1 - - [07/May/2025 11:31:04] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:05,571 - INFO - 127.0.0.1 - - [07/May/2025 11:31:05] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:05,873 - INFO - 127.0.0.1 - - [07/May/2025 11:31:05] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:06,189 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:06,518 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:06,519 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:06,519 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:06,532 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:06,607 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:31:06,609 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:31:06,618 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:31:06,619 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:31:06,624 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:06,842 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:06,844 - INFO - 127.0.0.1 - - [07/May/2025 11:31:06] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:07,153 - INFO - 127.0.0.1 - - [07/May/2025 11:31:07] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:07,416 - INFO - 127.0.0.1 - - [07/May/2025 11:31:07] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:07,462 - INFO - 127.0.0.1 - - [07/May/2025 11:31:07] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:07,725 - INFO - 127.0.0.1 - - [07/May/2025 11:31:07] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:10,435 - INFO - 127.0.0.1 - - [07/May/2025 11:31:10] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:10,487 - INFO - 127.0.0.1 - - [07/May/2025 11:31:10] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:10,870 - INFO - 127.0.0.1 - - [07/May/2025 11:31:10] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:11,197 - INFO - 127.0.0.1 - - [07/May/2025 11:31:11] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:11,198 - INFO - 127.0.0.1 - - [07/May/2025 11:31:11] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:11,207 - INFO - 127.0.0.1 - - [07/May/2025 11:31:11] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:11,296 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:31:11,298 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:31:11,307 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:31:11,308 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:31:11,314 - INFO - 127.0.0.1 - - [07/May/2025 11:31:11] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:11,509 - INFO - 127.0.0.1 - - [07/May/2025 11:31:11] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:15,689 - INFO - 127.0.0.1 - - [07/May/2025 11:31:15] "[32mGET /logout HTTP/1.1[0m" 302 - - _internal.py - 97
+2025-05-07 11:31:15,749 - INFO - Inicio de pagina  - app.py - 380
+2025-05-07 11:31:15,758 - INFO - 127.0.0.1 - - [07/May/2025 11:31:15] "GET / HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:15,937 - INFO - 127.0.0.1 - - [07/May/2025 11:31:15] "[33mGET /static/css/all.min.css HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:16,125 - INFO - 127.0.0.1 - - [07/May/2025 11:31:16] "[36mGET /static/css/sb-admin-2.min.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:16,129 - INFO - 127.0.0.1 - - [07/May/2025 11:31:16] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:16,132 - INFO - 127.0.0.1 - - [07/May/2025 11:31:16] "[36mGET /static/img/Logo.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:16,556 - INFO - 127.0.0.1 - - [07/May/2025 11:31:16] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:16,566 - INFO - 127.0.0.1 - - [07/May/2025 11:31:16] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:16,886 - INFO - 127.0.0.1 - - [07/May/2025 11:31:16] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:25,015 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 395
+2025-05-07 11:31:25,018 - INFO - 127.0.0.1 - - [07/May/2025 11:31:25] "POST / HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:25,072 - INFO - 127.0.0.1 - - [07/May/2025 11:31:25] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:25,276 - INFO - 127.0.0.1 - - [07/May/2025 11:31:25] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:25,618 - INFO - 127.0.0.1 - - [07/May/2025 11:31:25] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:25,619 - INFO - 127.0.0.1 - - [07/May/2025 11:31:25] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:25,626 - INFO - 127.0.0.1 - - [07/May/2025 11:31:25] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:25,866 - INFO - 127.0.0.1 - - [07/May/2025 11:31:25] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:32,501 - INFO - 127.0.0.1 - - [07/May/2025 11:31:32] "GET /Reporte-HorasFofimatic%20S.A HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:32,560 - INFO - 127.0.0.1 - - [07/May/2025 11:31:32] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:32,747 - INFO - 127.0.0.1 - - [07/May/2025 11:31:32] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:32,871 - INFO - 127.0.0.1 - - [07/May/2025 11:31:32] "[36mGET /static/css/style.css HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:33,247 - INFO - 127.0.0.1 - - [07/May/2025 11:31:33] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:33,248 - INFO - 127.0.0.1 - - [07/May/2025 11:31:33] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:33,257 - INFO - 127.0.0.1 - - [07/May/2025 11:31:33] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:33,510 - INFO - 127.0.0.1 - - [07/May/2025 11:31:33] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:43,215 - INFO - 127.0.0.1 - - [07/May/2025 11:31:43] "GET /gannt HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:43,302 - INFO - 127.0.0.1 - - [07/May/2025 11:31:43] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:43,467 - INFO - 127.0.0.1 - - [07/May/2025 11:31:43] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:44,001 - INFO - 127.0.0.1 - - [07/May/2025 11:31:44] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:44,002 - INFO - 127.0.0.1 - - [07/May/2025 11:31:44] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:44,009 - INFO - 127.0.0.1 - - [07/May/2025 11:31:44] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:44,265 - INFO - 127.0.0.1 - - [07/May/2025 11:31:44] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:49,998 - INFO - 127.0.0.1 - - [07/May/2025 11:31:49] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:50,311 - INFO - 127.0.0.1 - - [07/May/2025 11:31:50] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:50,623 - INFO - 127.0.0.1 - - [07/May/2025 11:31:50] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:50,945 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:31:50,948 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:31:50,960 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:31:50,962 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:31:50,968 - INFO - 127.0.0.1 - - [07/May/2025 11:31:50] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:50,969 - INFO - 127.0.0.1 - - [07/May/2025 11:31:50] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:50,969 - INFO - 127.0.0.1 - - [07/May/2025 11:31:50] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:50,979 - INFO - 127.0.0.1 - - [07/May/2025 11:31:50] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:51,279 - INFO - 127.0.0.1 - - [07/May/2025 11:31:51] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:56,254 - INFO - 127.0.0.1 - - [07/May/2025 11:31:56] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:56,300 - INFO - 127.0.0.1 - - [07/May/2025 11:31:56] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:56,693 - INFO - 127.0.0.1 - - [07/May/2025 11:31:56] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:56,704 - INFO - 127.0.0.1 - - [07/May/2025 11:31:56] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:56,947 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:31:56,950 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:31:56,962 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:31:56,963 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:31:56,968 - INFO - 127.0.0.1 - - [07/May/2025 11:31:56] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:31:57,021 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:31:57,022 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:57,022 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:57,036 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:31:57,348 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:57,660 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:57,923 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:57,970 - INFO - 127.0.0.1 - - [07/May/2025 11:31:57] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:31:58,234 - INFO - 127.0.0.1 - - [07/May/2025 11:31:58] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:22,581 - INFO - 127.0.0.1 - - [07/May/2025 11:32:22] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:32:22,627 - INFO - 127.0.0.1 - - [07/May/2025 11:32:22] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:23,059 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:23,389 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:32:23,389 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:23,391 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:23,402 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:32:23,497 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:32:23,500 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:32:23,509 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:32:23,512 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:32:23,518 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:32:23,718 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:23,719 - INFO - 127.0.0.1 - - [07/May/2025 11:32:23] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:24,031 - INFO - 127.0.0.1 - - [07/May/2025 11:32:24] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:24,296 - INFO - 127.0.0.1 - - [07/May/2025 11:32:24] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:24,342 - INFO - 127.0.0.1 - - [07/May/2025 11:32:24] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:24,609 - INFO - 127.0.0.1 - - [07/May/2025 11:32:24] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:26,903 - INFO - 127.0.0.1 - - [07/May/2025 11:32:26] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:32:27,130 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:27,442 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:27,456 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:27,685 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:32:27,686 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:32:27,696 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:32:27,697 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:32:27,702 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:32:27,769 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:32:27,771 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:27,772 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:27,781 - INFO - 127.0.0.1 - - [07/May/2025 11:32:27] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:32:28,096 - INFO - 127.0.0.1 - - [07/May/2025 11:32:28] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:28,407 - INFO - 127.0.0.1 - - [07/May/2025 11:32:28] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:28,667 - INFO - 127.0.0.1 - - [07/May/2025 11:32:28] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:28,730 - INFO - 127.0.0.1 - - [07/May/2025 11:32:28] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:32:28,977 - INFO - 127.0.0.1 - - [07/May/2025 11:32:28] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:05,106 - INFO - 127.0.0.1 - - [07/May/2025 11:33:05] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:33:05,151 - INFO - 127.0.0.1 - - [07/May/2025 11:33:05] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:05,569 - INFO - 127.0.0.1 - - [07/May/2025 11:33:05] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:05,903 - INFO - 127.0.0.1 - - [07/May/2025 11:33:05] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:33:05,904 - INFO - 127.0.0.1 - - [07/May/2025 11:33:05] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:05,904 - INFO - 127.0.0.1 - - [07/May/2025 11:33:05] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:05,913 - INFO - 127.0.0.1 - - [07/May/2025 11:33:05] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:33:06,034 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:33:06,036 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:33:06,046 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:33:06,048 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:33:06,055 - INFO - 127.0.0.1 - - [07/May/2025 11:33:06] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:33:06,062 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:33:06,064 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:33:06,075 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:33:06,083 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:33:06,083 - INFO - 127.0.0.1 - - [07/May/2025 11:33:06] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:33:06,215 - INFO - 127.0.0.1 - - [07/May/2025 11:33:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:06,215 - INFO - 127.0.0.1 - - [07/May/2025 11:33:06] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:06,523 - INFO - 127.0.0.1 - - [07/May/2025 11:33:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:06,790 - INFO - 127.0.0.1 - - [07/May/2025 11:33:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:06,838 - INFO - 127.0.0.1 - - [07/May/2025 11:33:06] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:07,103 - INFO - 127.0.0.1 - - [07/May/2025 11:33:07] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:22,098 - INFO - 127.0.0.1 - - [07/May/2025 11:33:22] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:33:36,709 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:33:36,713 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:33:36,737 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:33:36,747 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:33:36,748 - INFO - 127.0.0.1 - - [07/May/2025 11:33:36] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:33:38,239 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:33:38,241 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:33:38,251 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:33:38,256 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:33:38,257 - INFO - 127.0.0.1 - - [07/May/2025 11:33:38] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:34:44,579 - INFO - 127.0.0.1 - - [07/May/2025 11:34:44] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:34:44,637 - INFO - 127.0.0.1 - - [07/May/2025 11:34:44] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:34:44,722 - INFO - 127.0.0.1 - - [07/May/2025 11:34:44] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:34:45,216 - INFO - 127.0.0.1 - - [07/May/2025 11:34:45] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:34:45,220 - INFO - 127.0.0.1 - - [07/May/2025 11:34:45] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:34:45,226 - INFO - 127.0.0.1 - - [07/May/2025 11:34:45] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:34:45,385 - INFO - 127.0.0.1 - - [07/May/2025 11:34:45] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:34:45,571 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:34:45,574 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:34:45,585 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:34:45,587 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:34:45,596 - INFO - 127.0.0.1 - - [07/May/2025 11:34:45] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:34:48,765 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:34:48,768 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:34:48,777 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:34:48,784 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:34:48,785 - INFO - 127.0.0.1 - - [07/May/2025 11:34:48] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:34:51,829 - INFO - 127.0.0.1 - - [07/May/2025 11:34:51] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:34:51,869 - INFO - 127.0.0.1 - - [07/May/2025 11:34:51] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:34:52,348 - INFO - 127.0.0.1 - - [07/May/2025 11:34:52] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:34:52,565 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:34:52,568 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:34:52,579 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:34:52,580 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:34:52,585 - INFO - 127.0.0.1 - - [07/May/2025 11:34:52] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:34:52,675 - INFO - 127.0.0.1 - - [07/May/2025 11:34:52] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:34:52,677 - INFO - 127.0.0.1 - - [07/May/2025 11:34:52] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:34:52,690 - INFO - 127.0.0.1 - - [07/May/2025 11:34:52] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:34:53,000 - INFO - 127.0.0.1 - - [07/May/2025 11:34:53] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:10,046 - INFO - 127.0.0.1 - - [07/May/2025 11:36:10] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:36:10,113 - INFO - 127.0.0.1 - - [07/May/2025 11:36:10] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:10,299 - INFO - 127.0.0.1 - - [07/May/2025 11:36:10] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:10,816 - INFO - 127.0.0.1 - - [07/May/2025 11:36:10] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:36:10,819 - INFO - 127.0.0.1 - - [07/May/2025 11:36:10] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:10,821 - INFO - 127.0.0.1 - - [07/May/2025 11:36:10] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:10,827 - INFO - 127.0.0.1 - - [07/May/2025 11:36:10] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:36:11,001 - INFO - 127.0.0.1 - - [07/May/2025 11:36:11] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:11,144 - INFO - 127.0.0.1 - - [07/May/2025 11:36:11] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:11,145 - INFO - 127.0.0.1 - - [07/May/2025 11:36:11] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:11,234 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:36:11,236 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:36:11,249 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:36:11,250 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:36:11,260 - INFO - 127.0.0.1 - - [07/May/2025 11:36:11] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:36:11,314 - INFO - 127.0.0.1 - - [07/May/2025 11:36:11] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:11,469 - INFO - 127.0.0.1 - - [07/May/2025 11:36:11] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:36:11,639 - INFO - 127.0.0.1 - - [07/May/2025 11:36:11] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:15,988 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:48:17,060 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:48:24,043 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:48:24,099 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:48:24,099 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:48:24,200 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.6:5000 - _internal.py - 97
+2025-05-07 11:48:24,200 - INFO - [33mPress CTRL+C to quit[0m - _internal.py - 97
+2025-05-07 11:48:24,201 - INFO -  * Restarting with stat - _internal.py - 97
+2025-05-07 11:48:27,098 - INFO - Scheduler started - base.py - 181
+2025-05-07 11:48:27,215 - INFO - version del desarrollo 3.0  - app.py - 1635
+2025-05-07 11:48:27,215 - INFO - mode de debug esta True  - app.py - 1638
+2025-05-07 11:48:27,224 - WARNING -  * Debugger is active! - _internal.py - 97
+2025-05-07 11:48:27,230 - INFO -  * Debugger PIN: 675-968-834 - _internal.py - 97
+2025-05-07 11:48:30,693 - INFO - 127.0.0.1 - - [07/May/2025 11:48:30] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:48:30,940 - INFO - 127.0.0.1 - - [07/May/2025 11:48:30] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:30,942 - INFO - 127.0.0.1 - - [07/May/2025 11:48:30] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:31,458 - INFO - 127.0.0.1 - - [07/May/2025 11:48:31] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:48:31,469 - INFO - 127.0.0.1 - - [07/May/2025 11:48:31] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:31,475 - INFO - 127.0.0.1 - - [07/May/2025 11:48:31] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:48:31,614 - INFO - 127.0.0.1 - - [07/May/2025 11:48:31] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:32,045 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:48:32,064 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:48:32,069 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:48:32,083 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:48:32,086 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:48:32,096 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:48:32,101 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:48:32,112 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:48:32,114 - INFO - 127.0.0.1 - - [07/May/2025 11:48:32] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:48:32,114 - INFO - 127.0.0.1 - - [07/May/2025 11:48:32] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:48:37,255 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:48:37,257 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:48:37,267 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:48:37,273 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:48:37,273 - INFO - 127.0.0.1 - - [07/May/2025 11:48:37] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:48:49,155 - INFO - 127.0.0.1 - - [07/May/2025 11:48:49] "GET /reporte_horas_sulfoquimica HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:48:49,220 - INFO - 127.0.0.1 - - [07/May/2025 11:48:49] "[36mGET /static/js/sw.js HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:49,645 - INFO - 127.0.0.1 - - [07/May/2025 11:48:49] "[36mGET /static/img/Fofigest.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:49,969 - INFO - 127.0.0.1 - - [07/May/2025 11:48:49] "[36mGET /static/js/manifest.json HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:49,971 - INFO - 127.0.0.1 - - [07/May/2025 11:48:49] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:49,977 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:48:49,981 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:48:49,993 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:48:49,995 - INFO - Datos filtrados correctamente. - Reporte_sulfoquimica.py - 66
+2025-05-07 11:48:49,997 - INFO - 127.0.0.1 - - [07/May/2025 11:48:49] "[33mGET /static/service-worker.js HTTP/1.1[0m" 404 - - _internal.py - 97
+2025-05-07 11:48:50,005 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "GET /reporte_horas_chart HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:48:50,013 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "[35m[1mGET /sw.js HTTP/1.1[0m" 500 - - _internal.py - 97
+2025-05-07 11:48:50,039 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 38
+2025-05-07 11:48:50,043 - WARNING - Fechas inválidas encontradas: - Reporte_sulfoquimica.py - 51
+2025-05-07 11:48:50,052 - WARNING -       id          empresa  codigo_proyecto  ...       estado tipo_consumo      mes
+0     83  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+1     85  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+3     86  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo  Febrero
+25    82  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Enero
+31    93  SULFOQUIMICA SA      Compras app  ...  COMPLETADOS   Desarrollo    Marzo
+36   102  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo    Junio
+37   103  SULFOQUIMICA SA         Intranet  ...  COMPLETADOS   Desarrollo     Mayo
+77   139  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+91   154  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Abril
+92   155  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Marzo
+99   162  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo    Julio
+103  166  SULFOQUIMICA SA  Rpa Facturacion  ...  COMPLETADOS   Desarrollo   Agosto
+
+[12 rows x 15 columns] - Reporte_sulfoquimica.py - 52
+2025-05-07 11:48:50,057 - INFO - Tabla por responsable, año y mes generada correctamente. - Reporte_sulfoquimica.py - 134
+2025-05-07 11:48:50,058 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "GET /reporte_horas_chart_dev HTTP/1.1" 200 - - _internal.py - 97
+2025-05-07 11:48:50,283 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "[36mGET /static/img/logo_F-Photoroom_144.png HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:50,299 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:50,613 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:50,876 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:50,920 - INFO - 127.0.0.1 - - [07/May/2025 11:48:50] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:48:51,186 - INFO - 127.0.0.1 - - [07/May/2025 11:48:51] "[36mGET /static/img/logo_F-Photoroom.ico HTTP/1.1[0m" 304 - - _internal.py - 97
+2025-05-07 11:49:59,718 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-07 11:50:00,016 - INFO - Scheduler has been shut down - base.py - 212

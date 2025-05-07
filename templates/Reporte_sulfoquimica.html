@@ -57,6 +57,10 @@
     vertical-align: middle;
     text-align: center;
   }
+
+  #filtroProyecto {
+    height: 130% !important;
+  }
 </style>
 
 <div class="container">
@@ -122,12 +126,12 @@
 
     const filtroAnio = document.getElementById("filtroAnio");
     filtroAnio.innerHTML = '<option value="">Todos</option>' + anios.map(a => `<option value="${a}">${a}</option>`).join("");
-
+    
     const filtroResponsable = document.getElementById("filtroResponsable");
     filtroResponsable.innerHTML = '<option value="">Todos</option>' + responsables.map(r => `<option value="${r}">${r}</option>`).join("");
-   
+    
     const filtroProyecto = document.getElementById("filtroProyecto");
-    filtroProyecto.innerHTML = '<option value="">Todos</option>' + proyectos.map(p => `<option value="${p}">${p}</option>`).join("");
+    filtroProyecto.innerHTML = proyectos.map(p => `<option value="${p}">${p}</option>`).join("");
 
     filtroAnio.addEventListener("change", renderizarDashboard);
     filtroResponsable.addEventListener("change", renderizarDashboard);
@@ -151,7 +155,6 @@
       datosFiltrados = datosFiltrados.filter(d => d.responsable === responsableSeleccionado);
     }
 
-    // === Gráfico: total horas por mes ===
     const resumenPorMes = {};
     datosFiltrados.forEach(d => {
       if (!resumenPorMes[d.mes]) resumenPorMes[d.mes] = 0;
@@ -195,7 +198,6 @@
       }
     });
 
-    // === Gráfico: total horas por proyecto ===
     const resumenPorProyecto = {};
     datosFiltrados.forEach(d => {
       if (!resumenPorProyecto[d.codigo_proyecto]) resumenPorProyecto[d.codigo_proyecto] = 0;
@@ -239,7 +241,6 @@
       }
     });
 
-    // === Tabla: análisis por responsable ===
     const resumenPorResponsable = {};
     datosFiltrados.forEach(d => {
       const responsable = d.responsable && d.responsable.trim() !== "" ? d.responsable : "Sin Responsable";
