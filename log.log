@@ -35940,3 +35940,1034 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^
 FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
 2025-05-08 17:40:57,674 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-08 18:07:44,454 - INFO - Scheduler started - base.py - 181
+2025-05-08 18:07:48,345 - INFO - version del desarrollo 3.0  - app.py - 1637
+2025-05-08 18:07:48,345 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1648
+2025-05-08 18:07:48,348 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 485
+2025-05-08 18:07:49,187 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:07:49,443 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:07:50,524 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:07:59,051 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 396
+2025-05-08 18:08:00,024 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:08:09,187 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:08:09,187 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:08:23,765 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:08:34,662 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:08:35,740 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:08:35,741 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:11:15,211 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:11:22,449 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:11:23,716 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:11:47,927 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 396
+2025-05-08 18:11:48,251 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:11:57,052 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:11:57,555 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:11:57,557 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:16:23,671 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-08 18:16:29,976 - INFO - Scheduler started - base.py - 181
+2025-05-08 18:16:33,809 - INFO - version del desarrollo 4.0  - app.py - 1638
+2025-05-08 18:16:33,809 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1649
+2025-05-08 18:16:33,821 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 485
+2025-05-08 18:16:45,427 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:16:46,178 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:16:46,178 - WARNING - Task queue depth is 2 - task.py - 114
+2025-05-08 18:16:46,181 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:16:48,256 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:16:49,193 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:16:54,895 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2025-05-08 18:16:55,280 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:19:01,785 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-08 18:19:08,285 - INFO - Scheduler started - base.py - 181
+2025-05-08 18:19:14,086 - INFO - version del desarrollo 4.0  - app.py - 1639
+2025-05-08 18:19:14,086 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1650
+2025-05-08 18:19:14,089 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 485
+2025-05-08 18:19:16,271 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:19:16,937 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:19:18,620 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:19:20,075 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:19:27,829 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2025-05-08 18:19:28,207 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:19:37,413 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:19:37,414 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:21:42,405 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:21:42,963 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:21:45,191 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:21:45,784 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:21:50,131 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-08 18:21:55,490 - INFO - Scheduler started - base.py - 181
+2025-05-08 18:21:59,198 - INFO - version del desarrollo 4.0  - app.py - 1640
+2025-05-08 18:21:59,198 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1651
+2025-05-08 18:21:59,200 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 485
+2025-05-08 18:22:05,388 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2025-05-08 18:22:06,235 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:22:14,983 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:22:15,477 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:22:15,477 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:22:20,917 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:22:21,361 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:22:36,137 - WARNING - Email o contraseña incorrectos - app.py - 413
+2025-05-08 18:22:36,320 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:22:36,634 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:23:10,442 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-08 18:23:21,815 - INFO - Scheduler started - base.py - 181
+2025-05-08 18:23:25,580 - INFO - version del desarrollo 4.0  - app.py - 1640
+2025-05-08 18:23:25,580 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1651
+2025-05-08 18:23:25,583 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 485
+2025-05-08 18:23:28,811 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2025-05-08 18:23:28,940 - ERROR - Exception on / [POST] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 402, in loginInp
+    print("contra"+models.Usuarios.query.filter_by(contraseña=password).first())
+          ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TypeError: can only concatenate str (not "Usuarios") to str
+2025-05-08 18:23:39,057 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:23:40,698 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:23:46,405 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2025-05-08 18:23:46,533 - ERROR - Exception on / [POST] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 402, in loginInp
+    print("contra"+models.Usuarios.query.filter_by(contraseña=password).first())
+          ~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+TypeError: can only concatenate str (not "Usuarios") to str
+2025-05-08 18:25:23,138 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-08 18:25:34,906 - INFO - Scheduler started - base.py - 181
+2025-05-08 18:25:38,596 - INFO - version del desarrollo 4.0  - app.py - 1640
+2025-05-08 18:25:38,596 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1651
+2025-05-08 18:25:38,598 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 485
+2025-05-08 18:25:41,583 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:25:42,042 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:25:42,047 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:25:43,205 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:25:49,247 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2025-05-08 18:25:49,905 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:25:59,066 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:27:05,949 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:27:06,639 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:27:12,912 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2025-05-08 18:27:13,745 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:27:19,108 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:27:19,500 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:27:22,545 - INFO - Scheduler has been shut down - base.py - 212
+2025-05-08 18:27:43,997 - INFO - Scheduler started - base.py - 181
+2025-05-08 18:27:47,673 - INFO - version del desarrollo 4.0  - app.py - 1641
+2025-05-08 18:27:47,673 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1652
+2025-05-08 18:27:47,676 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 485
+2025-05-08 18:27:50,625 - WARNING - Email o contraseña incorrectos - app.py - 414
+2025-05-08 18:27:50,861 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:27:50,866 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:27:51,326 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:28:05,242 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 398
+2025-05-08 18:28:05,634 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:28:14,277 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:28:14,901 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:28:14,901 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:28:26,834 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:28:26,837 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:28:31,235 - INFO - Inicio de pagina  - app.py - 381
+2025-05-08 18:28:31,662 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:28:36,273 - WARNING - Email o contraseña incorrectos - app.py - 414
+2025-05-08 18:28:36,764 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:28:52,746 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 398
+2025-05-08 18:28:53,042 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:29:01,662 - WARNING - Task queue depth is 1 - task.py - 114
+2025-05-08 18:29:02,177 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:29:10,299 - ERROR - Exception on /sw.js [GET] - app.py - 838
+Traceback (most recent call last):
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\app.py", line 171, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 499, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "c:\Users\FRANKLIN\Downloads\Desarrollos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 428, in send_file
+    stat = os.stat(path)
+           ^^^^^^^^^^^^^
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
+2025-05-08 18:29:48,016 - INFO - Scheduler has been shut down - base.py - 212

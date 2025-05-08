@@ -383,13 +383,15 @@ def login():
 
 @app.route("/", methods=['POST'])
 def loginInp():
+    v=config.config["version"]
     email = request.form.get('exampleInputEmail')
     password = request.form.get('exampleInputPassword')
 
     # Consultar si el usuario existe
     usuario = models.Usuarios.query.filter_by(correo=email).first()
+    passx=models.Usuarios.query.filter_by(contraseña=password).first()
 
-    if usuario :
+    if usuario and passx:
 
         # Si el usuario existe y la contraseña es correcta, iniciar sesión
         login_user(usuario)
@@ -397,12 +399,14 @@ def loginInp():
         session['username'] = usuario.permisos
         session['empresa'] = usuario.empresa
         session['correo'] = usuario.correo 
+        session['correo'] = usuario.correo 
+        
 
         if  session['username'] == "admin" or session['username'] == "dev" :
-            return render_template("splash.html") # Redirigir al tablero
+            return render_template("splash.html",v=v) # Redirigir al tablero
             
         else:   
-            return render_template("splash.html") # Redirigir al tablero
+            return render_template("splash.html",v=v) # Redirigir al tablero
           
     else:
         # Si no se encuentra el usuario o la contraseña es incorrecta
