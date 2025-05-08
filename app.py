@@ -40,6 +40,7 @@ from sqlalchemy import text
 from models import models  # <- aquí viene db
 from models.models import db  # importa directamente la instancia db
 from feature.Reporte_sulfoquimica import ReporteSulfoquimica  # Importar la clase
+import json
 db = SQLAlchemy()
 
 # Definimos el endpoint principal
@@ -748,7 +749,6 @@ def vista_tareas():
                                         usuarios=usuarios,
                                         total_horas_ejecucion=total_horas_ejecucion)
 
-
 # usuarios vista 
 @app.route('/usuarios_admin', methods=['GET'])
 @login_required
@@ -1178,6 +1178,8 @@ def crear_tarea():
         codigo_tarea=data['codigo_tarea'],
         titulo=data['titulo'],
         descripcion=data['descripcion'],
+        detalles_editor=data['detalles_editor'],
+        
         fecha_inicio=datetime.strptime(data['fecha_inicio'], '%Y-%m-%d'),
         responsable=data['responsable'],
         horas_estimadas=data['horas_estimadas'],
@@ -1191,7 +1193,6 @@ def crear_tarea():
     models.db.session.add(nueva_tarea)
     models.db.session.commit()
     return jsonify(nueva_tarea.serialize()), 201
-
 
 @app.route('/tareas/<int:id>', methods=['PUT'])
 def actualizar_tarea(id):
@@ -1207,6 +1208,7 @@ def actualizar_tarea(id):
     tarea.codigo_tarea = data.get('codigo_tarea', tarea.codigo_tarea)
     tarea.titulo = data.get('titulo', tarea.titulo)
     tarea.descripcion = data.get('descripcion', tarea.descripcion)
+    tarea.detalles_editor = data.get('detalles_editor')  
     tarea.fecha_inicio = datetime.strptime(data['fecha_inicio'], '%Y-%m-%d') if 'fecha_inicio' in data else tarea.fecha_inicio
     tarea.fecha_fin = datetime.strptime(data['fecha_fin'], '%Y-%m-%d') if 'fecha_fin' in data else tarea.fecha_fin
     tarea.responsable = data.get('responsable', tarea.responsable)
@@ -1647,4 +1649,3 @@ if __name__ == '__main__':
                 print("mode de debug esta falso , aplicacion en produccion")
                 serve(app,host="0.0.0.0", port=5000 , threads=2)
                 
-
