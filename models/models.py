@@ -51,6 +51,7 @@ class Tareas(db.Model):
     fecha_facturacion = db.Column(db.Date, nullable=True)  # Fecha de facturación
     estado = db.Column(db.Enum('PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS', name='estado_tarea'), nullable=False, default='PENDIENTE')  # Estado de la tarea
     #porcentaje = db.Column(db.Float, nullable=False, default=0)
+    detalles_editor = db.Column(db.JSON)  # <-- Cambiado a JSON para almacenar el editor de detalles
     tipo_consumo = db.Column(db.Enum('Desarrollo', 'Reuniones', 'Desarrollo por control de cambio', 'Soporte', 'Oportunidad de mejora', name='tipo_consumo'), nullable=False, default='Desarrollo')
     mes = db.Column(db.Enum(
         'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
@@ -76,10 +77,13 @@ class Tareas(db.Model):
             'fecha_facturacion': self.fecha_facturacion.strftime('%Y-%m-%d') if self.fecha_facturacion else None,
             'estado': self.estado,
             'tipo_consumo':self.tipo_consumo,
-            'mes':self.mes
+            'mes':self.mes,
+            'detalles_editor': self.detalles_editor  # <-- Para mostrarlo también en el fetch
             #'porcentaje': self.porcentaje
 
         }
+
+
 
 class SubTareas(db.Model):
     id = db.Column(db.Integer, primary_key=True)

@@ -1,15 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown to HTML</title>
-</head>
-<body>
-    <h1>Convertir Markdown a HTML</h1>
-    <form action="/render_markdown" method="POST">
-        <textarea name="markdown_text" rows="10" cols="50"></textarea><br>
-        <button type="submit">Convertir a HTML</button>
-    </form>
-</body>
-</html>
+<!-- Botón para abrir el modal -->
+<button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalGrande">
+    Abrir modal grande
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="modalGrande" tabindex="-1" aria-labelledby="modalGrandeLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalGrandeLabel">Modal Grande</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          Modal centrado, más ancho, pero no a pantalla completa.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -12,7 +12,33 @@
 
 <!-- Bootstrap Icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
-
+<!-- Estilos responsive editor js-->
+<style>
+    #editorjs {
+      min-height: 300px;
+      padding: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #fff;
+      width: 100%;
+      box-sizing: border-box;
+    }
+  
+    #editor-preview {
+      padding: 1rem;
+      border: 1px solid #eee;
+      margin-top: 1rem;
+      background: #f9f9f9;
+      word-break: break-word;
+    }
+  
+    @media (max-width: 768px) {
+      #editorjs, #editor-preview {
+        padding: 0.75rem;
+        font-size: 16px;
+      }
+    }
+  </style>
 
 <div class="container-fluid bg-light py-5">
     <div class="card p-4 shadow">
@@ -271,7 +297,7 @@
                                 <th class="d-none d-sm-table-cell text-truncate">EMPRESA</th>
                                 <th class="d-none d-sm-table-cell text-truncate">PROYECTO</th>         
                                 <th class="d-none d-sm-table-cell text-truncate">TÍTULO</th>
-                                <th class="d-none d-sm-table-cell text-truncate">DESCRIPCIÓN</th>
+                                <!--<th class="d-none d-sm-table-cell text-truncate">DESCRIPCIÓN</th>-->
                                 <th class="d-none d-sm-table-cell text-truncate">FECHA INICIO</th>
                                 <th class="d-none d-sm-table-cell text-truncate">FECHA FIN</th>
                                 <th class="d-none d-sm-table-cell text-truncate">HORAS DEDICADAS</th>
@@ -284,19 +310,44 @@
                         <tbody>
                             {% for tarea in tareas %}
                             <tr>
+                                <td class="d-none d-sm-table-cell text-center align-middle" style="position: relative;" 
+                                data-bs-toggle="modal" data-bs-target="#tareasform"
+                                onmouseover="showDeleteIcon({{ tarea.id }})"
+                                onmouseout="hideDeleteIcon({{ tarea.id }})">
+                            
+                                <!-- Ícono de acción -->
+                                <button type="button" class="btn btn-outline-primary btn-sm rounded-circle" style="width: 30px; height: 30px;">
+                                    <i class="bi bi-plus-lg"></i>
+                                </button>
+                            
                                 {% if session['username'] == "admin" %}
-                                <td class="d-none d-sm-table-cell text-truncate position-relative" data-bs-toggle="modal" data-bs-target="#tareasform" onmouseover="showDeleteIcon({{ tarea.id }})" onmouseout="hideDeleteIcon({{ tarea.id }})">
-                                    <i class="bi bi-plus-lg me-1"></i>
-                                    <span class="delete-icon material-icons-outlined position-absolute text-danger" id="delete-icon-{{ tarea.id }}" style="display: none; right: 5px; cursor: pointer;" onclick="event.stopPropagation(); eliminarTarea({{ tarea.id }})">delete</span>
-                                </td>
-                                {% else %}
-
-                                <td class="d-none d-sm-table-cell text-truncate position-relative" data-bs-toggle="modal" data-bs-target="#tareasform" onmouseover="editarTarea({{ tarea.id }})" onmouseout="hideDeleteIcon({{ tarea.id }})">
+                                <!-- Ícono de eliminar (solo para admin) -->
+                                <span class="position-absolute top-0 end-0 translate-middle badge rounded-pill bg-danger"
+                                id="delete-icon-{{ tarea.id }}"
+                                style="display: none; cursor: pointer;"
+                                onclick="handleDeleteClick(event, {{ tarea.id }})">
+                              <i class="bi bi-trash"></i>
+                                </span>
+                                    <script>
+                                    function showDeleteIcon(tareaId) {
+                                        document.getElementById('delete-icon-' + tareaId).style.display = 'block';
+                                    }
                                     
-                                    <i class="bi bi-plus-lg me-1"></i>
+                                    function hideDeleteIcon(tareaId) {
+                                        document.getElementById('delete-icon-' + tareaId).style.display = 'none';
+                                    }
+                                    </script>
 
-                                    </td>
+
+                                <script>
+                                    function handleDeleteClick(event, tareaId) {
+                                        event.preventDefault();
+                                        event.stopPropagation();
+                                        eliminarTarea(tareaId); // Tu lógica de eliminación
+                                    }
+                                    </script>
                                 {% endif %}
+                            </td>
 
                                 {% set estado_class = '' %}
                                 {% if tarea.estado == 'PENDIENTE' %}
@@ -315,7 +366,7 @@
                                 <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.empresa }}</td>
                                 <td class="d-none d-sm-table-cell  {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.codigo_proyecto }}</td>                          
                                 <td class="d-none d-sm-table-cell  {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.titulo }}</td>
-                                <td class="d-none d-sm-table-cell  text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>
+                               <!-- <td class="d-none d-sm-table-cell  text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.descripcion }}</td>-->
                                 <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_inicio }}</td>
                                 <td class="d-none d-sm-table-cell text-truncate {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.fecha_fin }}</td>
                                 <td class="d-none d-sm-table-cell {{ estado_class }}" data-bs-toggle="modal" data-bs-target="#tareasform" onclick="editarTarea({{ tarea.id }})">{{ tarea.horas_dedicadas }}</td>
@@ -336,7 +387,7 @@
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>EMPRESA:</strong> {{ tarea.empresa }}</p>
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>PROYECTO:</strong> {{ tarea.codigo_proyecto }}</p>
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>TIPO DE CONSUMO:</strong> {{ tarea.tipo_consumo }}</p>
-                                    <p onclick="editarTarea({{ tarea.id }})"><strong>DESCRIPCIÓN:</strong> {{ tarea.descripcion }}</p>
+                                   <!-- <p onclick="editarTarea({{ tarea.id }})"><strong>DESCRIPCIÓN:</strong> {{ tarea.descripcion }}</p>-->
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>FECHA INICIO Y FIN:</strong> {{ tarea.fecha_inicio }} - {{ tarea.fecha_fin }}</p>
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>HORAS DEDICADAS:</strong> {{ tarea.horas_dedicadas }}</p>
                                     <p onclick="editarTarea({{ tarea.id }})"><strong>HORAS ESTIMADAS:</strong> {{ tarea.horas_estimadas }}</p>
@@ -373,7 +424,7 @@
                             <td class="d-none d-sm-table-cell text-truncate"></td>
                             <td class="d-none d-sm-table-cell text-truncate"></td>
                             <td class="d-none d-sm-table-cell text-truncate"></td>
-                            <td class="d-none d-sm-table-cell text-truncate"></td>
+                            <!--<td class="d-none d-sm-table-cell text-truncate"></td>-->
                             <td class="d-table-cell d-sm-none text-truncate">Total de horas : {{ total_horas_ejecucion }}</td>
                            
                             
@@ -382,11 +433,37 @@
                 </div>
             </div>
 
-          
+         
+            <style>
+                /* Ancho completo en pantallas anchas */
+@media (min-width: 992px) {
+  .custom-modal {
+    max-width: 90vw;
+    width: 100%;
+  }
+}
+
+/* Alto completo en pantallas altas */
+@media (min-height: 700px) {
+  .custom-modal {
+    height: 100vh;
+    margin: 0;
+  }
+
+  .custom-modal .modal-content {
+    height: 100%;
+    border-radius: 0;
+  }
+}
+
+
+
+            </style>
 
             <!-- Modal para Crear/Editar Tareas -->
-<div class="modal fade modal-fullscreen-xxl-down" id="tareasform" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="tareasform" tabindex="-1"tabindex="-1" aria-labelledby="modalFullLabel" aria-hidden="true">
+
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Registrar tarea</h5>
@@ -429,6 +506,23 @@
                         <label for="descripcion">Descripción</label>
                         <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
                     </div>
+
+                    <!-- Editor.js debajo de descripción -->
+                    <div class="form-group mb-3">
+                        <label for="detalles">Detalles adicionales (Editor Notion-style)</label>
+                      
+                        <!-- Editor container -->
+                        <div id="editorjs"></div>
+                        <input type="hidden" name="detalles_editor" id="editorData">
+
+                       
+
+                        <!-- Área de vista previa -->
+                        <div id="editor-preview"></div>
+
+                       
+                    </div>
+
                     <div class="form-group">
                         <label for="fecha_inicio">Fecha Inicio</label>
                         <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
@@ -561,6 +655,95 @@
 
 
 
+<!-- Editor.js Scripts -->
+
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/checklist@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/code@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/@editorjs/link@latest"></script>
+
+<script>
+  const editor = new EditorJS({
+    holder: 'editorjs',
+    placeholder: 'Agrega detalles de la tarea aquí...',
+    tools: {
+      header: Header,
+      checklist: Checklist,
+      code: CodeTool,
+      linkTool: {
+        class: LinkTool,
+        config: {
+          endpoint: '/fake-endpoint', // solo para cumplir requerimiento interno
+          fetchData: async function (url) {
+            return {
+              success: 1,
+              meta: {
+                title: url,
+                description: "Haz clic para visitar el enlace",
+                image: { url: "https://img.icons8.com/color/48/link.png" }
+              }
+            };
+          }
+        }
+      }
+    }
+  });
+
+  // Guardar y renderizar al enviar el formulario
+  document.getElementById("formTarea").addEventListener("submit", function (e) {
+    e.preventDefault();
+    editor.save().then((data) => {
+      document.getElementById("editorData").value = JSON.stringify(data);
+      document.getElementById("formTarea").submit(); // <- envía el formulario real
+      renderEditorContent(data);
+    }).catch((error) => {
+      alert("Error guardando los detalles: " + error);
+    });
+  });
+
+  function renderEditorContent(data) {
+    const preview = document.getElementById('editor-preview');
+    preview.innerHTML = '';
+    data.blocks.forEach(block => {
+      if (block.type === 'paragraph') {
+        const p = document.createElement('p');
+        p.innerHTML = block.data.text;
+        preview.appendChild(p);
+      }
+      if (block.type === 'header') {
+        const h = document.createElement(`h${block.data.level}`);
+        h.innerHTML = block.data.text;
+        preview.appendChild(h);
+      }
+      if (block.type === 'code') {
+        const pre = document.createElement('pre');
+        pre.innerText = block.data.code;
+        preview.appendChild(pre);
+      }
+      if (block.type === 'checklist') {
+        const ul = document.createElement('ul');
+        block.data.items.forEach(item => {
+          const li = document.createElement('li');
+          li.innerHTML = `${item.checked ? '✅' : '❌'} ${item.text}`;
+          ul.appendChild(li);
+        });
+        preview.appendChild(ul);
+      }
+      if (block.type === 'linkTool') {
+        const a = document.createElement('a');
+        a.href = block.data.link;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.innerText = block.data.meta.title || block.data.link;
+        a.style.display = 'block';
+        a.style.color = 'blue';
+        preview.appendChild(a);
+      }
+    });
+  }
+</script>
+
 <script>
     function showDeleteIcon(id) {
         document.getElementById('delete-icon-' + id).style.display = 'inline';
@@ -570,9 +753,20 @@
         document.getElementById('delete-icon-' + id).style.display = 'none';
     }
 
+    function limpiarEditor() {
+            if (editor && editor.clear) {
+                editor.clear();
+                document.getElementById('editorData').value = ''; // También limpia el input hidden
+                document.getElementById('editor-preview').innerHTML = ''; // Limpia la vista previa
+            }
+            }
+
     function editarTarea(id) {
-        // Obtener los detalles de la tarea por ID y rellenar el formulario para editar
-        fetch(`/tareas/${id}`)
+        limpiarFormulario(); // Limpia el formulario antes de cargar los datos
+        limpiarEditor(); // Limpia el editor antes de cargar los datos
+
+       
+    fetch(`/tareas/${id}`)
         .then(response => response.json())
         .then(data => {
             document.getElementById('tareaId').value = data.id;
@@ -590,53 +784,82 @@
             document.getElementById('Cresponsable').value = data.responsable;
             document.getElementById('consumo').value = data.tipo_consumo;
             document.getElementById('mes').value = data.mes;
-        });
-    }
 
-    document.getElementById('formTarea').addEventListener('submit', function(event) {
-    event.preventDefault();
+            // Cargar contenido del Editor.js
+            if (editor && data.detalles_editor) {
+                editor.isReady
+                    .then(() => {
+                        // Si ya es un objeto, úsalo tal cual. Si es string, intenta parsear.
+                        const content = typeof data.detalles_editor === "string"
+                            ? JSON.parse(data.detalles_editor)
+                            : data.detalles_editor;
 
-    const id = document.getElementById('tareaId').value;
-    const method = id ? 'PUT' : 'POST';  // Usar PUT si es edición, POST si es creación
-    const url = id ? `/tareas/${id}` : '/outtareas';
-
-    fetch(url, {
-        method: method,
-        headers: {
-            'Content-Type': 'application/json'  // Asegúrate de enviar JSON
-        },
-        body: JSON.stringify({
-            empresa: document.getElementById('Cempresa').value,
-                    codigo_proyecto: document.getElementById('codigo_proyecto').value,
-                    codigo_tarea: document.getElementById('codigo_tarea').value,
-                    titulo: document.getElementById('titulo').value,
-                    descripcion: document.getElementById('descripcion').value,
-                    fecha_inicio: document.getElementById('fecha_inicio').value,
-                    fecha_fin: document.getElementById('fecha_fin').value,
-                    horas_estimadas: document.getElementById('horas_estimadas').value,
-                    horas_dedicadas: document.getElementById('horas_dedicadas').value,
-                    estado: document.getElementById('Cestado').value,
-                    responsable: document.getElementById('Cresponsable').value,
-                    tipo_consumo: document.getElementById('consumo').value,
-                    mes: document.getElementById('mes').value
+                        return editor.render(content);
+                    })
+                    .catch((error) => {
+                        console.error('Error al renderizar datos del editor:', error);
+                    });
+            }
         })
-    })
-    .then(response => {
-        if (response.ok) {
-            Swal.fire(
-                '¡Éxito!',
-                'La tarea ha sido guardada correctamente.',
-                'success'
-            ).then(() => {
-                location.reload();
-            });
-        } else {
-            Swal.fire(
-                'Error',
-                'Ocurrió un problema al guardar la tarea.',
-                'error'
-            );
-        }
+        .catch(error => {
+            console.error('Error al obtener los datos de la tarea:', error);
+        });
+}
+document.getElementById("formTarea").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    editor.save().then((editorContent) => {
+        const id = document.getElementById('tareaId').value;
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `/tareas/${id}` : '/outtareas';
+
+        const payload = {
+            empresa: document.getElementById('Cempresa').value,
+            codigo_proyecto: document.getElementById('codigo_proyecto').value,
+            codigo_tarea: document.getElementById('codigo_tarea').value,
+            titulo: document.getElementById('titulo').value,
+            descripcion: document.getElementById('descripcion').value,
+            fecha_inicio: document.getElementById('fecha_inicio').value,
+            fecha_fin: document.getElementById('fecha_fin').value,
+            horas_estimadas: parseFloat(document.getElementById('horas_estimadas').value),
+            horas_dedicadas: parseFloat(document.getElementById('horas_dedicadas').value),
+            estado: document.getElementById('Cestado').value,
+            responsable: document.getElementById('Cresponsable').value,
+            tipo_consumo: document.getElementById('consumo').value,
+            mes: document.getElementById('mes').value,
+            detalles_editor: JSON.stringify(editorContent)  // Agrega los datos del editor
+        };
+
+        fetch(url, {
+            method: method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (response.ok) {
+                Swal.fire(
+                    '¡Éxito!',
+                    'La tarea ha sido guardada correctamente.',
+                    'success'
+                ).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire(
+                    'Error',
+                    'Ocurrió un problema al guardar la tarea.',
+                    'error'
+                );
+            }
+        });
+    }).catch((error) => {
+        Swal.fire(
+            'Error',
+            'No se pudo guardar el contenido del editor: ' + error,
+            'error'
+        );
     });
 });
 
