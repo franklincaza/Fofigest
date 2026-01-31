@@ -118,6 +118,13 @@ Una herramienta para definir y ejecutar aplicaciones Docker multi-contenedor usa
 
 ## 🚀 Ejecutar Fofigest con Docker
 
+### Requisitos previos
+
+- Tener Docker instalado (ver [sección de instalación](#instalación-de-docker))
+- Tener el código fuente de Fofigest descargado
+
+> **Nota técnica**: El contenedor Docker utiliza Python 3.10, que es compatible con todas las dependencias del proyecto. No necesitas instalar Python en tu máquina local.
+
 ### Método 1: Usando Docker Compose (Recomendado)
 
 Este es el método más sencillo y recomendado para principiantes.
