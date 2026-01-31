@@ -159,6 +159,19 @@ Este es el método más sencillo y recomendado para principiantes.
    docker-compose down
    ```
 
+### Modo desarrollo con Docker Compose
+
+Si estás desarrollando y quieres que tus cambios se reflejen automáticamente sin reconstruir la imagen, crea un archivo `docker-compose.override.yml`:
+
+```yaml
+services:
+  web:
+    volumes:
+      - .:/app
+```
+
+Este archivo se aplicará automáticamente sobre `docker-compose.yml` y montará tu código local en el contenedor.
+
 ### Método 2: Usando Docker directamente
 
 Este método te da más control pero requiere ejecutar más comandos.

@@ -25,7 +25,6 @@ EXPOSE 5000
 
 # Variable de entorno para Flask
 ENV FLASK_APP=app.py
-ENV FLASK_ENV=production
 
 # Comando para ejecutar la aplicación
 CMD ["python", "app.py"]
