@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Logs y bases de datos locales
+*.log
+*.db
+*.sqlite
+flask_monitoringdashboard.db
+log.log
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+*~
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de Excel y tareas
+*.xlsx
+*.xls
+
+# Archivos de instalación
+*.msi
+
+# Directorios de instancia
+instance/

@@ -20,21 +20,62 @@ El proyecto sigue el patrón MVC y tiene la siguiente estructura:
 
 ## Instalación y Configuración
 
-### Requisitos
+### 🐳 Opción 1: Ejecutar con Docker (Recomendado)
+
+La forma más fácil y rápida de ejecutar este proyecto es usando Docker. No necesitas instalar Python ni ninguna dependencia manualmente.
+
+📚 **[Ver guía completa de Docker](DOCKER.MD)** - Tutorial completo en español que te enseña desde cero cómo usar Docker
+
+**Inicio rápido**:
+```bash
+# Clonar el repositorio
+git clone https://github.com/franklincaza/Fofigest.git
+cd Fofigest
+
+# Ejecutar con Docker Compose
+docker-compose up --build
+
+# Acceder a la aplicación en http://localhost:5000
+```
+
+### 🐍 Opción 2: Instalación tradicional con Python
+
+#### Requisitos
 
 - **Python 3.8+**
 - **Flask**
 - **Jinja2** (ya viene integrado con Flask)
 - Cualquier otro paquete necesario está listado en `requirements.txt`
 
-### Pasos para instalar
+#### Pasos para instalar
 
 1. Clonar el repositorio:
 
    ```bash
    git clone https://github.com/franklincaza/Fofigest.git
-   cd fofimatic_project
+   cd Fofigest
    ``` 
+
+2. Crear un entorno virtual:
+
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # En Windows: venv\Scripts\activate
+   ```
+
+3. Instalar las dependencias:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Ejecutar la aplicación:
+
+   ```bash
+   python app.py
+   ```
+
+5. Acceder a la aplicación en `http://localhost:5000`
 
 
 
