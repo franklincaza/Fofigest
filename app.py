@@ -416,7 +416,11 @@ def loginInp():
             session['username'] = usuario.permisos
             session['empresa'] = usuario.empresa
             session['correo'] = usuario.correo
-            return render_template("splash.html", v=v)
+            if usuario.permisos == 'usuario':
+                redirect_url = f'/Reporte-Horas{usuario.empresa}'
+            else:
+                redirect_url = '/tablero'
+            return render_template("splash.html", v=v, redirect_url=redirect_url)
 
     flash("Email o contraseña incorrectos", "danger")
     logging.warning(f"Intento de login fallido para: {email}")
@@ -683,7 +687,11 @@ def verify_otp():
             session.pop('otp_correo', None)
             logging.info(f"Login OTP exitoso: {correo}")
             v = config.config["version"]
-            return render_template("splash.html", v=v)
+            if usuario.permisos == 'usuario':
+                redirect_url = f'/Reporte-Horas{usuario.empresa}'
+            else:
+                redirect_url = '/tablero'
+            return render_template("splash.html", v=v, redirect_url=redirect_url)
         else:
             flash('Código incorrecto o expirado', 'danger')
 
