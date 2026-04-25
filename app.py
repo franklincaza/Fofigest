@@ -4,7 +4,8 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from models import models
 import config
-from datetime import datetime
+from datetime import datetime, timedelta
+import random
 import logging
 from sqlalchemy.exc import IntegrityError
 from flask_mail import Mail, Message
@@ -20,7 +21,7 @@ import pandas as pd
 import plotly.express as px
 import plotly.io as pio
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 from flask_ckeditor import CKEditor
 from sqlalchemy import or_, and_
 from io import BytesIO
@@ -104,7 +105,16 @@ CKEDITOR_PKG_TYPE ="basic"
 # Es recomendable envolver este código dentro de un app context
 # para evitar problemas de conexión con la base de datos.
 with app.app_context():
-  models.db.create_all()  # Crear todas las tablas definidas en los modelos de SQLAlchemy
+    models.db.create_all()  # Crear todas las tablas definidas en los modelos de SQLAlchemy
+    # Migración manual: agrega columnas OTP si no existen (SQLite no las crea automáticamente)
+    from sqlalchemy import inspect as sa_inspect
+    inspector = sa_inspect(models.db.engine)
+    existing_cols = [col['name'] for col in inspector.get_columns('usuarios')]
+    if 'otp_code' not in existing_cols:
+        models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_code VARCHAR(6)'))
+    if 'otp_expiry' not in existing_cols:
+        models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_expiry DATETIME'))
+    models.db.session.commit()
 
 # Cargar usuario
 @login_manager.user_loader
@@ -384,36 +394,33 @@ def login():
 
 @app.route("/", methods=['POST'])
 def loginInp():
-    v=config.config["version"]
+    v = config.config["version"]
     email = request.form.get('exampleInputEmail')
     password = request.form.get('exampleInputPassword')
 
-    # Consultar si el usuario existe
     usuario = models.Usuarios.query.filter_by(correo=email).first()
-    passx=models.Usuarios.query.filter_by(contraseña=password).first()
 
-    if usuario and passx:
+    if usuario:
+        stored = usuario.contraseña or ''
+        # Soporta contraseñas hasheadas (werkzeug) y texto plano (usuarios legacy)
+        try:
+            password_ok = check_password_hash(stored, password)
+        except Exception:
+            password_ok = False
+        if not password_ok:
+            password_ok = (stored == password)
 
-        # Si el usuario existe y la contraseña es correcta, iniciar sesión
-        login_user(usuario)
-        logging.info(f"Inicio de sesión exitoso {email}")
-        session['username'] = usuario.permisos
-        session['empresa'] = usuario.empresa
-        session['correo'] = usuario.correo 
-        session['correo'] = usuario.correo 
-        
+        if password_ok:
+            login_user(usuario)
+            logging.info(f"Inicio de sesión exitoso: {email}")
+            session['username'] = usuario.permisos
+            session['empresa'] = usuario.empresa
+            session['correo'] = usuario.correo
+            return render_template("splash.html", v=v)
 
-        if  session['username'] == "admin" or session['username'] == "dev" :
-            return render_template("splash.html",v=v) # Redirigir al tablero
-            
-        else:   
-            return render_template("splash.html",v=v) # Redirigir al tablero
-          
-    else:
-        # Si no se encuentra el usuario o la contraseña es incorrecta
-        flash("Email o contraseña incorrectos", "danger")
-        logging.warning("Email o contraseña incorrectos")
-        return render_template("login.html")
+    flash("Email o contraseña incorrectos", "danger")
+    logging.warning(f"Intento de login fallido para: {email}")
+    return render_template("login.html")
 
 # Ruta del tablero
 @app.route('/tablero', methods=['GET', 'POST'])
@@ -525,7 +532,7 @@ def nuevo_usuario_post():
                 nombres=request.form.get('Nombres'),
                 apellidos=request.form.get('Apellidos'),
                 correo=request.form.get('correo'),
-                contraseña=request.form.get('Contraseña'),
+                contraseña=generate_password_hash(request.form.get('Contraseña')),
                 empresa=request.form.get('Empresa'),
                 permisos="nuevo"
             )
@@ -573,22 +580,14 @@ def olvidaste_post():
                 msg = Message('Restablecimiento de Contraseña - FOFIGEST', 
                             recipients=[f'{correo}'])  # Lista de destinatarios
                 msg.body = 'Este es el cuerpo del correo en texto plano.'
-                msg.html = """<p>Hola </p>
-
-                               <p> Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en FOFIGEST. Si tú no solicitaste este cambio, puedes ignorar este correo y tu contraseña permanecerá sin cambios.</p>
-
-                               <p> Para restablecer tu contraseña, haz clic en el siguiente enlace o cópialo y pégalo en tu navegador:</p>
-
-                               <p> {reset_url}</p>
-
-                               <p> Este enlace será válido durante 1 hora y solo puede ser utilizado una vez. Si no realizas el restablecimiento en ese tiempo, deberás solicitar otro enlace.</p>
-
-                               <p> Si tienes alguna duda o necesitas asistencia adicional, no dudes en contactarnos respondiendo a este correo.</p>
-
-                               <p> Gracias por utilizar FOFIGEST.</p>
-
-                               <p> Saludos,
-                                El equipo de FOFIGESTL</p>"""
+                msg.html = f"""<p>Hola {usuario.nombres},</p>
+                               <p>Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en FOFIGEST.
+                               Si tú no solicitaste este cambio, puedes ignorar este correo.</p>
+                               <p>Para restablecer tu contraseña haz clic en el siguiente botón:</p>
+                               <p><a href="{reset_url}" style="background:#5a67d8;color:white;padding:12px 24px;border-radius:6px;text-decoration:none;font-weight:bold;">Restablecer contraseña</a></p>
+                               <p>O copia este enlace en tu navegador:<br><code>{reset_url}</code></p>
+                               <p>Este enlace es válido por <strong>1 hora</strong> y solo puede usarse una vez.</p>
+                               <p>Gracias por utilizar FOFIGEST.<br>El equipo de FOFIGEST</p>"""
 
                 # Enviar el correo
                 mail.send(msg)
@@ -599,9 +598,9 @@ def olvidaste_post():
                 flash(f"Error :{e}", "danger")
                 return str(e)
 
-        # Mostrar mensaje de éxito
-        
-        return 
+        flash("No se encontró una cuenta con ese correo o empresa", "danger")
+        empresas = models.Empresas.query.all()
+        return render_template("Olvide_Contraseña.html", empresas=empresas)
 
 @app.route('/reset/<token>', methods=['GET', 'POST'])
 def reset_with_token(token):
@@ -609,16 +608,87 @@ def reset_with_token(token):
         # Verificar el token (con un tiempo de expiración, en este caso 3600 segundos o 1 hora)
         email = serializer.loads(token, salt='password-reset-salt', max_age=3600)
     except Exception as e:
-        flash('El enlace de restablecimiento es inválido o ha expirado', 'error')
-        return redirect(url_for('reset_password'))
+        flash('El enlace de restablecimiento es inválido o ha expirado', 'danger')
+        return redirect(url_for('Olvidaste'))
 
     if request.method == 'POST':
         new_password = request.form.get('password')
-        # Aquí deberías actualizar la contraseña en la base de datos
+        confirm_password = request.form.get('confirm_password')
+        if new_password != confirm_password:
+            flash('Las contraseñas no coinciden', 'danger')
+            return render_template('reset_with_token.html', token=token)
+        usuario = models.Usuarios.query.filter_by(correo=email).first()
+        if usuario:
+            usuario.contraseña = generate_password_hash(new_password)
+            models.db.session.commit()
+            logging.info(f"Contraseña restablecida para: {email}")
         flash('Tu contraseña ha sido restablecida con éxito', 'success')
         return redirect(url_for('login'))
 
     return render_template('reset_with_token.html', token=token)
+
+
+# OTP Login — paso 1: solicitar correo y enviar código
+@app.route('/login-otp', methods=['GET', 'POST'])
+def login_otp():
+    if request.method == 'POST':
+        correo = request.form.get('correo')
+        usuario = models.Usuarios.query.filter_by(correo=correo).first()
+        if usuario:
+            otp = str(random.randint(100000, 999999))
+            usuario.otp_code = otp
+            usuario.otp_expiry = datetime.utcnow() + timedelta(minutes=10)
+            models.db.session.commit()
+            try:
+                msg = Message('Código de acceso FOFIGEST', recipients=[correo])
+                msg.html = f"""<p>Hola {usuario.nombres},</p>
+                               <p>Tu código de acceso de un solo uso para FOFIGEST es:</p>
+                               <h2 style="letter-spacing:10px;color:#5a67d8;font-size:2rem;">{otp}</h2>
+                               <p>Este código es válido por <strong>10 minutos</strong>.</p>
+                               <p>Si no solicitaste este código, ignora este mensaje.</p>
+                               <p>El equipo de FOFIGEST</p>"""
+                mail.send(msg)
+                flash('Código enviado. Revisa tu correo electrónico.', 'success')
+            except Exception as e:
+                logging.error(f"Error enviando OTP a {correo}: {e}")
+                flash('No se pudo enviar el código. Intenta de nuevo.', 'danger')
+                return render_template('login_otp.html')
+            session['otp_correo'] = correo
+            return redirect(url_for('verify_otp'))
+        else:
+            flash('No existe una cuenta registrada con ese correo', 'danger')
+    return render_template('login_otp.html')
+
+
+# OTP Login — paso 2: verificar código de 6 dígitos
+@app.route('/verify-otp', methods=['GET', 'POST'])
+def verify_otp():
+    correo = session.get('otp_correo')
+    if not correo:
+        return redirect(url_for('login_otp'))
+
+    if request.method == 'POST':
+        otp_input = request.form.get('otp_code', '').strip()
+        usuario = models.Usuarios.query.filter_by(correo=correo).first()
+        if (usuario and usuario.otp_code and usuario.otp_expiry
+                and usuario.otp_code == otp_input
+                and usuario.otp_expiry > datetime.utcnow()):
+            usuario.otp_code = None
+            usuario.otp_expiry = None
+            models.db.session.commit()
+            login_user(usuario)
+            session['username'] = usuario.permisos
+            session['empresa'] = usuario.empresa
+            session['correo'] = usuario.correo
+            session.pop('otp_correo', None)
+            logging.info(f"Login OTP exitoso: {correo}")
+            v = config.config["version"]
+            return render_template("splash.html", v=v)
+        else:
+            flash('Código incorrecto o expirado', 'danger')
+
+    return render_template('verify_otp.html', correo=correo)
+
 
 # empresa
 @app.route('/empresa', methods=['GET', 'POST'])

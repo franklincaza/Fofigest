@@ -5,207 +5,176 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Página de inicio de sesión para una aplicación web">
-    <meta name="author" content="Tu Nombre">
-<!--pwa-->
-  <meta name="theme-color" content="#317EFB"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="{{url_for('static', filename='img/ilogo_F-Photoroom.png')}}" type="image/png">
-  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="manifest" href="{{ url_for('static', filename='js/manifest.json') }}">
-  <script src="{{ url_for('static', filename='js/sw.js') }}"></script>
+    <meta name="description" content="Página de inicio de sesión - FOFIGEST">
+    <meta name="theme-color" content="#317EFB"/>
+    <link rel="icon" href="{{ url_for('static', filename='img/ilogo_F-Photoroom.png') }}" type="image/png">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.png') }}" type="image/png">
+    <link rel="manifest" href="{{ url_for('static', filename='js/manifest.json') }}">
 
-    <title>Fofigest</title>
+    <title>Fofigest — Iniciar sesión</title>
 
-    <!-- Fuentes e iconos personalizados para esta plantilla -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,900" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url_for('static', filename='css/sb-admin-2.min.css') }}" rel="stylesheet">
 
-      <!-- Color de la barra del navegador en móviles Android (Chrome) -->
-        <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
-        <!-- Safari/iOS: color de la barra superior cuando está anclado como app web -->
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-        <!-- Windows (Internet Explorer/Edge) -->
-        <meta name="msapplication-TileColor" content="#000000">
-            <!-- Estilos personalizados para esta plantilla -->
-            <style>
+    <style>
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(to right, rgba(93, 173, 226, 0.8), rgba(52, 152, 219, 0.8)), 
-            url('https://cdn.pixabay.com/photo/2017/08/30/11/36/background-2698595_1280.jpg');
+            background: linear-gradient(to right, rgba(93, 173, 226, 0.8), rgba(52, 152, 219, 0.8)),
+                url('https://cdn.pixabay.com/photo/2017/08/30/11/36/background-2698595_1280.jpg');
             background-size: cover;
             background-position: center;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
 
-        .container {
-            max-width: 400px;
-            width: 100%;
-        }
+        .container { max-width: 420px; width: 100%; padding: 1rem; }
 
         .card {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            background-color: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.95);
             padding: 2rem;
-        }
-
-        .card img {
-            width: 100%;
-            margin-bottom: 1.5rem;
-            background-color: white;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            border-color: #5a67d8;
-            outline: none;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 0.75rem;
-            font-size: 1rem;
-            border-radius: 5px;
             border: none;
-            cursor: pointer;
         }
 
-        .btn-primary {
+        .card img { width: 100%; margin-bottom: 1.25rem; background-color: white; }
+
+        .btn-primary-custom {
             background-color: #5a67d8;
             color: white;
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
         }
+        .btn-primary-custom:hover { background-color: #4c5bc4; }
 
-        .btn-google {
-            background-color: #db4437;
-            color: white;
-            margin-top: 1rem;
-        }
-
-        .btn-facebook {
-            background-color: #3b5998;
-            color: white;
-            margin-top: 0.5rem;
-        }
-
-        .text-center {
-            text-align: center;
-            margin-top: 1rem;
-        }
-
-        .text-center a {
+        .btn-otp {
+            width: 100%;
+            padding: 0.65rem;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            border: 2px solid #5a67d8;
             color: #5a67d8;
-            text-decoration: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 0.75rem;
+            transition: all 0.2s;
         }
+        .btn-otp:hover { background-color: #5a67d8; color: white; }
 
-        .text-center a:hover {
-            text-decoration: underline;
+        .divider { text-align: center; margin: 1rem 0; color: #aaa; font-size: 0.85rem; }
+
+        .links { text-align: center; margin-top: 1rem; }
+        .links a { color: #5a67d8; text-decoration: none; font-size: 0.9rem; }
+        .links a:hover { text-decoration: underline; }
+
+        /* Input group toggle ojo */
+        .input-group .btn-outline-secondary {
+            border-color: #ddd;
+            color: #666;
         }
+        .input-group .form-control { border-right: none; }
+        .input-group .btn-outline-secondary { border-left: none; background: white; }
     </style>
 </head>
 
 <body>
- 
     <div class="container">
         <div class="card">
-            <img class="img-thumbnail" src="static/img/Logo.png" alt="Logo">
+            <img class="img-thumbnail" src="static/img/Logo.png" alt="Logo FOFIGEST">
 
-                 <!-- Mostrar mensajes flash -->
-     
-
-            <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">¡Bienvenido!</h1>
-            </div>
-
-
-            <form method="POST" action="{{ url_for('loginInp') }}">
-            
-                
-                <div class="form-group">
-                    <label for="exampleInputEmail">Email</label>
-                    <input type="email" class="form-control" id="exampleInputEmail" name="exampleInputEmail" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="exampleInputPassword">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword" name="exampleInputPassword" required>
-                </div>
-            
-                <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
-            </form>
-
-            <hr>
-
-            <div class="text-center">
-                <a href="olvidaste">¿Olvidaste tu contraseña?</a>
-            </div>
-            <div class="text-center">
-                <a href="Nuevo_Usuario">¡Crear una cuenta!</a>
-            </div>
             {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                <div class="mt-3">
+                <div class="mb-3">
                     {% for category, message in messages %}
-                        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <div class="alert alert-{{ category }} alert-dismissible fade show py-2" role="alert">
                             {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
                         </div>
                     {% endfor %}
                 </div>
             {% endif %}
-        {% endwith %}
+            {% endwith %}
+
+            <div class="text-center mb-3">
+                <h1 class="h4 text-gray-900">¡Bienvenido!</h1>
+            </div>
+
+            <form method="POST" action="{{ url_for('loginInp') }}">
+                <div class="mb-3">
+                    <label for="exampleInputEmail" class="form-label fw-semibold">Correo electrónico</label>
+                    <input type="email" class="form-control" id="exampleInputEmail"
+                           name="exampleInputEmail" placeholder="usuario@empresa.com" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="exampleInputPassword" class="form-label fw-semibold">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="exampleInputPassword"
+                               name="exampleInputPassword" placeholder="••••••••" required>
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword"
+                                title="Mostrar/ocultar contraseña">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary-custom">
+                    <i class="fas fa-sign-in-alt me-2"></i>       Iniciar Sesión
+                </button>
+            </form>
+
+            <div class="divider">— o —</div>
+
+            <a href="{{ url_for('login_otp') }}" class="btn-otp d-block text-center text-decoration-none">
+                <i class="fas fa-mobile-alt me-2"></i>Ingresar con código único (OTP)
+            </a>
+
+            <hr class="my-3">
+
+            <div class="links">
+                <a href="{{ url_for('Olvidaste') }}">¿Olvidaste tu contraseña?</a>
+                &nbsp;·&nbsp;
+                <a href="{{ url_for('Nuevo_Usuario') }}">Crear una cuenta</a>
+            </div>
         </div>
     </div>
 
-    <!-- Bootstrap y otras bibliotecas -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Toggle mostrar/ocultar contraseña
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const input = document.getElementById('exampleInputPassword');
+            const icon = document.getElementById('toggleIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("{{ url_for('static', filename='js/sw.js') }}")
+                .catch(function (error) { console.log('SW error:', error); });
+        }
+    </script>
 </body>
-<!--pwa-->
-<script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register("/sw.js").then(function(registration) {
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function(err) {
-          console.log('ServiceWorker registration failed: ', err);
-        });
-      });
-    }
-  </script>
-  <script>
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register("{{ url_for('static', filename='js/sw.js') }}")
-        .then(function(registration) {
-            console.log('Service Worker registrado con éxito:', registration.scope);
-        })
-        .catch(function(error) {
-            console.log('Error en el registro del Service Worker:', error);
-        });
-    } else {
-        console.log('Service Worker no es compatible con este navegador.');
-    }
-</script>
-
 </html>
