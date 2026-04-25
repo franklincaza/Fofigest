@@ -113,13 +113,13 @@ with app.app_context():
     if 'otp_code' not in existing_cols:
         models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_code VARCHAR(6)'))
     if 'otp_expiry' not in existing_cols:
-        models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_expiry DATETIME'))
+        models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_expiry TIMESTAMP'))
     models.db.session.commit()
 
 # Cargar usuario
 @login_manager.user_loader
 def load_user(user_id):
-    return models.Usuarios.query.get(int(user_id))
+    return models.db.session.get(models.Usuarios, int(user_id))
     
 
 # Ruta para subir archivos y procesar datos
@@ -270,11 +270,17 @@ def gannt():
 
         # Construir data
         tareas_data = [{
-            "id": str(tarea.codigo_proyecto),
+            "id": str(tarea.codigo_tarea),
+            "id_bd": tarea.id,
             "name": tarea.titulo,
             "start": tarea.fecha_inicio.strftime("%Y-%m-%d"),
             "end": tarea.fecha_fin.strftime("%Y-%m-%d"),
-            "progress": (tarea.horas_dedicadas / tarea.horas_estimadas) * 100 if tarea.horas_estimadas else 0
+            "progress": round((tarea.horas_dedicadas / tarea.horas_estimadas) * 100, 1) if tarea.horas_estimadas else 0,
+            "estado": tarea.estado or "PENDIENTE",
+            "responsable": tarea.responsable or "",
+            "horas_dedicadas": tarea.horas_dedicadas or 0,
+            "horas_estimadas": tarea.horas_estimadas or 0,
+            "codigo_proyecto": tarea.codigo_proyecto or ""
         } for tarea in tareas]
 
         return render_template('gantt.html', tareas_jsons=tareas_data, proyectos_=proyectos_)
@@ -371,11 +377,17 @@ def gannt_project(project):
 
 
         tareas_data = [{
-            "id": str(tarea.codigo_proyecto),
+            "id": str(tarea.codigo_tarea),
+            "id_bd": tarea.id,
             "name": tarea.titulo,
             "start": tarea.fecha_inicio.strftime("%Y-%m-%d"),
             "end": tarea.fecha_fin.strftime("%Y-%m-%d"),
-            "progress": (tarea.horas_dedicadas / tarea.horas_estimadas) * 100 if tarea.horas_estimadas else 0
+            "progress": round((tarea.horas_dedicadas / tarea.horas_estimadas) * 100, 1) if tarea.horas_estimadas else 0,
+            "estado": tarea.estado or "PENDIENTE",
+            "responsable": tarea.responsable or "",
+            "horas_dedicadas": tarea.horas_dedicadas or 0,
+            "horas_estimadas": tarea.horas_estimadas or 0,
+            "codigo_proyecto": tarea.codigo_proyecto or ""
         } for tarea in tareas]
 
         return render_template('gantt.html', tareas_jsons=tareas_data, proyectos_=proyectos_)
@@ -384,6 +396,142 @@ def gannt_project(project):
         logging.error(f"Error en /gannt/<project>: {str(e)}")
         flash("Hubo un error al cargar el gráfico de Gantt.", "danger")
         return render_template('gantt.html', tareas_jsons=[], proyectos_=[])
+
+
+# ─── API Endpoints para Gantt Enterprise ──────────────────────────────────────
+
+@app.route('/api/gantt/tarea/<string:codigo_tarea>', methods=['PATCH'])
+@login_required
+def gantt_update_tarea(codigo_tarea):
+    """Actualiza fechas, titulo, estado, responsable o progreso de una tarea."""
+    try:
+        data = request.get_json(force=True)
+        if not data:
+            return jsonify({"ok": False, "error": "JSON inválido"}), 400
+
+        tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first()
+        if not tarea:
+            return jsonify({"ok": False, "error": "Tarea no encontrada"}), 404
+
+        if 'titulo' in data and data['titulo'].strip():
+            tarea.titulo = data['titulo'].strip()[:100]
+        if 'fecha_inicio' in data:
+            tarea.fecha_inicio = datetime.strptime(data['fecha_inicio'], '%Y-%m-%d').date()
+        if 'fecha_fin' in data:
+            tarea.fecha_fin = datetime.strptime(data['fecha_fin'], '%Y-%m-%d').date()
+        if 'estado' in data and data['estado'] in ('PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS'):
+            tarea.estado = data['estado']
+        if 'responsable' in data:
+            tarea.responsable = data['responsable'].strip()[:100]
+        if 'horas_estimadas' in data:
+            he = float(data['horas_estimadas'])
+            if he >= 0:
+                tarea.horas_estimadas = he
+        if 'progress' in data:
+            prog = max(0.0, min(100.0, float(data['progress'])))
+            tarea.horas_dedicadas = round((prog / 100.0) * (tarea.horas_estimadas or 0), 2)
+
+        models.db.session.commit()
+        return jsonify({"ok": True})
+
+    except (ValueError, KeyError) as e:
+        models.db.session.rollback()
+        return jsonify({"ok": False, "error": "Datos inválidos: " + str(e)}), 422
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f"Error PATCH /api/gantt/tarea/{codigo_tarea}: {str(e)}")
+        return jsonify({"ok": False, "error": "Error interno"}), 500
+
+
+@app.route('/api/gantt/tarea', methods=['POST'])
+@login_required
+def gantt_create_tarea():
+    """Crea una nueva tarea desde el Gantt."""
+    try:
+        data = request.get_json(force=True)
+        if not data:
+            return jsonify({"ok": False, "error": "JSON inválido"}), 400
+
+        required = ('titulo', 'fecha_inicio', 'fecha_fin', 'responsable', 'codigo_proyecto')
+        for field in required:
+            if not data.get(field):
+                return jsonify({"ok": False, "error": f"Campo requerido: {field}"}), 422
+
+        meses_es = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                    'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+        fecha_inicio = datetime.strptime(data['fecha_inicio'], '%Y-%m-%d').date()
+        fecha_fin    = datetime.strptime(data['fecha_fin'],    '%Y-%m-%d').date()
+        mes = meses_es[fecha_inicio.month - 1]
+
+        tipo_consumo_validos = ('Desarrollo','Reuniones','Desarrollo por control de cambio','Soporte','Oportunidad de mejora')
+        tipo_consumo = data.get('tipo_consumo', 'Desarrollo')
+        if tipo_consumo not in tipo_consumo_validos:
+            tipo_consumo = 'Desarrollo'
+
+        codigo_tarea = f"{data['codigo_proyecto'][:10]}-{uuid.uuid4().hex[:8]}"
+
+        nueva = models.Tareas(
+            empresa=data.get('empresa', session.get('empresa', '')),
+            codigo_proyecto=data['codigo_proyecto'],
+            codigo_tarea=codigo_tarea,
+            titulo=data['titulo'].strip()[:100],
+            descripcion=data.get('descripcion', 'Tarea creada desde Gantt'),
+            fecha_inicio=fecha_inicio,
+            fecha_fin=fecha_fin,
+            responsable=data['responsable'].strip()[:100],
+            horas_dedicadas=0.0,
+            horas_estimadas=float(data.get('horas_estimadas', 8)),
+            estado=data.get('estado', 'PENDIENTE'),
+            tipo_consumo=tipo_consumo,
+            mes=mes
+        )
+        models.db.session.add(nueva)
+        models.db.session.commit()
+
+        return jsonify({
+            "ok": True,
+            "tarea": {
+                "id": codigo_tarea,
+                "id_bd": nueva.id,
+                "name": nueva.titulo,
+                "start": nueva.fecha_inicio.strftime('%Y-%m-%d'),
+                "end": nueva.fecha_fin.strftime('%Y-%m-%d'),
+                "progress": 0,
+                "estado": nueva.estado,
+                "responsable": nueva.responsable,
+                "horas_dedicadas": 0,
+                "horas_estimadas": nueva.horas_estimadas,
+                "codigo_proyecto": nueva.codigo_proyecto
+            }
+        }), 201
+
+    except (ValueError, KeyError) as e:
+        models.db.session.rollback()
+        return jsonify({"ok": False, "error": "Datos inválidos: " + str(e)}), 422
+    except IntegrityError:
+        models.db.session.rollback()
+        return jsonify({"ok": False, "error": "El código de tarea ya existe, intenta de nuevo"}), 409
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f"Error POST /api/gantt/tarea: {str(e)}")
+        return jsonify({"ok": False, "error": "Error interno"}), 500
+
+
+@app.route('/api/gantt/tarea/<string:codigo_tarea>', methods=['DELETE'])
+@login_required
+def gantt_delete_tarea(codigo_tarea):
+    """Elimina una tarea por su codigo_tarea."""
+    try:
+        tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first()
+        if not tarea:
+            return jsonify({"ok": False, "error": "Tarea no encontrada"}), 404
+        models.db.session.delete(tarea)
+        models.db.session.commit()
+        return jsonify({"ok": True})
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f"Error DELETE /api/gantt/tarea/{codigo_tarea}: {str(e)}")
+        return jsonify({"ok": False, "error": "Error interno"}), 500
 
 
 # login 
