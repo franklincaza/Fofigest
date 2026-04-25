@@ -1,207 +1,382 @@
-
-{% extends 'Base.html' %}  <!-- Esto se define al principio, si estás en Admin o Base lo defines en la vista -->
+{% extends 'Base.html' %}
 {% block content %}
-{% if session['username'] == "admin" %} 
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-<div class="container-fluid bg-light py-5">
-    <div class="card p-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-center">USUARIOS</h2>
-            <a type="button" class="btn btn-primary btn-lg" href="Nuevo_Usuario" >
-                <span class="desktop-text"><!--Agregar Usuario--></span>
-                <span class="mobile-icon material-icons-outlined">add</span>
-            </a>
+{% if session['username'] == "admin" %}
+
+<style>
+  /* ── Usuarios: estilos específicos ── */
+  #dataTable thead th {
+    background: var(--bg-page);
+    color: var(--text-dark);
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    border-bottom: 2px solid var(--border-color);
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  #dataTable tbody tr { transition: background var(--transition); }
+  #dataTable tbody tr:hover { background: rgba(78,115,223,.04); }
+  #dataTable td {
+    vertical-align: middle;
+    font-size: .875rem;
+    color: var(--text-dark);
+    border-color: var(--border-color);
+  }
+  .badge-status { font-size: .68rem; padding: .35em .7em; letter-spacing: .03em; }
+
+  /* Filtros por columna */
+  #filter-row th { padding: .3rem .4rem; background: var(--bg-page); border-bottom: 1px solid var(--border-color); }
+  .col-filter-input {
+    font-family: 'Nunito', sans-serif;
+    font-size: .73rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: var(--bg-card);
+    color: var(--text-dark);
+    padding: .2rem .45rem;
+    width: 100%;
+    outline: none;
+    transition: border-color var(--transition), box-shadow var(--transition);
+  }
+  .col-filter-input:focus { border-color: #4e73df; box-shadow: 0 0 0 .15rem rgba(78,115,223,.15); }
+  .col-filter-input::placeholder { color: var(--text-muted); font-style: italic; }
+  #dataTable thead tr:first-child th .fa-filter { opacity: .45; transition: opacity var(--transition); }
+  #dataTable thead tr:first-child th:hover .fa-filter { opacity: 1; }
+
+  /* Modo oscuro */
+  .modo-oscuro #dataTable thead th    { background: #2d2d3a; color: #c3c3cd; border-color: #3c3c50; }
+  .modo-oscuro #dataTable td          { color: #c3c3cd; border-color: #3c3c50; }
+  .modo-oscuro #dataTable tbody tr:hover { background: rgba(255,255,255,.05); }
+  .modo-oscuro .card                  { background: #1e1e2d !important; border-color: #3c3c50; }
+  .modo-oscuro .card-header           { background: #2d2d3a !important; border-color: #3c3c50 !important; }
+  .modo-oscuro .modal-content         { background: #1e1e2d; color: #c3c3cd; }
+  .modo-oscuro .form-control,
+  .modo-oscuro .form-select           { background: #2d2d3a; color: #c3c3cd; border-color: #3c3c50; }
+  .modo-oscuro #filter-row th         { background: #2d2d3a; border-color: #3c3c50; }
+  .modo-oscuro .col-filter-input      { background: #252535; color: #c3c3cd; border-color: #3c3c50; }
+  .modo-oscuro .col-filter-input:focus { border-color: #4e73df; }
+</style>
+
+<div class="container-fluid">
+
+  <!-- Encabezado de página -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 fw-bold" style="color: var(--text-heading)">
+      <i class="fas fa-users me-2" style="color: var(--color-primary)"></i>Gestión de Usuarios
+    </h1>
+  </div>
+
+  <!-- Card principal -->
+  <div class="card shadow mb-4" style="border-radius: var(--radius)">
+
+    <!-- Card Header -->
+    <div class="card-header py-3 d-flex align-items-center justify-content-between flex-wrap gap-2"
+         style="border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0">
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <h6 class="m-0 fw-bold text-primary">
+          <i class="fas fa-user-cog me-2"></i>Listado de Usuarios
+        </h6>
+        <button class="btn btn-sm btn-outline-secondary" onclick="limpiarFiltros()"
+                id="btnLimpiarFiltros" style="display:none" title="Limpiar todos los filtros">
+          <i class="fas fa-times me-1"></i>Limpiar Filtros
+        </button>
+      </div>
+
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <!-- Buscador -->
+        <div class="input-group input-group-sm" style="width: 175px">
+          <input type="text" id="buscador" class="form-control"
+                 placeholder="Buscar..." onkeyup="filtrarTabla()">
+          <span class="input-group-text"><i class="fas fa-search"></i></span>
         </div>
-        
-        <div class="row">
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover" id="dataTable" width="100%" cellspacing="0">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>NOMBRES</th>
-                            <th>APELLIDOS</th>
-                            <th>EMPRESA</th>
-                            <th>CORREO</th>
-                            <th>PERMISO</th>
-                            <th>ACCIONES</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usuarioTableBody">
-                        <!-- Aquí se llenarán los usuarios -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+        <!-- Nuevo Usuario -->
+        <a href="Nuevo_Usuario" class="btn btn-primary btn-sm">
+          <i class="fas fa-user-plus me-1"></i>Nuevo Usuario
+        </a>
+      </div>
+
+    </div><!-- /card-header -->
+
+    <!-- Card Body: tabla -->
+    <div class="card-body p-0">
+      <div class="table-responsive" style="max-height: 70vh; overflow-y: auto">
+        <table class="table table-bordered table-hover mb-0" id="dataTable" cellspacing="0">
+          <thead>
+            <tr>
+              <th>ID <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th>Nombres <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th>Apellidos <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th>Empresa <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th>Correo <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th>Permiso <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="text-center">Acciones</th>
+            </tr>
+            <!-- Fila de filtros por columna -->
+            <tr id="filter-row">
+              <th><input type="text" class="col-filter-input" data-col="0" placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off"></th>
+              <th><input type="text" class="col-filter-input" data-col="1" placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off"></th>
+              <th><input type="text" class="col-filter-input" data-col="2" placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off"></th>
+              <th><input type="text" class="col-filter-input" data-col="3" placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off"></th>
+              <th><input type="text" class="col-filter-input" data-col="4" placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off"></th>
+              <th><input type="text" class="col-filter-input" data-col="5" placeholder="admin / dev..." oninput="actualizarVisibilidad()" autocomplete="off"></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="usuarioTableBody">
+            <!-- Filas generadas dinámicamente por JS -->
+          </tbody>
+        </table>
+      </div>
+    </div><!-- /card-body -->
+
+  </div><!-- /card -->
 </div>
 
-<!-- Modal para Crear/Editar Usuarios -->
-<div class="modal fade" id="usuarioForm" tabindex="-1" aria-labelledby="usuarioFormLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="usuarioFormLabel">Registrar Usuario</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <!-- Formulario para Crear/Editar usuarios -->
-          <form id="usuarioFormContent">
-              <div class="mb-3">
-                  <label for="nombres" class="form-label">Nombres</label>
-                  <input type="text" class="form-control" id="nombres" required>
-              </div>
-              <div class="mb-3">
-                  <label for="apellidos" class="form-label">Apellidos</label>
-                  <input type="text" class="form-control" id="apellidos" required>
-              </div>
 
-              <div class="form-group">
-                <label for="empresa">Empresa</label>
-            <select class="form-control" id="empresa" name="empresa" required>
-               
+<!-- ════════════════════════════════════════════
+     MODAL: CREAR / EDITAR USUARIO
+════════════════════════════════════════════ -->
+<div class="modal fade" id="usuarioForm" tabindex="-1"
+     aria-labelledby="usuarioFormLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: var(--radius)">
+
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="usuarioFormLabel">
+          <i class="fas fa-user-edit me-2 text-primary"></i>Registrar / Editar Usuario
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="usuarioFormContent">
+          <div class="row g-3">
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Nombres</label>
+              <input type="text" class="form-control" id="nombres" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Apellidos</label>
+              <input type="text" class="form-control" id="apellidos" required>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Empresa</label>
+              <select class="form-select" id="empresa" name="empresa" required>
                 <option value="" disabled selected>Selecciona la empresa</option>
                 {% for empresa in empresas %}
-                <option value="{{empresa.empresa}}">{{ empresa.empresa }}</option>
+                <option value="{{ empresa.empresa }}">{{ empresa.empresa }}</option>
                 {% endfor %}
-            </select>
+              </select>
             </div>
 
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Correo</label>
+              <input type="email" class="form-control" id="correo" required>
+            </div>
 
-              <div class="mb-3">
-                  <label for="correo" class="form-label">Correo</label>
-                  <input type="email" class="form-control" id="correo" required>
-              </div>
-              <div class="mb-3">
-                  <label for="contraseña" class="form-label">Contraseña</label>
-                  <input type="password" class="form-control" id="contraseña" >
-              </div>
-              <div class="mb-3">
-                  <label for="permisos" class="form-label">Permisos</label>
-                  <select class="form-control" id="permisos" required>
-                      <option value="admin">Admin</option>
-                      <option value="dev">Dev</option>
-                      <option value="usuario">Usuario</option>
-                  </select>
-              </div>
-              <button type="submit" class="btn btn-primary">Guardar</button>
-          </form>
-        </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Contraseña</label>
+              <input type="password" class="form-control" id="contraseña"
+                     placeholder="Dejar vacío para no cambiar">
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small">Permisos</label>
+              <select class="form-select" id="permisos" required>
+                <option value="admin">Admin</option>
+                <option value="dev">Dev</option>
+                <option value="usuario">Usuario</option>
+              </select>
+            </div>
+
+          </div><!-- /.row -->
+        </form>
       </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="submit" form="usuarioFormContent" class="btn btn-primary">
+          <i class="fas fa-save me-1"></i>Guardar
+        </button>
+      </div>
+
     </div>
+  </div>
 </div>
 
+
+<!-- ════════════════════════════════════════════
+     SCRIPTS
+════════════════════════════════════════════ -->
 <script>
-    let usuarioId = null; // Variable global para almacenar el ID del usuario a editar o para un nuevo usuario
+let usuarioId = null;
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Llamada a la API para obtener los usuarios
-        fetch('/usuarios/json')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('usuarioTableBody');
-                tableBody.innerHTML = ''; // Limpiar la tabla antes de rellenarla
-                data.forEach(usuario => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${usuario.id}</td>
-                        <td>${usuario.nombres}</td>
-                        <td>${usuario.apellidos}</td>
-                        <td>${usuario.empresa}</td>
-                        <td>${usuario.correo}</td>
-                        <td>${usuario.permisos}</td>
-                        <td>
-                            <button class="btn btn-warning btn-sm" onclick="editarUsuario(${usuario.id})">Editar</button>
-                            <button class="btn btn-danger btn-sm" onclick="eliminarUsuario(${usuario.id})">Eliminar</button>
-                        </td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error al obtener los usuarios:', error));
-    });
+/* ── Cargar usuarios al iniciar ── */
+document.addEventListener('DOMContentLoaded', function () {
+  cargarUsuarios();
+});
 
-    function limpiarFormulario() {
-        document.getElementById('usuarioFormContent').reset();
-        usuarioId = null; // Reiniciar la variable usuarioId para un nuevo usuario
+function cargarUsuarios() {
+  fetch('/usuarios/json')
+    .then(r => r.json())
+    .then(data => {
+      const tbody = document.getElementById('usuarioTableBody');
+      tbody.innerHTML = '';
+      data.forEach(usuario => {
+        const permisoColor = usuario.permisos === 'admin'
+          ? `style="background-color: var(--color-primary)"`
+          : `class="bg-secondary"`;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${usuario.id}</td>
+          <td>${usuario.nombres}</td>
+          <td>${usuario.apellidos}</td>
+          <td>${usuario.empresa}</td>
+          <td>${usuario.correo}</td>
+          <td class="text-center">
+            <span class="badge rounded-pill badge-status" ${permisoColor}>${usuario.permisos}</span>
+          </td>
+          <td class="text-center text-nowrap">
+            <button class="btn btn-primary btn-sm me-1"
+                    onclick="editarUsuario(${usuario.id})" title="Editar">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button class="btn btn-danger btn-sm"
+                    onclick="eliminarUsuario(${usuario.id})" title="Eliminar">
+              <i class="fas fa-trash"></i>
+            </button>
+          </td>`;
+        tbody.appendChild(row);
+      });
+      actualizarVisibilidad();
+    })
+    .catch(err => console.error('Error al obtener usuarios:', err));
+}
+
+/* ── Editar usuario ── */
+function editarUsuario(id) {
+  usuarioId = id;
+  fetch(`/usuario/${id}`)
+    .then(r => r.json())
+    .then(data => {
+      document.getElementById('nombres').value    = data.nombres;
+      document.getElementById('apellidos').value  = data.apellidos;
+      document.getElementById('empresa').value    = data.empresa;
+      document.getElementById('correo').value     = data.correo;
+      document.getElementById('contraseña').value = '';
+      document.getElementById('permisos').value   = data.permisos;
+      new bootstrap.Modal(document.getElementById('usuarioForm')).show();
+    })
+    .catch(err => console.error('Error al obtener datos del usuario:', err));
+}
+
+/* ── Limpiar formulario ── */
+function limpiarFormulario() {
+  document.getElementById('usuarioFormContent').reset();
+  usuarioId = null;
+}
+
+/* ── Guardar (crear / editar) ── */
+document.getElementById('usuarioFormContent').addEventListener('submit', function (e) {
+  e.preventDefault();
+  const payload = {
+    nombres:    document.getElementById('nombres').value,
+    apellidos:  document.getElementById('apellidos').value,
+    empresa:    document.getElementById('empresa').value,
+    correo:     document.getElementById('correo').value,
+    contraseña: document.getElementById('contraseña').value,
+    permisos:   document.getElementById('permisos').value
+  };
+  const method = usuarioId ? 'PUT'         : 'POST';
+  const url    = usuarioId ? `/usuario/${usuarioId}` : '/usuario';
+
+  fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
+    .then(res => {
+      if (res.ok) {
+        Swal.fire('¡Éxito!', 'Usuario guardado correctamente.', 'success')
+          .then(() => { bootstrap.Modal.getInstance(document.getElementById('usuarioForm'))?.hide(); cargarUsuarios(); });
+      } else {
+        Swal.fire('Error', 'No se pudo guardar el usuario.', 'error');
+      }
+    })
+    .catch(err => console.error('Error al guardar usuario:', err));
+});
+
+/* ── Eliminar usuario ── */
+function eliminarUsuario(id) {
+  Swal.fire({
+    title: '¿Estás seguro?',
+    text: '¡No podrás revertir esto!',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#4e73df',
+    cancelButtonColor:  '#e74a3b',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText:  'Cancelar'
+  }).then(result => {
+    if (result.isConfirmed) {
+      fetch(`/usuario/${id}`, { method: 'DELETE' })
+        .then(res => {
+          if (res.ok) {
+            Swal.fire('¡Eliminado!', 'El usuario ha sido eliminado.', 'success')
+              .then(() => cargarUsuarios());
+          } else {
+            Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
+          }
+        });
     }
+  });
+}
 
-    // Función para obtener los datos de un usuario y rellenar el formulario para editar
-    function editarUsuario(id) {
-        usuarioId = id; // Guardar el ID del usuario a editar
+/* ── Motor de filtrado combinado ── */
+function actualizarVisibilidad() {
+  const globalQ = (document.getElementById('buscador')?.value || '').toLowerCase().trim();
+  const colFilters = {};
+  document.querySelectorAll('#filter-row input[data-col]').forEach(inp => {
+    const val = inp.value.toLowerCase().trim();
+    if (val) colFilters[parseInt(inp.dataset.col)] = val;
+  });
+  const hayFiltros = globalQ || Object.keys(colFilters).length > 0;
+  const btnLimpiar = document.getElementById('btnLimpiarFiltros');
+  if (btnLimpiar) btnLimpiar.style.display = hayFiltros ? '' : 'none';
 
-        fetch(`/usuario/${id}`)
-            .then(response => response.json())
-            .then(data => {
-                // Rellenar el formulario con los datos obtenidos
-                document.getElementById('nombres').value = data.nombres;
-                document.getElementById('apellidos').value = data.apellidos;
-                document.getElementById('empresa').value = data.empresa;
-                document.getElementById('correo').value = data.correo;
-                document.getElementById('contraseña').value = '';  // No mostrar la contraseña
-                document.getElementById('permisos').value = data.permisos;
-
-                const usuarioModal = new bootstrap.Modal(document.getElementById('usuarioForm'));
-                usuarioModal.show();
-            })
-            .catch(error => console.error('Error al obtener los datos del usuario:', error));
+  document.querySelectorAll('#dataTable tbody tr').forEach(row => {
+    if (globalQ && !row.textContent.toLowerCase().includes(globalQ)) { row.style.display = 'none'; return; }
+    const cells = row.querySelectorAll('td');
+    for (const [colIdx, term] of Object.entries(colFilters)) {
+      const cell = cells[parseInt(colIdx)];
+      if (cell && !cell.textContent.toLowerCase().includes(term)) { row.style.display = 'none'; return; }
     }
+    row.style.display = '';
+  });
+}
 
-    // Función para manejar tanto la creación como la edición de usuarios
-    document.getElementById('usuarioFormContent').addEventListener('submit', function (e) {
-        e.preventDefault();
+function filtrarTabla()  { actualizarVisibilidad(); }
 
-        const usuarioData = {
-            nombres: document.getElementById('nombres').value,
-            apellidos: document.getElementById('apellidos').value,
-            empresa: document.getElementById('empresa').value,
-            correo: document.getElementById('correo').value,
-            contraseña: document.getElementById('contraseña').value,
-            permisos: document.getElementById('permisos').value
-        };
-
-        const method = usuarioId ? 'PUT' : 'POST';
-        const url = usuarioId ? `/usuario/${usuarioId}` : '/usuario';
-
-        fetch(url, {
-            method: method,
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(usuarioData)
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Usuario guardado exitosamente');
-                location.reload(); // Recargar la página para ver los cambios
-            } else {
-                alert('Error al guardar el usuario');
-            }
-        })
-        .catch(error => console.error('Error al guardar el usuario:', error));
-    });
-
-    function eliminarUsuario(id) {
-        if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-            fetch(`/usuario/${id}`, {
-                method: 'DELETE'
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('Usuario eliminado exitosamente');
-                    location.reload(); // Recargar la página para ver los cambios
-                } else {
-                    alert('Error al eliminar el usuario');
-                }
-            })
-            .catch(error => console.error('Error al eliminar el usuario:', error));
-        }
-    }
+function limpiarFiltros() {
+  document.querySelectorAll('#filter-row input').forEach(inp => inp.value = '');
+  const b = document.getElementById('buscador'); if (b) b.value = '';
+  actualizarVisibilidad();
+}
 </script>
-{% else %}           
-<p> No tienes permiso para esta pagina </p>
+
+{% else %}
+<div class="container-fluid d-flex align-items-center justify-content-center" style="min-height: 60vh">
+  <div class="text-center">
+    <i class="fas fa-lock fa-3x mb-3" style="color: var(--color-danger)"></i>
+    <h4 class="fw-bold" style="color: var(--text-heading)">Acceso Denegado</h4>
+    <p class="text-muted">No tienes permisos para ver esta página.</p>
+    <a href="/" class="btn btn-primary btn-sm mt-2">
+      <i class="fas fa-home me-1"></i>Volver al inicio
+    </a>
+  </div>
+</div>
 {% endif %}
 
 {% endblock %}
