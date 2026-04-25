@@ -1,49 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log de Eventos — Fofigest</title>
 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
-        <style>
-            th {
-                text-align: center;  /* Estilo para centrar los encabezados */
-            }
-        </style>
-        <title>Log</title>
-    </head>
-    <body>
-        <div class="container mt-5">
-            <h2>Log de Eventos</h2>
-            <table border="1" class="dataframe table table-striped table-hover" id="logTable">
-  <thead>
-    <tr style="text-align: right;">
-      <th>Fecha</th>
-      <th>Nivel</th>
-      <th>Mensaje</th>
-      <th>Estado</th>
-    </tr>
-  </thead>
-  <tbody>
-  </tbody>
-</table>
+  <!-- Google Fonts: Nunito -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <!-- Bootstrap 5 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+  <!-- Font Awesome 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+  <style>
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f9fc;
+      color: #5a5c69;
+    }
+
+    /* Card */
+    .log-card {
+      border-radius: .35rem;
+      box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.10);
+      border: 1px solid #e3e6f0;
+      background: #fff;
+      overflow: hidden;
+    }
+    .log-card-header {
+      background: #f8f9fc;
+      border-bottom: 1px solid #e3e6f0;
+      padding: .85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .log-card-header h6 {
+      margin: 0;
+      font-weight: 700;
+      color: #4e73df;
+      font-size: .9rem;
+    }
+
+    /* Table */
+    #logTable thead th {
+      background: #f8f9fc !important;
+      color: #5a5c69;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      border-bottom: 2px solid #e3e6f0 !important;
+      white-space: nowrap;
+    }
+    #logTable tbody td {
+      font-size: .875rem;
+      color: #5a5c69;
+      border-color: #e3e6f0;
+      vertical-align: middle;
+    }
+    #logTable tbody tr:hover { background: rgba(78,115,223,.04); }
+
+    /* DataTables overrides */
+    .dataTables_wrapper .dataTables_filter input {
+      border: 1px solid #e3e6f0;
+      border-radius: .35rem;
+      padding: .2rem .5rem;
+      font-family: 'Nunito', sans-serif;
+      font-size: .875rem;
+      color: #5a5c69;
+    }
+    .dataTables_wrapper .dataTables_filter input:focus {
+      outline: none;
+      border-color: #4e73df;
+      box-shadow: 0 0 0 .15rem rgba(78,115,223,.15);
+    }
+    .dataTables_wrapper .dataTables_length select,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+      font-family: 'Nunito', sans-serif;
+      font-size: .875rem;
+      color: #5a5c69;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background: #4e73df !important;
+      border-color: #4e73df !important;
+      color: #fff !important;
+      border-radius: .35rem;
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: #e3e6f0 !important;
+      color: #4e73df !important;
+      border-radius: .35rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-4 pb-4">
+
+    <!-- Encabezado -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h1 style="font-size: 1.5rem; font-weight: 800; color: #3a3b45; margin: 0">
+        <i class="fas fa-clipboard-list me-2" style="color: #4e73df"></i>Log de Eventos
+      </h1>
+    </div>
+
+    <!-- Card con la tabla -->
+    <div class="log-card">
+      <div class="log-card-header">
+        <i class="fas fa-list me-1"></i>
+        <h6>Registro de Actividad</h6>
+      </div>
+      <div class="p-3">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover mb-0" id="logTable">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Nivel</th>
+                <th>Mensaje</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
         </div>
-        
-        <!-- Scripts de DataTables y jQuery -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $('#logTable').DataTable({
-                    "searching": true,   // Habilita la búsqueda en la tabla
-                    "paging": true,      // Habilita la paginación
-                    "info": true,        // Muestra información de la tabla
-                    "ordering": true     // Habilita la opción de ordenar las columnas
-                });
-            });
-        </script>
-    </body>
-    </html>
-    
+      </div>
+    </div>
+
+  </div>
+
+  <!-- jQuery + DataTables -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#logTable').DataTable({
+        searching: true,
+        paging:    true,
+        info:      true,
+        ordering:  true,
+        language: {
+          search:        "Buscar:",
+          lengthMenu:    "Mostrar _MENU_ registros",
+          info:          "Mostrando _START_ a _END_ de _TOTAL_ registros",
+          infoEmpty:     "Mostrando 0 a 0 de 0 registros",
+          paginate:      { previous: "Anterior", next: "Siguiente" },
+          zeroRecords:   "No se encontraron resultados"
+        }
+      });
+    });
+  </script>
+</body>
+</html>
