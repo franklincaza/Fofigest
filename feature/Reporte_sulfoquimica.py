@@ -5,7 +5,7 @@ import warnings
 
 # Suprimir warnings específicos
 warnings.simplefilter(action='ignore', category=UserWarning)  # Ignora UserWarnings
-warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)  # Ignora SettingWithCopyWarning
+#warnings.simplefilter(action='ignore', category=pd.errors.SettingWithCopyWarning)  # Ignora SettingWithCopyWarning
 
 
 # Configurar el logger

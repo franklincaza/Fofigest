@@ -37612,3 +37612,1609 @@ Traceback (most recent call last):
            ^^^^^^^^^^^^^
 FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'C:\\Users\\FRANKLIN\\Downloads\\Desarrollos\\Fofigest\\sw.js'
 2025-05-08 18:34:27,184 - INFO - Scheduler has been shut down - base.py - 212
+2026-04-24 20:13:42,278 - INFO - version del desarrollo 4.0  - app.py - 1640
+2026-04-24 20:13:42,280 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1651
+2026-04-24 20:13:42,283 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 20:14:00,264 - INFO - Inicio de pagina  - app.py - 380
+2026-04-24 20:14:00,525 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:14:01,506 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:14:01,506 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:14:14,477 - WARNING - Email o contraseña incorrectos - app.py - 413
+2026-04-24 20:14:15,395 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:14:24,036 - WARNING - Email o contraseña incorrectos - app.py - 413
+2026-04-24 20:14:24,905 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:14:30,336 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 397
+2026-04-24 20:14:31,287 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:14:40,574 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:14:50,669 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:15:01,747 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:15:07,318 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:15:15,530 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:15:34,057 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:15:47,292 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:15:55,953 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:15:55,960 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:16:19,020 - INFO - Archivo HTML con Bootstrap y DataTables generado correctamente. - app.py - 1095
+2026-04-24 20:25:03,146 - INFO - version del desarrollo 4.0  - app.py - 1640
+2026-04-24 20:25:03,148 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1651
+2026-04-24 20:25:03,152 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 20:25:08,303 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:25:08,303 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 20:25:08,310 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:25:12,481 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:25:12,596 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 20:25:12,596 - WARNING - Task queue depth is 3 - task.py - 113
+2026-04-24 20:25:14,354 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 20:25:14,354 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 20:25:14,356 - ERROR - Exception on /reporte_horas_chart [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 287, in reportes_horas_dev
+    reporte.limpiar_fechas()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\feature\Reporte_sulfoquimica.py", line 45, in limpiar_fechas
+    self.df['fecha_inicio'] = pd.to_datetime(self.df['fecha_inicio'], errors='coerce')
+                                             ~~~~~~~^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\indexes\range.py", line 525, in get_loc
+    raise KeyError(key)
+KeyError: 'fecha_inicio'
+2026-04-24 20:25:14,358 - ERROR - Error al generar el reporte: 'fecha_inicio' - app.py - 327
+2026-04-24 20:25:14,476 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:26:47,058 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:26:47,465 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:28:10,227 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:28:11,611 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:28:11,613 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:30:49,659 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:31:28,150 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:31:28,155 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:31:51,338 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:32:09,518 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:32:09,519 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 20:32:09,524 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:32:23,983 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:33:03,371 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:40:34,973 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:40:36,495 - ERROR - Exception on /upload [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.OperationalError: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 158, in upload_file
+    return render_template('subir_datos.html')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 128, in _render
+    app.update_template_context(context)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 530, in update_template_context
+    context.update(self.ensure_sync(func)())
+                   ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 405, in _user_context_processor
+    return dict(current_user=_get_user())
+                             ~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 370, in _get_user
+    current_app.login_manager._load_user()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\login_manager.py", line 364, in _load_user
+    user = self._user_callback(user_id)
+  File "D:\App.Proyectos\Fofigest\app.py", line 110, in load_user
+    return models.Usuarios.query.get(int(user_id))
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "<string>", line 2, in get
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\util\deprecations.py", line 386, in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 1127, in get
+    return self._get_impl(ident, loading.load_on_pk_identity)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\query.py", line 1136, in _get_impl
+    return self.session._get_impl(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        mapper,
+        ^^^^^^^
+    ...<6 lines>...
+        execution_options=self._execution_options,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 3859, in _get_impl
+    return db_load_fn(
+        self,
+    ...<5 lines>...
+        bind_arguments=bind_arguments,
+    )
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\loading.py", line 695, in load_on_pk_identity
+    session.execute(
+    ~~~~~~~~~~~~~~~^
+        q,
+        ^^
+    ...<2 lines>...
+        bind_arguments=bind_arguments,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        statement,
+        ^^^^^^^^^^
+    ...<4 lines>...
+        _add_event=_add_event,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self,
+        ^^^^^
+    ...<4 lines>...
+        conn,
+        ^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+        statement, params or {}, execution_options=execution_options
+    )
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+[SQL: SELECT usuarios.id AS usuarios_id, usuarios.nombres AS usuarios_nombres, usuarios.apellidos AS usuarios_apellidos, usuarios.correo AS usuarios_correo, usuarios."contraseña" AS "usuarios_contraseña", usuarios.empresa AS usuarios_empresa, usuarios.permisos AS usuarios_permisos 
+FROM usuarios 
+WHERE usuarios.id = %(pk_1)s]
+[parameters: {'pk_1': 1}]
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-04-24 20:40:42,748 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:41:01,412 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 20:41:06,893 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:41:07,616 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:41:07,625 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:41:22,037 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:41:22,040 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 20:44:11,782 - INFO - Archivo HTML con Bootstrap y DataTables generado correctamente. - app.py - 1095
+2026-04-24 20:44:50,029 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 20:44:50,031 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 170, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 21:40:10,203 - INFO - version del desarrollo 4.0  - app.py - 2159
+2026-04-24 21:40:10,205 - INFO - mode de debug esta falso , aplicacion en produccion - app.py - 2166
+2026-04-24 21:40:10,209 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 21:40:27,659 - INFO - Inicio de pagina  - app.py - 482
+2026-04-24 21:40:27,913 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 21:40:29,215 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 263, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 21:40:35,478 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 495
+2026-04-24 21:40:35,917 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 21:40:36,598 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 263, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 21:40:43,019 - ERROR - Exception on /tablero [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 666, in proyecto
+    return render_template('tablero.html',
+                           empresas=empresas,
+    ...<7 lines>...
+                           usuarios=usuarios,
+                           total_horas_ejecucion=total_horas_ejecucion)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\tablero.html", line 323, in template
+    {% for c in tarea.responsable %} {% set h.v = h.v + c | ord %} {% endfor %}
+    ^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: No filter named 'ord'.
+2026-04-24 21:49:51,262 - INFO - version del desarrollo 4.0  - app.py - 2174
+2026-04-24 21:49:51,262 - INFO - mode de debug esta falso , aplicacion en produccion - app.py - 2181
+2026-04-24 21:49:51,274 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 21:49:57,161 - ERROR - Exception on /tablero [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 681, in proyecto
+    return render_template('tablero.html',
+                           empresas=empresas,
+    ...<7 lines>...
+                           usuarios=usuarios,
+                           total_horas_ejecucion=total_horas_ejecucion)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\tablero.html", line 1, in top-level template code
+    {% extends 'Base.html' %}
+  File "D:\App.Proyectos\Fofigest\templates\Base.html", line 442, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\templates\tablero.html", line 216, in block 'content'
+    <a href="{{ url_for('tablero') }}" class="btn btn-outline-secondary btn-sm">
+    ^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\routing\map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'tablero'. Did you mean 'log' instead?
+2026-04-24 21:50:02,204 - INFO - Inicio de pagina  - app.py - 497
+2026-04-24 21:50:02,701 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 21:50:02,715 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 21:50:04,051 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 278, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 21:51:18,427 - INFO - Login OTP exitoso: franklinramirez07@hotmail.com - app.py - 634
+2026-04-24 21:51:37,675 - ERROR - Exception while serving /login/otp/verify - channel.py - 437
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1128, in _rollback_impl
+    self.engine.dialect.do_rollback(self.connection)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 712, in do_rollback
+    dbapi_connection.rollback()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+psycopg2.OperationalError: server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\waitress\channel.py", line 430, in service
+    task.service()
+    ~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\waitress\task.py", line 167, in service
+    self.execute()
+    ~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\waitress\task.py", line 435, in execute
+    app_iter = self.channel.server.application(environ, start_response)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\waitress\proxy_headers.py", line 64, in translate_proxy_headers
+    return app(environ, start_response)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1536, in __call__
+    return self.wsgi_app(environ, start_response)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1527, in wsgi_app
+    ctx.pop(error)
+    ~~~~~~~^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\ctx.py", line 436, in pop
+    app_ctx.pop(exc)
+    ~~~~~~~~~~~^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\ctx.py", line 262, in pop
+    self.app.do_teardown_appcontext(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1382, in do_teardown_appcontext
+    self.ensure_sync(func)(exc)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_sqlalchemy\extension.py", line 448, in _teardown_session
+    self.session.remove()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\scoping.py", line 259, in remove
+    self.registry().close()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2507, in close
+    self._close_impl(invalidate=False)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 2576, in _close_impl
+    transaction.close(invalidate)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "<string>", line 2, in close
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 1417, in close
+    transaction.close()
+    ~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2597, in close
+    self._do_close()
+    ~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2735, in _do_close
+    self._close_impl()
+    ~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2721, in _close_impl
+    self._connection_rollback_impl()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2713, in _connection_rollback_impl
+    self.connection._rollback_impl()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1130, in _rollback_impl
+    self._handle_dbapi_exception(e, None, None, None, None)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1128, in _rollback_impl
+    self.engine.dialect.do_rollback(self.connection)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 712, in do_rollback
+    dbapi_connection.rollback()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+server closed the connection unexpectedly
+	This probably means the server terminated abnormally
+	before or while processing the request.
+
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+2026-04-24 21:52:01,055 - INFO - Login OTP exitoso: franklinramirez07@hotmail.com - app.py - 634
+2026-04-24 21:52:01,926 - ERROR - Exception on /sw.js [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 278, in serve_sw
+    return send_file('sw.js', mimetype='application/javascript')
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\helpers.py", line 518, in send_file
+    return werkzeug.utils.send_file(  # type: ignore[return-value]
+           ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        **_prepare_send_file_kwargs(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<9 lines>...
+        )
+        ^
+    )
+    ^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\utils.py", line 421, in send_file
+    stat = os.stat(path)
+FileNotFoundError: [WinError 2] El sistema no puede encontrar el archivo especificado: 'D:\\App.Proyectos\\Fofigest\\sw.js'
+2026-04-24 21:52:08,602 - ERROR - Exception on /tablero [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 681, in proyecto
+    return render_template('tablero.html',
+                           empresas=empresas,
+    ...<7 lines>...
+                           usuarios=usuarios,
+                           total_horas_ejecucion=total_horas_ejecucion)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\tablero.html", line 1, in top-level template code
+    {% extends 'Base.html' %}
+  File "D:\App.Proyectos\Fofigest\templates\Base.html", line 442, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\templates\tablero.html", line 216, in block 'content'
+    <a href="{{ url_for('tablero') }}" class="btn btn-outline-secondary btn-sm">
+    ^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\werkzeug\routing\map.py", line 901, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'tablero'. Did you mean 'log' instead?
+2026-04-24 21:56:51,769 - INFO - version del desarrollo 4.0  - app.py - 2177
+2026-04-24 21:56:51,769 - INFO - mode de debug esta falso , aplicacion en produccion - app.py - 2184
+2026-04-24 21:56:51,772 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 21:57:07,529 - INFO - Inicio de pagina  - app.py - 500
+2026-04-24 21:57:08,080 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 21:57:13,313 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 513
+2026-04-24 21:57:20,852 - ERROR - Exception on /tablero [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 684, in proyecto
+    return render_template('tablero.html',
+                           empresas=empresas,
+    ...<7 lines>...
+                           usuarios=usuarios,
+                           total_horas_ejecucion=total_horas_ejecucion)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\tablero.html", line 1, in top-level template code
+    {% extends 'Base.html' %}
+  File "D:\App.Proyectos\Fofigest\templates\Base.html", line 442, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\templates\tablero.html", line 318, in block 'content'
+    → {{ tarea.fecha_fin.strftime('%d/%m/%y') if tarea.fecha_fin else '—' }}
+    ^^^^^^^^^^^^^
+ValueError: format %y requires year >= 1900 on Windows
+2026-04-24 22:15:02,733 - INFO - Inicio de sesión exitoso admin@test.com - app.py - 530
+2026-04-24 22:15:02,967 - INFO - Inicio de pagina  - app.py - 517
+2026-04-24 22:15:02,984 - INFO - Ingreso a pagina de olvidaste contraseña  - app.py - 755
+2026-04-24 22:16:10,503 - INFO - version del desarrollo 4.0  - app.py - 2194
+2026-04-24 22:16:10,503 - INFO - mode de debug esta falso , aplicacion en produccion - app.py - 2201
+2026-04-24 22:16:10,508 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 22:16:14,034 - INFO - Inicio de pagina  - app.py - 517
+2026-04-24 22:16:14,662 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:16:14,677 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:16:20,644 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 530
+2026-04-24 22:17:56,053 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:17:56,053 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 22:17:57,895 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:17:57,895 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:17:57,899 - ERROR - Error al generar el reporte: 'fecha_inicio' - app.py - 459
+2026-04-24 22:17:57,901 - ERROR - Exception on /reporte_horas_chart [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 419, in reportes_horas_dev
+    reporte.limpiar_fechas()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\feature\Reporte_sulfoquimica.py", line 45, in limpiar_fechas
+    self.df['fecha_inicio'] = pd.to_datetime(self.df['fecha_inicio'], errors='coerce')
+                                             ~~~~~~~^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\indexes\range.py", line 525, in get_loc
+    raise KeyError(key)
+KeyError: 'fecha_inicio'
+2026-04-24 22:18:58,086 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:19:09,976 - ERROR - Exception on /upload [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 273, in upload_file
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\io\excel\_xlsxwriter.py", line 197, in __init__
+    from xlsxwriter import Workbook
+ModuleNotFoundError: No module named 'xlsxwriter'
+2026-04-24 22:19:22,545 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:19:29,836 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:19:29,883 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 22:19:30,743 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:19:30,745 - ERROR - Exception on /reporte_horas_chart [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 419, in reportes_horas_dev
+    reporte.limpiar_fechas()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\feature\Reporte_sulfoquimica.py", line 45, in limpiar_fechas
+    self.df['fecha_inicio'] = pd.to_datetime(self.df['fecha_inicio'], errors='coerce')
+                                             ~~~~~~~^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\indexes\range.py", line 525, in get_loc
+    raise KeyError(key)
+KeyError: 'fecha_inicio'
+2026-04-24 22:19:30,780 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:19:30,782 - ERROR - Error al generar el reporte: 'fecha_inicio' - app.py - 459
+2026-04-24 22:21:25,116 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:21:25,125 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 22:21:26,369 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:21:26,369 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:21:26,371 - ERROR - Error al generar el reporte: 'fecha_inicio' - app.py - 459
+2026-04-24 22:21:26,372 - ERROR - Exception on /reporte_horas_chart [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 419, in reportes_horas_dev
+    reporte.limpiar_fechas()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\feature\Reporte_sulfoquimica.py", line 45, in limpiar_fechas
+    self.df['fecha_inicio'] = pd.to_datetime(self.df['fecha_inicio'], errors='coerce')
+                                             ~~~~~~~^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\indexes\range.py", line 525, in get_loc
+    raise KeyError(key)
+KeyError: 'fecha_inicio'
+2026-04-24 22:22:16,445 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:36:23,602 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:36:23,804 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 22:36:24,819 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:36:24,820 - ERROR - Error al generar el reporte: 'fecha_inicio' - app.py - 459
+2026-04-24 22:36:24,823 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:36:24,824 - ERROR - Exception on /reporte_horas_chart [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 419, in reportes_horas_dev
+    reporte.limpiar_fechas()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\feature\Reporte_sulfoquimica.py", line 45, in limpiar_fechas
+    self.df['fecha_inicio'] = pd.to_datetime(self.df['fecha_inicio'], errors='coerce')
+                                             ~~~~~~~^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\indexes\range.py", line 525, in get_loc
+    raise KeyError(key)
+KeyError: 'fecha_inicio'
+2026-04-24 22:38:12,426 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:38:12,577 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:38:12,743 - WARNING - Task queue depth is 2 - task.py - 113
+2026-04-24 22:38:12,916 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:38:12,917 - ERROR - Error al generar el reporte: 'fecha_inicio' - app.py - 459
+2026-04-24 22:38:13,107 - INFO - Datos obtenidos correctamente desde la API. - Reporte_sulfoquimica.py - 37
+2026-04-24 22:38:13,108 - ERROR - Exception on /reporte_horas_chart [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 419, in reportes_horas_dev
+    reporte.limpiar_fechas()
+    ~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\feature\Reporte_sulfoquimica.py", line 45, in limpiar_fechas
+    self.df['fecha_inicio'] = pd.to_datetime(self.df['fecha_inicio'], errors='coerce')
+                                             ~~~~~~~^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\frame.py", line 4378, in __getitem__
+    indexer = self.columns.get_loc(key)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\core\indexes\range.py", line 525, in get_loc
+    raise KeyError(key)
+KeyError: 'fecha_inicio'
+2026-04-24 22:41:10,476 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:43:41,819 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:44:07,368 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:44:07,407 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-24 22:53:59,625 - INFO - version del desarrollo 4.0  - app.py - 2194
+2026-04-24 22:53:59,626 - INFO - mode de debug esta falso , aplicacion en produccion - app.py - 2201
+2026-04-24 22:53:59,631 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 22:54:02,421 - INFO - Inicio de pagina  - app.py - 517
+2026-04-24 22:54:08,774 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 530
+2026-04-24 22:54:08,814 - ERROR - Exception on / [POST] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 534, in loginInp
+    return render_template("splash.html", v=v)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\splash.html", line 1, in top-level template code
+    {% extends 'Base.html' %}
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\Base.html", line 379, in template
+    {% elif session['username'] == "dev"%}
+    ^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'elif'. Jinja was looking for the following tags: 'endif'. The innermost block that needs to be closed is 'if'.
+2026-04-24 22:55:15,079 - ERROR - Exception on /tareas [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 969, in vista_tareas
+    return render_template("tareas.html", tareas=tareas,
+                                        empresas=empresas,
+    ...<2 lines>...
+                                        total_horas_ejecucion=total_horas_ejecucion,
+                                        paginado=paginado)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\tareas.html", line 2, in top-level template code
+    {% extends 'Base.html' %}
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "D:\App.Proyectos\Fofigest\templates\Base.html", line 379, in template
+    {% elif session['username'] == "dev"%}
+    ^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateSyntaxError: Encountered unknown tag 'elif'. Jinja was looking for the following tags: 'endif'. The innermost block that needs to be closed is 'if'.
+2026-04-24 22:55:22,359 - INFO - Inicio de pagina  - app.py - 517
+2026-04-24 22:55:27,035 - INFO - Ingreso a pagina de olvidaste contraseña  - app.py - 755
+2026-04-24 22:55:39,207 - INFO - Reset password solicitado por franklinramirez07@hotmail.com - app.py - 800
+2026-04-24 22:56:50,957 - INFO - Inicio de sesión exitoso a@t.com - app.py - 530
+2026-04-24 23:06:54,321 - INFO - version del desarrollo 4.0  - app.py - 2242
+2026-04-24 23:06:54,322 - INFO - mode de debug esta falso , aplicacion en produccion - app.py - 2249
+2026-04-24 23:06:54,327 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-24 23:06:54,659 - INFO - Inicio de pagina  - app.py - 565
+2026-04-24 23:07:03,128 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 578
+2026-04-24 23:08:46,739 - ERROR - Exception on /upload [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\app.py", line 274, in upload_file
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\io\excel\_openpyxl.py", line 58, in __init__
+    from openpyxl.workbook import Workbook
+ModuleNotFoundError: No module named 'openpyxl'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 282, in upload_file
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\io\excel\_xlsxwriter.py", line 197, in __init__
+    from xlsxwriter import Workbook
+ModuleNotFoundError: No module named 'xlsxwriter'
+2026-04-24 23:08:52,775 - ERROR - Exception on /upload [GET] - app.py - 875
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\app.py", line 274, in upload_file
+    with pd.ExcelWriter(output, engine='openpyxl') as writer:
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\io\excel\_openpyxl.py", line 58, in __init__
+    from openpyxl.workbook import Workbook
+ModuleNotFoundError: No module named 'openpyxl'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\flask_login\utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\app.py", line 282, in upload_file
+    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+         ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\App.Proyectos\Fofigest\.venv\Lib\site-packages\pandas\io\excel\_xlsxwriter.py", line 197, in __init__
+    from xlsxwriter import Workbook
+ModuleNotFoundError: No module named 'xlsxwriter'
+2026-04-24 23:09:10,589 - INFO - Archivo HTML con Bootstrap y DataTables generado correctamente. - app.py - 1364
+2026-04-25 07:53:09,802 - INFO - version del desarrollo 4.0  - app.py - 2242
+2026-04-25 07:53:09,803 - INFO - mode de debug esta falso , aplicacion en produccion - app.py - 2249
+2026-04-25 07:53:09,807 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-25 07:53:29,640 - INFO - Inicio de pagina  - app.py - 565
+2026-04-25 07:53:29,889 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-25 07:53:36,646 - INFO - Inicio de sesión exitoso franklinramirez07@hotmail.com - app.py - 578
+2026-04-25 07:53:37,716 - WARNING - Task queue depth is 1 - task.py - 113
+2026-04-25 11:56:51,390 - INFO - Scheduler started - base.py - 181
+2026-04-25 11:56:51,508 - INFO - Scheduler has been shut down - base.py - 212
+2026-04-25 11:58:11,939 - INFO - Scheduler started - base.py - 181
+2026-04-25 11:58:12,079 - INFO - Scheduler has been shut down - base.py - 212
+2026-04-25 12:02:35,554 - INFO - Scheduler started - base.py - 181
+2026-04-25 12:02:35,653 - INFO - Scheduler has been shut down - base.py - 212
+2026-04-25 12:07:11,544 - INFO - Scheduler started - base.py - 181
+2026-04-25 12:07:11,975 - INFO - Scheduler has been shut down - base.py - 212
+2026-04-25 12:13:39,157 - INFO - Scheduler started - base.py - 181
+2026-04-25 12:13:39,686 - INFO - Scheduler has been shut down - base.py - 212
+2026-04-25 12:15:59,265 - INFO - Scheduler started - base.py - 181
+2026-04-25 12:16:03,266 - INFO - version del desarrollo 4.0  - app.py - 1642
+2026-04-25 12:16:03,266 - INFO - mode de debug esta falso , aplicacion en producciion - app.py - 1653
+2026-04-25 12:16:03,272 - INFO - Serving on http://0.0.0.0:5000 - wasyncore.py - 449
+2026-04-25 12:20:33,242 - INFO - Scheduler has been shut down - base.py - 212

@@ -1,7 +1,9 @@
 from flask import Flask, flash, redirect, render_template, request, session, url_for,jsonify,session, send_file,abort
 import os
-from models import models  
-import config 
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from models import models
+import config
 from datetime import datetime
 import logging
 from sqlalchemy.exc import IntegrityError
@@ -35,13 +37,11 @@ from flask import render_template
 from sqlalchemy import extract
 from sqlalchemy import desc  # Asegúrate de importar esto
 import flask_monitoringdashboard as dashboard
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-from models import models  # <- aquí viene db
-from models.models import db  # importa directamente la instancia db
+
+
 from feature.Reporte_sulfoquimica import ReporteSulfoquimica  # Importar la clase
 import json
-db = SQLAlchemy()
 
 # Definimos el endpoint principal
 host = config.config["host"]
@@ -92,6 +92,7 @@ app.config['MAIL_DEFAULT_SENDER'] = ('Tu nombre', 'franklinranmirez07@hotmail.co
 mail = Mail(app)
 # Inicialización de la base de datos con la instancia de la aplicación Flask
 models.db.init_app(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login' 
@@ -103,7 +104,7 @@ CKEDITOR_PKG_TYPE ="basic"
 # Es recomendable envolver este código dentro de un app context
 # para evitar problemas de conexión con la base de datos.
 with app.app_context():
-    models.db.create_all()  # Crear todas las tablas definidas en los modelos de SQLAlchemy
+  models.db.create_all()  # Crear todas las tablas definidas en los modelos de SQLAlchemy
 
 # Cargar usuario
 @login_manager.user_loader

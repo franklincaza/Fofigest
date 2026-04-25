@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"^@app\\\\\\\\.route\\\\|^def \" /d/App.Proyectos/Fofigest/app.py)",
+      "Bash(pip list *)",
+      "Bash(python -m py_compile app.py)",
+      "Bash(python -m py_compile models/models.py)",
+      "Bash(.venv/Scripts/python.exe -m py_compile app.py)",
+      "Bash(.venv/Scripts/python.exe -m py_compile models/models.py)"
+    ]
+  }
+}
