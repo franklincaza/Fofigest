@@ -1,595 +1,1438 @@
 {% extends 'Base.html' %}
 {% block content %}
 
-   <!-- BODY-->
-   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
-   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" />
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<!-- Dependencias de página -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,600,700,900" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
-<!-- Bootstrap Icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
-   
-   <div class="container-fluid bg-light py-5">
-       <div class="card p-4">
-           <h2 class="text-center mb-4">TABLERO DE PROYECTOS</h2>
-           
-           <!-- Formulario de filtros -->
-           <div class="d-flex gap-2 mb-3 justify-content-start align-items-center flex-wrap">
-               <!-- Botón de refrescar --> 
-                  <!-- 🔄 Refrescar -->
-                  <a id="refrescar" class="btn btn-outline-info btn-sm d-flex align-items-center" href="tablero" onclick="window.location.reload();">
-                    <i class="bi bi-arrow-clockwise me-1"></i>
-                    Refrescar
-                </a>
+<style>
+/* ════════════════════════════════════════════════════════
+   Kanban Board — Fofigest Enterprise UI
+   ════════════════════════════════════════════════════════ */
+:root {
+    --kb-color-pendiente:    #858796;
+    --kb-color-progreso:     #4e73df;
+    --kb-color-revision:     #f6c23e;
+    --kb-color-impedimentos: #e74a3b;
+    --kb-color-completados:  #1cc88a;
+    --kb-border:             #e3e6f0;
+    --kb-bg-col:             #f8f9fc;
+    --kb-shadow-hover:       0 4px 14px rgba(0,0,0,.1);
+    --kb-radius:             0.35rem;
+    --kb-transition:         0.15s ease-in-out;
+}
 
-           
-               <!-- Botón de descargar filtro -->
-            
-              
+body { font-family: 'Nunito', sans-serif; }
 
-               <button class="btn btn-outline-info btn-sm d-flex align-items-center" data-bs-toggle="modal" data-bs-target="#filtroModal">
-                <i class="bi bi-funnel-fill me-1"></i>
-                Filtros
-            </button>
+/* ── Layout wrapper ── */
+.kb-wrapper {
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+    -webkit-overflow-scrolling: touch;
+}
 
-           </div>
+.kb-board {
+    display: flex;
+    gap: 1rem;
+    min-height: 560px;
+    width: max-content;
+    min-width: 100%;
+    align-items: flex-start;
+}
 
-           <!-- Modal para el formulario de filtros -->
-           <div class="modal fade" id="filtroModal" tabindex="-1" role="dialog" aria-labelledby="filtroModalLabel" aria-hidden="true">
-               <div class="modal-dialog modal-lg" role="document">
-                   <div class="modal-content">
-                       <div class="modal-header">
-                           <h5 class="modal-title" id="filtroModalLabel">Filtros de Reporte</h5>
-                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                               <span aria-hidden="true">&times;</span>
-                           </button>
-                       </div>
-                       <div class="modal-body">
-                           <!-- Formulario de filtros dentro del modal -->
-                           <form method="POST" action="tablero">
-                               <div class="row mb-4">
-                                   <!-- Filtro de Estado -->
-                                   
-                                   <!-- Filtro de Responsable -->
-                                   <div class="col-sm-12 col-md-4 mb-2">
-                                       <label for="responsable">Filtrar Responsable</label>
-                                       <select class="form-control" id="responsable_" name="responsable_">
-                                           <option value="">Todos los responsables</option>
-                                           {% for usuario in usuarios %}
-                                           <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">
-                                               {{ usuario.nombres }} {{ usuario.apellidos }}
-                                           </option>
-                                           {% endfor %}
-                                       </select>
-                                   </div>
-               
-                                 <!-- Filtro de empresa -->
-                                 <div class="col-sm-12 col-md-4 mb-2">
-                                    <label for="empresa_">Filtrar empresa</label>
-                                    <select class="form-control" id="empresa_" name="empresa_">
-                                        <option value="">Todos los empresas</option>
-                                        {% for proyecto_item in empresas %}
-                                        <option value="{{ proyecto_item.empresa }}">
-                                            {{ proyecto_item.empresa }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                    </div>
+/* ── Column ── */
+.kb-col {
+    width: 288px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    border: 1px solid var(--kb-border);
+    background: var(--kb-bg-col);
+    overflow: hidden;
+}
 
+.kb-col__head {
+    padding: 0.65rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.kb-col__head .kb-badge {
+    font-size: 0.68rem;
+    padding: 0.2em 0.6em;
+    border-radius: 10rem;
+    background: rgba(255,255,255,.25);
+    font-weight: 700;
+}
 
-                                   <!-- Filtro por Mes -->
-                                   <div class="col-sm-12 col-md-4 mb-2">
-                                       <label for="mes">Filtrar por Mes</label>
-                                       <select class="form-control" id="mes_" name="mes_">
-                                           <option value="">Todos los meses</option>
-                                           <option value="Enero">Enero</option>
-                                           <option value="Febrero">Febrero</option>
-                                           <option value="Marzo">Marzo</option>
-                                           <option value="Abril">Abril</option>
-                                           <option value="Mayo">Mayo</option>
-                                           <option value="Junio">Junio</option>
-                                           <option value="Julio">Julio</option>
-                                           <option value="Agosto">Agosto</option>
-                                           <option value="Septiembre">Septiembre</option>
-                                           <option value="Octubre">Octubre</option>
-                                           <option value="Noviembre">Noviembre</option>
-                                           <option value="Diciembre">Diciembre</option>
-                                       </select>
-                                   </div>
+/* Column colour themes */
+.kb-col--pendiente    .kb-col__head { background: var(--kb-color-pendiente);    color: #fff; }
+.kb-col--progreso     .kb-col__head { background: var(--kb-color-progreso);     color: #fff; }
+.kb-col--revision     .kb-col__head { background: var(--kb-color-revision);     color: #1a1a2e; }
+.kb-col--revision     .kb-col__head .kb-badge { background: rgba(0,0,0,.12); color: #1a1a2e; }
+.kb-col--impedimentos .kb-col__head { background: var(--kb-color-impedimentos); color: #fff; }
+.kb-col--completados  .kb-col__head { background: var(--kb-color-completados);  color: #fff; }
 
-                                 
-                               </div>
-                               <div class="modal-footer">
-                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                   <button type="submit" class="btn btn-primary">Aplicar Filtros</button>
-                               </div>
-                           </form>
-                       </div>
-                   </div>
-               </div>
-           </div>
-           
-            <div class="row">
-                <!-- Columna de PENDIENTE -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
-                    <h4 class="bg-secondary text-white text-center">PENDIENTE</h4>
-                    <div class="kanban-column bg-light p-2" id="pendiente" data-estado="PENDIENTE" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for tarea in tareas_PENDIENTE %}
-                        <hr style="border: 1px solid black; width: 80%;">
-                        <div class="kanban-item mb-2" draggable="true" ondragstart="drag(event)" id="{{ tarea.id }}">
-                            <strong>{{ tarea.codigo_proyecto }}</strong> - {{ tarea.titulo }}<br>
-                            <small>{{ tarea.descripcion }}</small><br>
-                            <strong>Fecha Inicio:</strong> {{ tarea.fecha_inicio }}<br>
-                            <strong>Fecha Fin:</strong> {{ tarea.fecha_fin }}<br>
-                            <strong>Responsable:</strong> {{ tarea.responsable }}<br>
-                            <strong>Horas dedicadas:</strong> {{ tarea.horas_dedicadas }}<br>
-                            <strong>Horas estimadas:</strong> {{ tarea.horas_estimadas }}
-                        </div>
-                        <hr style="border: 1px solid black; width: 80%;">
-                        {% endfor %}
-                    </div>
-                    <button class="btn btn-light btn-expand justify-content" data-bs-toggle="modal" data-bs-target="#tareasform" type="button" onclick="limpiarFormulario();generarCodigoUnico();">+ Agregar tarea</button>
-                </div>
+.kb-col__body {
+    flex: 1;
+    padding: 0.5rem;
+    min-height: 160px;
+    transition: background var(--kb-transition), outline var(--kb-transition);
+}
 
-                <!-- Columna de PROGRESO -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
-                    <h4 class="bg-primary text-white text-center">PROGRESO</h4>
-                    <div class="kanban-column bg-light p-2" id="progreso" data-estado="PROGRESO" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for tarea in tareas_PROGRESO %}
-                        <hr style="border: 1px solid black; width: 80%;">
-                        <div class="kanban-item mb-2" draggable="true" ondragstart="drag(event)" id="{{ tarea.id }}">
-                            <strong>{{ tarea.codigo_proyecto }}</strong> - {{ tarea.titulo }}<br>
-                            <small>{{ tarea.descripcion }}</small><br>
-                            <strong>Fecha Inicio:</strong> {{ tarea.fecha_inicio }}<br>
-                            <strong>Fecha Fin:</strong> {{ tarea.fecha_fin }}<br>
-                            <strong>Responsable:</strong> {{ tarea.responsable }}<br>
-                            <strong>Horas dedicadas:</strong> {{ tarea.horas_dedicadas }}<br>
-                            <strong>Horas estimadas:</strong> {{ tarea.horas_estimadas }}
-                        </div>
-                        <hr style="border: 1px solid black; width: 80%;">
-                        {% endfor %}
-                    </div>
-                </div>
+.kb-col__body.drag-over {
+    background: rgba(78,115,223,.07);
+    outline: 2px dashed #4e73df;
+    outline-offset: -3px;
+}
 
-                <!-- Columna de REVISIÓN -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
-                    <h4 class="bg-warning text-dark text-center">REVISIÓN</h4>
-                    <div class="kanban-column bg-light p-2" id="revision" data-estado="REVISIÓN" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for tarea in tareas_REVISIÓN %}
-                        <hr style="border: 1px solid black; width: 80%;">
-                        <div class="kanban-item mb-2" draggable="true" ondragstart="drag(event)" id="{{ tarea.id }}">
-                            <strong>{{ tarea.codigo_proyecto }}</strong> - {{ tarea.titulo }}<br>
-                            <small>{{ tarea.descripcion }}</small><br>
-                            <strong>Fecha Inicio:</strong> {{ tarea.fecha_inicio }}<br>
-                            <strong>Fecha Fin:</strong> {{ tarea.fecha_fin }}<br>
-                            <strong>Responsable:</strong> {{ tarea.responsable }}<br>
-                            <strong>Horas dedicadas:</strong> {{ tarea.horas_dedicadas }}<br>
-                            <strong>Horas estimadas:</strong> {{ tarea.horas_estimadas }}
-                        </div>
-                        <hr style="border: 1px solid black; width: 80%;">
-                        {% endfor %}
-                    </div>
-                </div>
+.kb-col__foot {
+    padding: 0.4rem 0.5rem 0.6rem;
+}
 
-                <!-- Columna de IMPEDIMENTOS -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
-                    <h4 class="bg-danger text-white text-center">IMPEDIMENTOS</h4>
-                    <div class="kanban-column bg-light p-2" id="impedimentos" data-estado="IMPEDIMENTOS" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for tarea in tareas_IMPEDIMENTOS %}
-                        <hr style="border: 1px solid black; width: 80%;">
-                        <div class="kanban-item mb-2" draggable="true" ondragstart="drag(event)" id="{{ tarea.id }}">
-                            <strong>{{ tarea.codigo_proyecto }}</strong> - {{ tarea.titulo }}<br>
-                            <small>{{ tarea.descripcion }}</small><br>
-                            <strong>Fecha Inicio:</strong> {{ tarea.fecha_inicio }}<br>
-                            <strong>Fecha Fin:</strong> {{ tarea.fecha_fin }}<br>
-                            <strong>Responsable:</strong> {{ tarea.responsable }}<br>
-                            <strong>Horas dedicadas:</strong> {{ tarea.horas_dedicadas }}<br>
-                            <strong>Horas estimadas:</strong> {{ tarea.horas_estimadas }}
-                        </div>
-                        <hr style="border: 1px solid black; width: 80%;">
-                        {% endfor %}
-                    </div>
-                </div>
-                {% if session['username'] == "admin" %} 
-                <!-- Columna de COMPLETADOS -->
-                <div class="col-12 col-sm-6 col-md-4 col-lg-2 mb-3">
-                    <h4 class="bg-success text-white text-center">COMPLETADOS</h4>
-                    <div class="kanban-column bg-light p-2" id="completados" data-estado="COMPLETADOS" ondrop="drop(event)" ondragover="allowDrop(event)">
-                        {% for tarea in tareas_COMPLETADOS %}
-                        <hr style="border: 1px solid black; width: 80%;">
-                        <div class="kanban-item mb-2" draggable="true" ondragstart="drag(event)" id="{{ tarea.id }}">
-                            <strong>{{ tarea.codigo_proyecto }}</strong> - {{ tarea.titulo }}<br>
-                            <small>{{ tarea.descripcion }}</small><br>
-                            <strong>Fecha Inicio:</strong> {{ tarea.fecha_inicio }}<br>
-                            <strong>Fecha Fin:</strong> {{ tarea.fecha_fin }}<br>
-                            <strong>Responsable:</strong> {{ tarea.responsable }}<br>
-                            <strong>Horas dedicadas:</strong> {{ tarea.horas_dedicadas }}<br>
-                            <strong>Horas estimadas:</strong> {{ tarea.horas_estimadas }}
-                        </div>
-                        <hr style="border: 1px solid black; width: 80%;">
-                        {% endfor %}
+.kb-col__add {
+    width: 100%;
+    background: transparent;
+    border: 1px dashed #d1d3e2;
+    color: #858796;
+    border-radius: var(--kb-radius);
+    padding: 0.35rem 0;
+    font-size: 0.78rem;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    transition: all var(--kb-transition);
+}
+.kb-col__add:hover {
+    background: #fff;
+    border-color: #4e73df;
+    color: #4e73df;
+}
+
+/* ── Card ── */
+.kb-card {
+    background: #fff;
+    border-radius: var(--kb-radius);
+    border: 1px solid var(--kb-border);
+    border-left-width: 4px;
+    padding: 0.7rem 0.75rem 0.55rem;
+    margin-bottom: 0.4rem;
+    cursor: grab;
+    user-select: none;
+    position: relative;
+    transition: transform var(--kb-transition), box-shadow var(--kb-transition), opacity var(--kb-transition);
+}
+.kb-card:hover                            { box-shadow: var(--kb-shadow-hover); transform: translateY(-1px); }
+.kb-card.dragging                         { opacity: .45; cursor: grabbing; transform: rotate(1.5deg) scale(1.02); }
+
+/* Left border by estado */
+.kb-card[data-estado="PENDIENTE"]         { border-left-color: var(--kb-color-pendiente); }
+.kb-card[data-estado="PROGRESO"]          { border-left-color: var(--kb-color-progreso); }
+.kb-card[data-estado="REVISIÓN"]          { border-left-color: var(--kb-color-revision); }
+.kb-card[data-estado="IMPEDIMENTOS"]      { border-left-color: var(--kb-color-impedimentos); }
+.kb-card[data-estado="COMPLETADOS"]       { border-left-color: var(--kb-color-completados); }
+
+/* Active timer indicator */
+.kb-card--timing { border-left-color: var(--kb-color-progreso) !important; }
+.kb-card--timing::after {
+    content: '';
+    position: absolute;
+    top: .45rem; right: .5rem;
+    width: 7px; height: 7px;
+    background: var(--kb-color-progreso);
+    border-radius: 50%;
+    animation: kb-pulse 1.4s ease-in-out infinite;
+}
+@keyframes kb-pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%     { opacity:.3; transform:scale(.6); }
+}
+
+/* Card header row */
+.kb-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: .3rem;
+    margin-bottom: .3rem;
+}
+.kb-card__code {
+    font-size: .68rem;
+    color: #858796;
+    font-weight: 700;
+    letter-spacing: .02em;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.kb-card__actions {
+    display: flex;
+    gap: .15rem;
+    opacity: 0;
+    transition: opacity var(--kb-transition);
+    flex-shrink: 0;
+}
+.kb-card:hover .kb-card__actions { opacity: 1; }
+
+.kb-act {
+    background: transparent;
+    border: none;
+    padding: .15rem .3rem;
+    border-radius: .25rem;
+    font-size: .7rem;
+    cursor: pointer;
+    color: #adb5bd;
+    line-height: 1;
+    transition: all var(--kb-transition);
+}
+.kb-act:hover         { background: #eaecf4; }
+.kb-act.edit:hover    { color: #4e73df; }
+.kb-act.delete:hover  { color: #e74a3b; }
+
+/* Card body */
+.kb-card__title {
+    font-size: .85rem;
+    font-weight: 700;
+    color: #3a3b45;
+    margin-bottom: .25rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.35;
+}
+.kb-card__desc {
+    font-size: .75rem;
+    color: #858796;
+    margin-bottom: .45rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+}
+
+/* Progress */
+.kb-progress {
+    margin-bottom: .4rem;
+}
+.kb-progress .progress {
+    height: 4px;
+    border-radius: 2px;
+    background: #eaecf4;
+    margin-bottom: .15rem;
+}
+.kb-progress__label {
+    font-size: .68rem;
+    color: #adb5bd;
+}
+
+/* Card footer */
+.kb-card__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .4rem;
+    margin-bottom: .45rem;
+}
+.kb-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #4e73df;
+    color: #fff;
+    font-size: .62rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0;
+}
+.kb-card__meta {
+    font-size: .68rem;
+    color: #adb5bd;
+    display: flex;
+    align-items: center;
+    gap: .2rem;
+}
+
+/* ── Timer row ── */
+.kb-card__timer {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    padding-top: .4rem;
+    border-top: 1px solid #f0f1f7;
+}
+.kb-timer-display {
+    font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+    font-size: .76rem;
+    color: #adb5bd;
+    flex: 1;
+    letter-spacing: .02em;
+    transition: color var(--kb-transition);
+}
+.kb-card--timing .kb-timer-display {
+    color: var(--kb-color-progreso);
+    font-weight: 700;
+}
+.kb-timer-btn {
+    background: transparent;
+    border: 1px solid #e3e6f0;
+    color: #adb5bd;
+    padding: .15rem .42rem;
+    border-radius: .25rem;
+    font-size: .7rem;
+    cursor: pointer;
+    transition: all var(--kb-transition);
+    line-height: 1.5;
+    font-family: 'Nunito', sans-serif;
+}
+.kb-timer-btn:hover             { background: #eaecf4; border-color: #4e73df; color: #4e73df; }
+.kb-timer-btn--running          { background: #4e73df; border-color: #4e73df; color: #fff; }
+.kb-timer-btn--running:hover    { background: #2e59d9; }
+
+.kb-timer-save {
+    background: transparent;
+    border: none;
+    color: #d1d3e2;
+    font-size: .68rem;
+    cursor: pointer;
+    padding: .15rem .28rem;
+    border-radius: .2rem;
+    transition: all var(--kb-transition);
+    line-height: 1;
+}
+.kb-timer-save:hover { color: #1cc88a; background: #eaecf4; }
+
+/* ── Stat pills in page header ── */
+.kb-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    background: #fff;
+    border: 1px solid var(--kb-border);
+    border-radius: var(--kb-radius);
+    padding: .3rem .7rem;
+    font-size: .78rem;
+    font-weight: 600;
+    color: #5a5c69;
+    box-shadow: 0 1px 3px rgba(0,0,0,.05);
+}
+</style>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE HEADER
+══════════════════════════════════════════════════════════════════ -->
+<div class="d-sm-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+    <div>
+        <h1 class="h3 mb-0" style="color:#3a3b45;font-weight:700;">
+            <i class="fas fa-columns me-2 text-primary"></i>Tablero de Proyectos
+        </h1>
+        <small class="text-muted">Gestión visual de tareas por estado</small>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        <!-- Stats pills -->
+        <span class="kb-stat">
+            <i class="fas fa-tasks text-primary"></i>
+            {{ (tareas_PENDIENTE|length) + (tareas_PROGRESO|length) + (tareas_REVISIÓN|length) + (tareas_IMPEDIMENTOS|length) + (tareas_COMPLETADOS|length) }} tareas
+        </span>
+        <span class="kb-stat">
+            <i class="fas fa-clock text-warning"></i>
+            {{ total_horas_ejecucion }}h ejecutadas
+        </span>
+        <!-- Actions -->
+        <button class="btn btn-sm btn-outline-secondary shadow-sm" onclick="location.reload()">
+            <i class="fas fa-sync-alt me-1"></i>Refrescar
+        </button>
+        <button class="btn btn-sm btn-outline-primary shadow-sm"
+                data-bs-toggle="modal" data-bs-target="#filtroModal">
+            <i class="fas fa-filter me-1"></i>Filtros
+        </button>
+        <button class="btn btn-sm btn-primary shadow-sm"
+                onclick="abrirModalNuevaTarea('PENDIENTE')">
+            <i class="fas fa-plus me-1"></i>Nueva Tarea
+        </button>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     KANBAN BOARD
+══════════════════════════════════════════════════════════════════ -->
+<div class="kb-wrapper">
+<div class="kb-board">
+
+    <!-- ─── PENDIENTE ─── -->
+    <div class="kb-col kb-col--pendiente">
+        <div class="kb-col__head">
+            <span><i class="fas fa-clock me-1"></i>Pendiente</span>
+            <span class="kb-badge">{{ tareas_PENDIENTE|length }}</span>
+        </div>
+        <div class="kb-col__body kanban-column"
+             id="pendiente" data-estado="PENDIENTE"
+             ondrop="drop(event)" ondragover="allowDrop(event)"
+             ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            {% for tarea in tareas_PENDIENTE %}
+            {% if tarea.horas_estimadas and tarea.horas_estimadas > 0 %}
+                {% set pct = (tarea.horas_dedicadas / tarea.horas_estimadas * 100)|int %}
+                {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+            {% else %}
+                {% set pct = 0 %}
+            {% endif %}
+            <div class="kb-card"
+                 id="{{ tarea.id }}"
+                 draggable="true"
+                 ondragstart="drag(event)"
+                 data-estado="{{ tarea.estado }}">
+                <div class="kb-card__top">
+                    <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
+                        <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
+                    </span>
+                    <div class="kb-card__actions">
+                        <button class="kb-act edit"
+                                onclick="abrirModalEditarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Editar tarea">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        {% if session['username'] == "admin" %}
+                        <button class="kb-act delete"
+                                onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Eliminar tarea">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                         {% endif %}
                     </div>
                 </div>
+                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                {% if tarea.descripcion %}
+                <div class="kb-card__desc">{{ tarea.descripcion }}</div>
+                {% endif %}
+                <div class="kb-progress">
+                    <div class="progress">
+                        <div class="progress-bar {% if pct < 50 %}bg-primary{% elif pct < 80 %}bg-warning{% else %}bg-success{% endif %}"
+                             style="width:{{ pct }}%"></div>
+                    </div>
+                    <span class="kb-progress__label">{{ tarea.horas_dedicadas }}h / {{ tarea.horas_estimadas }}h estimadas ({{ pct }}%)</span>
+                </div>
+                <div class="kb-card__foot">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="kb-avatar" title="{{ tarea.responsable }}">
+                            {{ tarea.responsable[0]|upper if tarea.responsable else '?' }}
+                        </div>
+                        <span style="font-size:.72rem;color:#5a5c69;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                              title="{{ tarea.responsable }}">{{ tarea.responsable }}</span>
+                    </div>
+                    <span class="kb-card__meta">
+                        <i class="fas fa-calendar-alt"></i>
+                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                    </span>
+                </div>
+                <div class="kb-card__timer">
+                    <i class="fas fa-stopwatch" style="color:#d1d3e2;font-size:.68rem;"></i>
+                    <span class="kb-timer-display" data-id="{{ tarea.id }}">00:00:00</span>
+                    <button class="kb-timer-btn" data-id="{{ tarea.id }}"
+                            onclick="TimerManager.toggle({{ tarea.id }}); event.stopPropagation();"
+                            title="Iniciar / Pausar cronómetro">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="kb-timer-save" data-id="{{ tarea.id }}"
+                            onclick="guardarTiempoTimer({{ tarea.id }}); event.stopPropagation();"
+                            title="Guardar tiempo">
+                        <i class="fas fa-save"></i>
+                    </button>
+                </div>
             </div>
+            {% endfor %}
+        </div>
+        <div class="kb-col__foot">
+            <button class="kb-col__add" onclick="abrirModalNuevaTarea('PENDIENTE')">
+                <i class="fas fa-plus me-1"></i>Agregar tarea
+            </button>
         </div>
     </div>
 
-    <!-- Modal para Crear/Editar Tareas -->
-    <div class="modal fade" id="tareasform" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Registrar tarea</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" ></button>
-            </div>
-            <div class="modal-body">
-              <!-- Formulario para Crear/Editar tareas -->
-              <form id="formTarea" method="POST">
-                <input type="hidden" id="tareaId" name="tareaId" />
-
-                <div class="form-group">
-                    <label for="Empresa">Empresa</label>
-                <select class="form-control" id="Cempresa" name="Cempresa" required>
-                    <option value="" disabled selected>Selecciona la empresa</option>
-                    {% for empresa_item in empresas %}
-                    <option value="{{empresa_item.empresa}}">{{ empresa_item.empresa }}</option>
-                    {% endfor %}
-                </select>
-             </div>
-
-                <div class="form-group">
-                    <label for="Proyecto">Proyecto</label>
-                <select class="form-control" id="codigo_proyecto" name="codigo_proyecto" required>
-                    <option value="" disabled selected>Selecciona el proyecto</option>
-                    {% for proyecto in proyectos %}
-                    <option value="{{ proyecto.nombre_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-                <div class="form-group">
-                    <label for="codigo_tarea">Código Tarea</label>
-                    <input type="text" class="form-control" id="codigo_tarea" name="codigo_tarea" onclick="generarCodigoUnico()" required>
-                </div>
-                <div class="form-group">
-                    <label for="titulo">Título</label>
-                    <input type="text" class="form-control" id="titulo" name="titulo" required>
-                </div>
-                <div class="form-group">
-                    <label for="descripcion">Descripción</label>
-                    <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="fecha_inicio">Fecha Inicio</label>
-                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
-                </div>
-                <div class="form-group">
-                    <label for="fecha_fin">Fecha Fin</label>
-                    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
-                </div>
-                <div class="form-group">
-                    <label for="horas_estimadas">Horas Estimadas</label>
-                    <input type="number" class="form-control" id="horas_estimadas" name="horas_estimadas" required>
-                </div>
-                <div class="form-group">
-                    <label for="horas_dedicadas">Horas Dedicadas</label>
-                    <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas" required>
-                </div>
-                <div class="form-group">
-                    <label for="estado">Estado</label>
-                    <!-- Botón que cambia de color dinámicamente según el estado seleccionado -->
-                    <div class="input-group">
-                        <button id="estadoButton" class="btn btn-secondary w-100 text-start" type="button" disabled>
-                            Selecciona un estado
+    <!-- ─── PROGRESO ─── -->
+    <div class="kb-col kb-col--progreso">
+        <div class="kb-col__head">
+            <span><i class="fas fa-spinner me-1"></i>En Progreso</span>
+            <span class="kb-badge">{{ tareas_PROGRESO|length }}</span>
+        </div>
+        <div class="kb-col__body kanban-column"
+             id="progreso" data-estado="PROGRESO"
+             ondrop="drop(event)" ondragover="allowDrop(event)"
+             ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            {% for tarea in tareas_PROGRESO %}
+            {% if tarea.horas_estimadas and tarea.horas_estimadas > 0 %}
+                {% set pct = (tarea.horas_dedicadas / tarea.horas_estimadas * 100)|int %}
+                {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+            {% else %}
+                {% set pct = 0 %}
+            {% endif %}
+            <div class="kb-card"
+                 id="{{ tarea.id }}"
+                 draggable="true"
+                 ondragstart="drag(event)"
+                 data-estado="{{ tarea.estado }}">
+                <div class="kb-card__top">
+                    <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
+                        <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
+                    </span>
+                    <div class="kb-card__actions">
+                        <button class="kb-act edit"
+                                onclick="abrirModalEditarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Editar tarea">
+                            <i class="fas fa-pen"></i>
                         </button>
-                        <select class="form-control" id="Cestado" name="Cestado" required onchange="cambiarColorEstado()" required>
-                            <option value="" disabled selected>Selecciona un estado</option>
-                            <option value="PENDIENTE">PENDIENTE</option>
-                            <option value="PROGRESO">PROGRESO</option>
-                            <option value="REVISIÓN">REVISIÓN</option>
-                            <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
-                            {% if session['username'] == "admin" %} 
-                            <option value="COMPLETADOS">COMPLETADOS</option>
-                            {% endif %}
-                        </select>
+                        {% if session['username'] == "admin" %}
+                        <button class="kb-act delete"
+                                onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Eliminar tarea">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        {% endif %}
                     </div>
                 </div>
-                
-                <script>
-                    function cambiarColorEstado() {
-                        const estadoSelect = document.getElementById("Cestado");
-                        const estadoButton = document.getElementById("estadoButton");
-                        const selectedEstado = estadoSelect.value;
-                
-                        // Reiniciar clases de botón
-                        estadoButton.className = "btn w-100 text-start";
-                
-                        // Aplicar la clase correcta según el estado seleccionado
-                        switch (selectedEstado) {
-                            case 'PENDIENTE':
-                                estadoButton.classList.add('btn-secondary');
-                                break;
-                            case 'PROGRESO':
-                                estadoButton.classList.add('btn-primary');
-                                break;
-                            case 'REVISIÓN':
-                                estadoButton.classList.add('btn-warning', 'text-dark');
-                                break;
-                            case 'IMPEDIMENTOS':
-                                estadoButton.classList.add('btn-danger');
-                                break;
-                            case 'COMPLETADOS':
-                                estadoButton.classList.add('btn-success');
-                                break;
-                            default:
-                                estadoButton.classList.add('btn-secondary');
-                        }
-                
-                        // Cambiar el texto del botón al estado seleccionado
-                        estadoButton.textContent = selectedEstado;
-                    }
-                </script>
-                
-                <div class="form-group">
-                    <label for="responsable">Responsable</label>
-                    <select class="form-control" id="Cresponsable" name="Cresponsable" required>
-                        <option value="" disabled selected>Selecciona el responsable</option>
-                        {% for usuario in usuarios %}
-                        <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">{{ usuario.nombres }} {{ usuario.apellidos }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                {% if tarea.descripcion %}
+                <div class="kb-card__desc">{{ tarea.descripcion }}</div>
+                {% endif %}
+                <div class="kb-progress">
+                    <div class="progress">
+                        <div class="progress-bar {% if pct < 50 %}bg-primary{% elif pct < 80 %}bg-warning{% else %}bg-success{% endif %}"
+                             style="width:{{ pct }}%"></div>
+                    </div>
+                    <span class="kb-progress__label">{{ tarea.horas_dedicadas }}h / {{ tarea.horas_estimadas }}h estimadas ({{ pct }}%)</span>
                 </div>
-
-                <div class="form-group">
-                    <label for="responsable">Tipo de consumo</label>
-                    <select class="form-control" id="consumo" name="consumo" required>
-                        <option value="" disabled selected>Selecciona el tipo de consumo</option>
-                        <option value="Reuniones" selected>Reuniones</option>
-                        <option value="Desarrollo">Desarrollo</option>
-                        <option value="Desarrollo por control de cambio">Desarrollo por control de cambio</option>
-                        <option value="Soporte">Soporte</option>
-                        <option value="Oportunidad de mejora">Oportunidad de mejora</option>
-                    </select>
+                <div class="kb-card__foot">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="kb-avatar" title="{{ tarea.responsable }}">
+                            {{ tarea.responsable[0]|upper if tarea.responsable else '?' }}
+                        </div>
+                        <span style="font-size:.72rem;color:#5a5c69;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                              title="{{ tarea.responsable }}">{{ tarea.responsable }}</span>
+                    </div>
+                    <span class="kb-card__meta">
+                        <i class="fas fa-calendar-alt"></i>
+                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                    </span>
                 </div>
-
-                <div class="form-group">
-                    <label for="mes">Mes</label>
-                    <select class="form-control" id="mes" name="mes" required>
-                        <option value="" disabled selected>Selecciona el mes</option>
-                        <option value="Enero">Enero</option>
-                        <option value="Febrero">Febrero</option>
-                        <option value="Marzo">Marzo</option>
-                        <option value="Abril">Abril</option>
-                        <option value="Mayo">Mayo</option>
-                        <option value="Junio">Junio</option>
-                        <option value="Julio">Julio</option>
-                        <option value="Agosto">Agosto</option>
-                        <option value="Septiembre">Septiembre</option>
-                        <option value="Octubre">Octubre</option>
-                        <option value="Noviembre">Noviembre</option>
-                        <option value="Diciembre">Diciembre</option>
-                    </select>
+                <div class="kb-card__timer">
+                    <i class="fas fa-stopwatch" style="color:#d1d3e2;font-size:.68rem;"></i>
+                    <span class="kb-timer-display" data-id="{{ tarea.id }}">00:00:00</span>
+                    <button class="kb-timer-btn" data-id="{{ tarea.id }}"
+                            onclick="TimerManager.toggle({{ tarea.id }}); event.stopPropagation();"
+                            title="Iniciar / Pausar cronómetro">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="kb-timer-save" data-id="{{ tarea.id }}"
+                            onclick="guardarTiempoTimer({{ tarea.id }}); event.stopPropagation();"
+                            title="Guardar tiempo">
+                        <i class="fas fa-save"></i>
+                    </button>
                 </div>
-
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Guardar</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-              </form>
             </div>
-          </div>
+            {% endfor %}
+        </div>
+        <div class="kb-col__foot">
+            <button class="kb-col__add" onclick="abrirModalNuevaTarea('PROGRESO')">
+                <i class="fas fa-plus me-1"></i>Agregar tarea
+            </button>
         </div>
     </div>
 
-    <script>
-        function showDeleteIcon(id) {
-            document.getElementById('delete-icon-' + id).style.display = 'inline';
-        }
-    
-        function hideDeleteIcon(id) {
-            document.getElementById('delete-icon-' + id).style.display = 'none';
-        }
-    
-        function editarTarea(id) {
-            // Obtener los detalles de la tarea por ID y rellenar el formulario para editar
-            fetch(`/tareas/${id}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('tareaId').value = data.id;
-                document.getElementById('Cempresa').value = data.empresa;
-                document.getElementById('codigo_proyecto').value = data.codigo_proyecto;
-                document.getElementById('codigo_tarea').value = data.codigo_tarea;
-                document.getElementById('titulo').value = data.titulo;
-                document.getElementById('descripcion').value = data.descripcion;
-                document.getElementById('fecha_inicio').value = data.fecha_inicio;
-                document.getElementById('fecha_fin').value = data.fecha_fin || '';
-                document.getElementById('horas_estimadas').value = data.horas_estimadas;
-                document.getElementById('horas_dedicadas').value = data.horas_dedicadas;
-                document.getElementById('fecha_facturacion').value = data.fecha_facturacion || '';
-                document.getElementById('Cestado').value = data.estado;
-                document.getElementById('Cresponsable').value = data.responsable;
-                document.getElementById('consumo').value = data.tipo_consumo;
-                document.getElementById('mes').value = data.mes;
-            });
-        }
-    
-        document.getElementById('formTarea').addEventListener('submit', function(event) {
-            event.preventDefault();
-    
-            const id = document.getElementById('tareaId').value;
-            const method = id ? 'PUT' : 'POST';  // Usar PUT si es edición, POST si es creación
-            const url = id ? `/tareas/${id}` : '/outtareas';
-    
-            fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    empresa: document.getElementById('Cempresa').value,
-                    codigo_proyecto: document.getElementById('codigo_proyecto').value,
-                    codigo_tarea: document.getElementById('codigo_tarea').value,
-                    titulo: document.getElementById('titulo').value,
-                    descripcion: document.getElementById('descripcion').value,
-                    fecha_inicio: document.getElementById('fecha_inicio').value,
-                    fecha_fin: document.getElementById('fecha_fin').value,
-                    horas_estimadas: document.getElementById('horas_estimadas').value,
-                    horas_dedicadas: document.getElementById('horas_dedicadas').value,
-                    estado: document.getElementById('Cestado').value,
-                    responsable: document.getElementById('Cresponsable').value,
-                    tipo_consumo: document.getElementById('consumo').value,
-                    mes: document.getElementById('mes').value
-                })
-            })
-            .then(response => {
-                if (response.ok) {
-                    Swal.fire(
-                        '¡Éxito!',
-                        'La tarea ha sido guardada correctamente.',
-                        'success'
-                    ).then(() => {
-                        location.reload();
-                    });
-                } else {
-                    Swal.fire(
-                        'Error',
-                        'Ocurrió un problema al guardar la tarea.',
-                        'error'
-                    );
-                }
-            });
-        });
-    
-        function limpiarFormulario() {
-            document.getElementById('formTarea').reset();
-            document.getElementById('tareaId').value = '';
-        }
-    
-        function generarCodigoUnico() {
-            const now = new Date();
-            const timestamp = now.getFullYear().toString() + 
-                              (now.getMonth() + 1).toString().padStart(2, '0') + 
-                              now.getDate().toString().padStart(2, '0') + 
-                              now.getHours().toString().padStart(2, '0') + 
-                              now.getMinutes().toString().padStart(2, '0') + 
-                              now.getSeconds().toString().padStart(2, '0') + 
-                              now.getMilliseconds().toString().padStart(3, '0');
-            
-            const randomPart = Math.random().toString(36).substring(2, 10);
-    
-            const uniqueCode = `${timestamp}-${randomPart}`;
-    
-            document.getElementById('codigo_tarea').value = uniqueCode;  // Asignar el código al input de 'codigo'
-            return uniqueCode;
-        }
-    
-        {% if session['username'] == "admin" %}
-    
-        function eliminarTarea(id) {
-            Swal.fire({
-                title: '¿Estás seguro?',
-                text: "¡No podrás revertir esto!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Sí, eliminar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch(`/tareas/${id}`, {
-                        method: 'DELETE'
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            Swal.fire(
-                                '¡Eliminado!',
-                                'La tarea ha sido eliminada.',
-                                'success'
-                            ).then(() => {
-                                location.reload();
-                            });
-                        } else {
-                            Swal.fire(
-                                'Error',
-                                'Ocurrió un problema al eliminar la tarea.',
-                                'error'
-                            );
-                        }
-                    });
-                }
-            });
-        }
-    
-        {% else %}
-    
-        function eliminarTarea(id) {
-            Swal.fire(
-                'Acceso Denegado',
-                'No tienes permisos para borrar tareas.',
-                'error'
-            );
-        }
-    
-        {% endif %}
-    </script>
+    <!-- ─── REVISIÓN ─── -->
+    <div class="kb-col kb-col--revision">
+        <div class="kb-col__head">
+            <span><i class="fas fa-search me-1"></i>Revisión</span>
+            <span class="kb-badge" style="background:rgba(0,0,0,.12);color:#1a1a2e;">{{ tareas_REVISIÓN|length }}</span>
+        </div>
+        <div class="kb-col__body kanban-column"
+             id="revision" data-estado="REVISIÓN"
+             ondrop="drop(event)" ondragover="allowDrop(event)"
+             ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            {% for tarea in tareas_REVISIÓN %}
+            {% if tarea.horas_estimadas and tarea.horas_estimadas > 0 %}
+                {% set pct = (tarea.horas_dedicadas / tarea.horas_estimadas * 100)|int %}
+                {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+            {% else %}
+                {% set pct = 0 %}
+            {% endif %}
+            <div class="kb-card"
+                 id="{{ tarea.id }}"
+                 draggable="true"
+                 ondragstart="drag(event)"
+                 data-estado="{{ tarea.estado }}">
+                <div class="kb-card__top">
+                    <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
+                        <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
+                    </span>
+                    <div class="kb-card__actions">
+                        <button class="kb-act edit"
+                                onclick="abrirModalEditarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Editar tarea">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        {% if session['username'] == "admin" %}
+                        <button class="kb-act delete"
+                                onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Eliminar tarea">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                {% if tarea.descripcion %}
+                <div class="kb-card__desc">{{ tarea.descripcion }}</div>
+                {% endif %}
+                <div class="kb-progress">
+                    <div class="progress">
+                        <div class="progress-bar {% if pct < 50 %}bg-primary{% elif pct < 80 %}bg-warning{% else %}bg-success{% endif %}"
+                             style="width:{{ pct }}%"></div>
+                    </div>
+                    <span class="kb-progress__label">{{ tarea.horas_dedicadas }}h / {{ tarea.horas_estimadas }}h estimadas ({{ pct }}%)</span>
+                </div>
+                <div class="kb-card__foot">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="kb-avatar" title="{{ tarea.responsable }}">
+                            {{ tarea.responsable[0]|upper if tarea.responsable else '?' }}
+                        </div>
+                        <span style="font-size:.72rem;color:#5a5c69;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                              title="{{ tarea.responsable }}">{{ tarea.responsable }}</span>
+                    </div>
+                    <span class="kb-card__meta">
+                        <i class="fas fa-calendar-alt"></i>
+                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                    </span>
+                </div>
+                <div class="kb-card__timer">
+                    <i class="fas fa-stopwatch" style="color:#d1d3e2;font-size:.68rem;"></i>
+                    <span class="kb-timer-display" data-id="{{ tarea.id }}">00:00:00</span>
+                    <button class="kb-timer-btn" data-id="{{ tarea.id }}"
+                            onclick="TimerManager.toggle({{ tarea.id }}); event.stopPropagation();"
+                            title="Iniciar / Pausar cronómetro">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="kb-timer-save" data-id="{{ tarea.id }}"
+                            onclick="guardarTiempoTimer({{ tarea.id }}); event.stopPropagation();"
+                            title="Guardar tiempo">
+                        <i class="fas fa-save"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="kb-col__foot">
+            <button class="kb-col__add" onclick="abrirModalNuevaTarea('REVISIÓN')">
+                <i class="fas fa-plus me-1"></i>Agregar tarea
+            </button>
+        </div>
+    </div>
+
+    <!-- ─── IMPEDIMENTOS ─── -->
+    <div class="kb-col kb-col--impedimentos">
+        <div class="kb-col__head">
+            <span><i class="fas fa-exclamation-triangle me-1"></i>Impedimentos</span>
+            <span class="kb-badge">{{ tareas_IMPEDIMENTOS|length }}</span>
+        </div>
+        <div class="kb-col__body kanban-column"
+             id="impedimentos" data-estado="IMPEDIMENTOS"
+             ondrop="drop(event)" ondragover="allowDrop(event)"
+             ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            {% for tarea in tareas_IMPEDIMENTOS %}
+            {% if tarea.horas_estimadas and tarea.horas_estimadas > 0 %}
+                {% set pct = (tarea.horas_dedicadas / tarea.horas_estimadas * 100)|int %}
+                {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+            {% else %}
+                {% set pct = 0 %}
+            {% endif %}
+            <div class="kb-card"
+                 id="{{ tarea.id }}"
+                 draggable="true"
+                 ondragstart="drag(event)"
+                 data-estado="{{ tarea.estado }}">
+                <div class="kb-card__top">
+                    <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
+                        <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
+                    </span>
+                    <div class="kb-card__actions">
+                        <button class="kb-act edit"
+                                onclick="abrirModalEditarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Editar tarea">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        {% if session['username'] == "admin" %}
+                        <button class="kb-act delete"
+                                onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Eliminar tarea">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                {% if tarea.descripcion %}
+                <div class="kb-card__desc">{{ tarea.descripcion }}</div>
+                {% endif %}
+                <div class="kb-progress">
+                    <div class="progress">
+                        <div class="progress-bar {% if pct < 50 %}bg-primary{% elif pct < 80 %}bg-warning{% else %}bg-success{% endif %}"
+                             style="width:{{ pct }}%"></div>
+                    </div>
+                    <span class="kb-progress__label">{{ tarea.horas_dedicadas }}h / {{ tarea.horas_estimadas }}h estimadas ({{ pct }}%)</span>
+                </div>
+                <div class="kb-card__foot">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="kb-avatar" title="{{ tarea.responsable }}">
+                            {{ tarea.responsable[0]|upper if tarea.responsable else '?' }}
+                        </div>
+                        <span style="font-size:.72rem;color:#5a5c69;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                              title="{{ tarea.responsable }}">{{ tarea.responsable }}</span>
+                    </div>
+                    <span class="kb-card__meta">
+                        <i class="fas fa-calendar-alt"></i>
+                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                    </span>
+                </div>
+                <div class="kb-card__timer">
+                    <i class="fas fa-stopwatch" style="color:#d1d3e2;font-size:.68rem;"></i>
+                    <span class="kb-timer-display" data-id="{{ tarea.id }}">00:00:00</span>
+                    <button class="kb-timer-btn" data-id="{{ tarea.id }}"
+                            onclick="TimerManager.toggle({{ tarea.id }}); event.stopPropagation();"
+                            title="Iniciar / Pausar cronómetro">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="kb-timer-save" data-id="{{ tarea.id }}"
+                            onclick="guardarTiempoTimer({{ tarea.id }}); event.stopPropagation();"
+                            title="Guardar tiempo">
+                        <i class="fas fa-save"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="kb-col__foot">
+            <button class="kb-col__add" onclick="abrirModalNuevaTarea('IMPEDIMENTOS')">
+                <i class="fas fa-plus me-1"></i>Agregar tarea
+            </button>
+        </div>
+    </div>
+
+    {% if session['username'] == "admin" %}
+    <!-- ─── COMPLETADOS (solo admin) ─── -->
+    <div class="kb-col kb-col--completados">
+        <div class="kb-col__head">
+            <span><i class="fas fa-check-circle me-1"></i>Completados</span>
+            <span class="kb-badge">{{ tareas_COMPLETADOS|length }}</span>
+        </div>
+        <div class="kb-col__body kanban-column"
+             id="completados" data-estado="COMPLETADOS"
+             ondrop="drop(event)" ondragover="allowDrop(event)"
+             ondragenter="dragEnter(event)" ondragleave="dragLeave(event)">
+            {% for tarea in tareas_COMPLETADOS %}
+            {% if tarea.horas_estimadas and tarea.horas_estimadas > 0 %}
+                {% set pct = (tarea.horas_dedicadas / tarea.horas_estimadas * 100)|int %}
+                {% if pct > 100 %}{% set pct = 100 %}{% endif %}
+            {% else %}
+                {% set pct = 0 %}
+            {% endif %}
+            <div class="kb-card"
+                 id="{{ tarea.id }}"
+                 draggable="true"
+                 ondragstart="drag(event)"
+                 data-estado="{{ tarea.estado }}">
+                <div class="kb-card__top">
+                    <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
+                        <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
+                    </span>
+                    <div class="kb-card__actions">
+                        <button class="kb-act edit"
+                                onclick="abrirModalEditarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Editar tarea">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                        <button class="kb-act delete"
+                                onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
+                                title="Eliminar tarea">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                {% if tarea.descripcion %}
+                <div class="kb-card__desc">{{ tarea.descripcion }}</div>
+                {% endif %}
+                <div class="kb-progress">
+                    <div class="progress">
+                        <div class="progress-bar bg-success"
+                             style="width:{{ pct }}%"></div>
+                    </div>
+                    <span class="kb-progress__label">{{ tarea.horas_dedicadas }}h / {{ tarea.horas_estimadas }}h estimadas ({{ pct }}%)</span>
+                </div>
+                <div class="kb-card__foot">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="kb-avatar" style="background:#1cc88a;" title="{{ tarea.responsable }}">
+                            {{ tarea.responsable[0]|upper if tarea.responsable else '?' }}
+                        </div>
+                        <span style="font-size:.72rem;color:#5a5c69;max-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"
+                              title="{{ tarea.responsable }}">{{ tarea.responsable }}</span>
+                    </div>
+                    <span class="kb-card__meta">
+                        <i class="fas fa-calendar-alt"></i>
+                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                    </span>
+                </div>
+                <div class="kb-card__timer">
+                    <i class="fas fa-stopwatch" style="color:#d1d3e2;font-size:.68rem;"></i>
+                    <span class="kb-timer-display" data-id="{{ tarea.id }}">00:00:00</span>
+                    <button class="kb-timer-btn" data-id="{{ tarea.id }}"
+                            onclick="TimerManager.toggle({{ tarea.id }}); event.stopPropagation();"
+                            title="Iniciar / Pausar cronómetro">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <button class="kb-timer-save" data-id="{{ tarea.id }}"
+                            onclick="guardarTiempoTimer({{ tarea.id }}); event.stopPropagation();"
+                            title="Guardar tiempo">
+                        <i class="fas fa-save"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="kb-col__foot">
+            <button class="kb-col__add" onclick="abrirModalNuevaTarea('COMPLETADOS')">
+                <i class="fas fa-plus me-1"></i>Agregar tarea
+            </button>
+        </div>
+    </div>
+    {% endif %}
+
+</div><!-- /.kb-board -->
+</div><!-- /.kb-wrapper -->
 
 
-    
-     <!-- Scripts de Bootstrap y dependencias -->
-     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    
-    <!-- Script de arrastre -->
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL — FILTROS (Bootstrap 5)
+══════════════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="filtroModal" tabindex="-1" aria-labelledby="filtroModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#f8f9fc;border-bottom:1px solid #e3e6f0;">
+                <h5 class="modal-title fw-bold text-primary" id="filtroModalLabel">
+                    <i class="fas fa-filter me-2"></i>Filtros de Tablero
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="tablero">
+                    <div class="row g-3">
+                        <div class="col-sm-12 col-md-4">
+                            <label class="fw-semibold mb-1">Responsable</label>
+                            <select class="form-control" id="responsable_" name="responsable_">
+                                <option value="">Todos los responsables</option>
+                                {% for usuario in usuarios %}
+                                <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">
+                                    {{ usuario.nombres }} {{ usuario.apellidos }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <label class="fw-semibold mb-1">Empresa</label>
+                            <select class="form-control" id="empresa_" name="empresa_">
+                                <option value="">Todas las empresas</option>
+                                {% for proyecto_item in empresas %}
+                                <option value="{{ proyecto_item.empresa }}">{{ proyecto_item.empresa }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-sm-12 col-md-4">
+                            <label class="fw-semibold mb-1">Mes</label>
+                            <select class="form-control" id="mes_" name="mes_">
+                                <option value="">Todos los meses</option>
+                                <option value="Enero">Enero</option>
+                                <option value="Febrero">Febrero</option>
+                                <option value="Marzo">Marzo</option>
+                                <option value="Abril">Abril</option>
+                                <option value="Mayo">Mayo</option>
+                                <option value="Junio">Junio</option>
+                                <option value="Julio">Julio</option>
+                                <option value="Agosto">Agosto</option>
+                                <option value="Septiembre">Septiembre</option>
+                                <option value="Octubre">Octubre</option>
+                                <option value="Noviembre">Noviembre</option>
+                                <option value="Diciembre">Diciembre</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer px-0 pb-0 mt-3">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check me-1"></i>Aplicar Filtros
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     MODAL — CREAR / EDITAR TAREA (Bootstrap 5)
+══════════════════════════════════════════════════════════════════ -->
+<div class="modal fade" id="tareasform" tabindex="-1" aria-labelledby="tareasformLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#f8f9fc;border-bottom:1px solid #e3e6f0;">
+                <h5 class="modal-title fw-bold text-primary" id="tareasformLabel">
+                    <i class="fas fa-tasks me-2"></i><span id="modalTareasTitulo">Registrar Tarea</span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" style="min-height:300px;">
+                <form id="formTarea" method="POST">
+                    <input type="hidden" id="tareaId" name="tareaId">
+                    <input type="hidden" id="fecha_facturacion" name="fecha_facturacion">
+
+                    <div class="row g-3">
+                        <!-- Empresa -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Empresa <span class="text-danger">*</span></label>
+                            <select class="form-control" id="Cempresa" name="Cempresa" required>
+                                <option value="" disabled selected>Selecciona la empresa</option>
+                                {% for empresa_item in empresas %}
+                                <option value="{{ empresa_item.empresa }}">{{ empresa_item.empresa }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Proyecto -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Proyecto <span class="text-danger">*</span></label>
+                            <select class="form-control" id="codigo_proyecto" name="codigo_proyecto" required>
+                                <option value="" disabled selected>Selecciona el proyecto</option>
+                                {% for proyecto in proyectos %}
+                                <option value="{{ proyecto.nombre_proyecto }}">{{ proyecto.nombre_proyecto }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Código Tarea -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Código Tarea</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="codigo_tarea" name="codigo_tarea"
+                                       placeholder="Autogenerado" required readonly>
+                                <button type="button" class="btn btn-outline-secondary"
+                                        onclick="generarCodigoUnico()" title="Regenerar código">
+                                    <i class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Mes -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Mes <span class="text-danger">*</span></label>
+                            <select class="form-control" id="mes" name="mes" required>
+                                <option value="" disabled selected>Selecciona el mes</option>
+                                <option value="Enero">Enero</option>
+                                <option value="Febrero">Febrero</option>
+                                <option value="Marzo">Marzo</option>
+                                <option value="Abril">Abril</option>
+                                <option value="Mayo">Mayo</option>
+                                <option value="Junio">Junio</option>
+                                <option value="Julio">Julio</option>
+                                <option value="Agosto">Agosto</option>
+                                <option value="Septiembre">Septiembre</option>
+                                <option value="Octubre">Octubre</option>
+                                <option value="Noviembre">Noviembre</option>
+                                <option value="Diciembre">Diciembre</option>
+                            </select>
+                        </div>
+                        <!-- Título -->
+                        <div class="col-12">
+                            <label class="fw-semibold mb-1">Título <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="titulo" name="titulo"
+                                   placeholder="Nombre descriptivo de la tarea" required>
+                        </div>
+                        <!-- Descripción -->
+                        <div class="col-12">
+                            <label class="fw-semibold mb-1">Descripción <span class="text-danger">*</span></label>
+                            <textarea class="form-control" id="descripcion" name="descripcion"
+                                      rows="3" placeholder="Detalla el alcance de la tarea..." required></textarea>
+                        </div>
+                        <!-- Fechas -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Fecha Inicio <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Fecha Fin</label>
+                            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin">
+                        </div>
+                        <!-- Horas -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Horas Estimadas <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="horas_estimadas" name="horas_estimadas"
+                                   min="0" step="0.5" placeholder="0" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Horas Dedicadas <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas"
+                                   min="0" step="0.5" placeholder="0" required>
+                        </div>
+                        <!-- Estado -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Estado <span class="text-danger">*</span></label>
+                            <div class="d-flex gap-2">
+                                <select class="form-control" id="Cestado" name="Cestado" required
+                                        onchange="cambiarColorEstado()">
+                                    <option value="" disabled selected>Selecciona un estado</option>
+                                    <option value="PENDIENTE">PENDIENTE</option>
+                                    <option value="PROGRESO">PROGRESO</option>
+                                    <option value="REVISIÓN">REVISIÓN</option>
+                                    <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
+                                    {% if session['username'] == "admin" %}
+                                    <option value="COMPLETADOS">COMPLETADOS</option>
+                                    {% endif %}
+                                </select>
+                                <button id="estadoButton" class="btn btn-secondary" type="button" disabled
+                                        style="white-space:nowrap;min-width:110px;">
+                                    Estado
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Responsable -->
+                        <div class="col-md-6">
+                            <label class="fw-semibold mb-1">Responsable <span class="text-danger">*</span></label>
+                            <select class="form-control" id="Cresponsable" name="Cresponsable" required>
+                                <option value="" disabled selected>Selecciona el responsable</option>
+                                {% for usuario in usuarios %}
+                                <option value="{{ usuario.nombres }} {{ usuario.apellidos }}">
+                                    {{ usuario.nombres }} {{ usuario.apellidos }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <!-- Tipo de Consumo -->
+                        <div class="col-12">
+                            <label class="fw-semibold mb-1">Tipo de Consumo <span class="text-danger">*</span></label>
+                            <select class="form-control" id="consumo" name="consumo" required>
+                                <option value="" disabled selected>Selecciona el tipo</option>
+                                <option value="Reuniones">Reuniones</option>
+                                <option value="Desarrollo">Desarrollo</option>
+                                <option value="Desarrollo por control de cambio">Desarrollo por control de cambio</option>
+                                <option value="Soporte">Soporte</option>
+                                <option value="Oportunidad de mejora">Oportunidad de mejora</option>
+                            </select>
+                        </div>
+                    </div><!-- /.row -->
+
+                    <div class="d-flex justify-content-end gap-2 mt-4 pt-3 border-top">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Guardar Tarea
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════════════════════════════ -->
 <script>
-    function allowDrop(event) {
-        event.preventDefault();
-    }
+/* ──────────────────────────────────────────────────────────────
+   TIME TRACKER — persistencia en LocalStorage
+   Esquema por tarea: { accumulated: <segundos>, startedAt: <ms|null>, isRunning: <bool> }
+   Al actualizar la página el `startedAt` sigue siendo un timestamp absoluto,
+   por lo que el tiempo transcurrido se recalcula correctamente sin necesidad
+   de un servidor o WebSocket.
+   ────────────────────────────────────────────────────────────── */
+const TimerManager = {
+    _intervals: {},
 
-    function drag(event) {
-        event.dataTransfer.setData("tareaId", event.target.id);
-    }
+    _key(id) { return `fofigest_timer_${id}`; },
 
-    function drop(event) {
-        event.preventDefault();
-        const tareaId = event.dataTransfer.getData("tareaId");
-        const nuevoEstado = event.target.closest('.kanban-column').getAttribute('data-estado');
+    getState(id) {
+        try {
+            const raw = localStorage.getItem(this._key(id));
+            return raw ? JSON.parse(raw) : { accumulated: 0, startedAt: null, isRunning: false };
+        } catch { return { accumulated: 0, startedAt: null, isRunning: false }; }
+    },
 
-        // Mover la tarea al nuevo contenedor visualmente
-        event.target.appendChild(document.getElementById(tareaId));
+    _save(id, state) {
+        try { localStorage.setItem(this._key(id), JSON.stringify(state)); } catch {}
+    },
 
-        // Actualizar el estado de la tarea en el backend
-        fetch(`/actualizar_estado_tarea/${tareaId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                nuevo_estado: nuevoEstado
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                console.log('Estado actualizado correctamente');
-            } else {
-                console.error('Error al actualizar el estado');
+    getElapsed(id) {
+        const s = this.getState(id);
+        let total = s.accumulated || 0;
+        if (s.isRunning && s.startedAt) {
+            total += Math.floor((Date.now() - s.startedAt) / 1000);
+        }
+        return total;
+    },
+
+    formatTime(secs) {
+        const h = Math.floor(secs / 3600);
+        const m = Math.floor((secs % 3600) / 60);
+        const s = secs % 60;
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    },
+
+    start(id) {
+        const state = this.getState(id);
+        if (state.isRunning) return;
+        state.isRunning = true;
+        state.startedAt = Date.now();
+        this._save(id, state);
+        this._intervals[id] = setInterval(() => this._tick(id), 1000);
+        this._updateUI(id, true);
+    },
+
+    pause(id) {
+        const state = this.getState(id);
+        if (!state.isRunning) return;
+        state.accumulated = (state.accumulated || 0) + Math.floor((Date.now() - state.startedAt) / 1000);
+        state.isRunning = false;
+        state.startedAt = null;
+        this._save(id, state);
+        clearInterval(this._intervals[id]);
+        delete this._intervals[id];
+        this._updateDisplay(id);
+        this._updateUI(id, false);
+    },
+
+    toggle(id) {
+        const state = this.getState(id);
+        if (state.isRunning) this.pause(id);
+        else this.start(id);
+    },
+
+    _tick(id) { this._updateDisplay(id); },
+
+    _updateDisplay(id) {
+        const el = document.querySelector(`.kb-timer-display[data-id="${id}"]`);
+        if (el) el.textContent = this.formatTime(this.getElapsed(id));
+    },
+
+    _updateUI(id, isRunning) {
+        const btn = document.querySelector(`.kb-timer-btn[data-id="${id}"]`);
+        if (btn) {
+            btn.innerHTML = isRunning ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+            btn.classList.toggle('kb-timer-btn--running', isRunning);
+        }
+        const card = document.getElementById(String(id));
+        if (card) card.classList.toggle('kb-card--timing', isRunning);
+    },
+
+    /* Restaurar todos los timers al cargar la página */
+    init() {
+        document.querySelectorAll('.kb-timer-display').forEach(el => {
+            const id = parseInt(el.getAttribute('data-id'), 10);
+            if (!id) return;
+            const state = this.getState(id);
+            this._updateDisplay(id);
+            if (state.isRunning) {
+                this._updateUI(id, true);
+                this._intervals[id] = setInterval(() => this._tick(id), 1000);
             }
         });
     }
+};
+
+/* Guardar tiempo del timer como horas dedicadas (abre modal de edición pre-cargado) */
+async function guardarTiempoTimer(id) {
+    const elapsed = TimerManager.getElapsed(id);
+    if (elapsed === 0) {
+        Swal.fire('Sin tiempo', 'El cronómetro no ha registrado tiempo aún.', 'info');
+        return;
+    }
+    const hours = parseFloat((elapsed / 3600).toFixed(2));
+    const timeFormatted = TimerManager.formatTime(elapsed);
+
+    const result = await Swal.fire({
+        title: 'Guardar tiempo registrado',
+        html: `Tiempo acumulado: <strong>${timeFormatted}</strong><br>= <strong>${hours} horas</strong><br><br>
+               ¿Abrir el formulario de edición con este valor?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#4e73df',
+        confirmButtonText: '<i class="fas fa-edit me-1"></i>Editar y guardar',
+        cancelButtonText: 'Cancelar'
+    });
+
+    if (!result.isConfirmed) return;
+
+    await editarTarea(id);
+    document.getElementById('horas_dedicadas').value = hours;
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('tareasform')).show();
+}
+
+/* ──────────────────────────────────────────────────────────────
+   DRAG & DROP — HTML5 native (mejorado)
+   ────────────────────────────────────────────────────────────── */
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drag(event) {
+    /* Bloquear arrastre si el clic fue en un botón de acción */
+    if (event.target.closest('.kb-act') || event.target.closest('.kb-timer-btn') || event.target.closest('.kb-timer-save')) {
+        event.preventDefault();
+        return;
+    }
+    const card = event.currentTarget;
+    event.dataTransfer.setData('tareaId', card.id);
+    event.dataTransfer.effectAllowed = 'move';
+    /* Dar feedback visual ligero */
+    setTimeout(() => card.classList.add('dragging'), 0);
+}
+
+function dragEnter(event) {
+    event.preventDefault();
+    const col = event.currentTarget;
+    if (col.classList.contains('kanban-column')) col.classList.add('drag-over');
+}
+
+function dragLeave(event) {
+    const col = event.currentTarget;
+    /* Solo quitar cuando el cursor sale del área del contenedor */
+    if (!col.contains(event.relatedTarget)) col.classList.remove('drag-over');
+}
+
+function drop(event) {
+    event.preventDefault();
+    const tareaId = event.dataTransfer.getData('tareaId');
+    const targetCol = event.currentTarget.closest
+        ? event.currentTarget
+        : event.target.closest('.kanban-column');
+
+    if (!targetCol || !tareaId) return;
+
+    const nuevoEstado = targetCol.getAttribute('data-estado');
+    const card = document.getElementById(tareaId);
+    if (!card) return;
+
+    /* Mover visualmente */
+    targetCol.appendChild(card);
+    card.setAttribute('data-estado', nuevoEstado);
+
+    /* Limpiar visual de drag */
+    document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over'));
+    document.querySelectorAll('.kb-card').forEach(c => c.classList.remove('dragging'));
+
+    /* Persistir en backend */
+    fetch(`/actualizar_estado_tarea/${tareaId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nuevo_estado: nuevoEstado })
+    }).then(r => {
+        if (!r.ok) console.error('Error al actualizar estado en backend');
+    }).catch(e => console.error('Network error en drag:', e));
+}
+
+/* Limpiar clases de drag al soltar fuera de un drop target */
+document.addEventListener('dragend', () => {
+    document.querySelectorAll('.kb-card').forEach(c => c.classList.remove('dragging'));
+    document.querySelectorAll('.kanban-column').forEach(c => c.classList.remove('drag-over'));
+});
+
+/* ──────────────────────────────────────────────────────────────
+   CRUD — Tareas
+   ────────────────────────────────────────────────────────────── */
+function cambiarColorEstado() {
+    const select = document.getElementById('Cestado');
+    const btn    = document.getElementById('estadoButton');
+    const val    = select.value;
+
+    btn.className = 'btn w-100';
+    const map = {
+        'PENDIENTE':    'btn-secondary',
+        'PROGRESO':     'btn-primary',
+        'REVISIÓN':     'btn-warning text-dark',
+        'IMPEDIMENTOS': 'btn-danger',
+        'COMPLETADOS':  'btn-success'
+    };
+    (map[val] || 'btn-secondary').split(' ').forEach(c => btn.classList.add(c));
+    btn.textContent = val || 'Estado';
+}
+
+/* Abrir modal para nueva tarea pre-seleccionando el estado de la columna */
+function abrirModalNuevaTarea(estado) {
+    limpiarFormulario();
+    generarCodigoUnico();
+    document.getElementById('modalTareasTitulo').textContent = 'Registrar Tarea';
+    const select = document.getElementById('Cestado');
+    if (estado) { select.value = estado; cambiarColorEstado(); }
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('tareasform')).show();
+}
+
+/* Abrir modal en modo edición */
+function abrirModalEditarTarea(id) {
+    document.getElementById('modalTareasTitulo').textContent = 'Editar Tarea';
+    editarTarea(id).then(() => {
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('tareasform')).show();
+    });
+}
+
+/* Cargar datos de una tarea en el formulario (retorna Promise) */
+function editarTarea(id) {
+    return fetch(`/tareas/${id}`)
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('tareaId').value             = data.id;
+            document.getElementById('Cempresa').value            = data.empresa       || '';
+            document.getElementById('codigo_proyecto').value     = data.codigo_proyecto || '';
+            document.getElementById('codigo_tarea').value        = data.codigo_tarea  || '';
+            document.getElementById('titulo').value              = data.titulo        || '';
+            document.getElementById('descripcion').value         = data.descripcion   || '';
+            document.getElementById('fecha_inicio').value        = data.fecha_inicio  || '';
+            document.getElementById('fecha_fin').value           = data.fecha_fin     || '';
+            document.getElementById('horas_estimadas').value     = data.horas_estimadas || 0;
+            document.getElementById('horas_dedicadas').value     = data.horas_dedicadas || 0;
+            document.getElementById('fecha_facturacion').value   = data.fecha_facturacion || '';
+            document.getElementById('Cestado').value             = data.estado        || '';
+            document.getElementById('Cresponsable').value        = data.responsable   || '';
+            document.getElementById('consumo').value             = data.tipo_consumo  || '';
+            document.getElementById('mes').value                 = data.mes           || '';
+            cambiarColorEstado();
+        })
+        .catch(e => {
+            console.error('Error cargando tarea:', e);
+            Swal.fire('Error', 'No se pudieron cargar los datos de la tarea.', 'error');
+        });
+}
+
+function limpiarFormulario() {
+    document.getElementById('formTarea').reset();
+    document.getElementById('tareaId').value = '';
+    document.getElementById('estadoButton').textContent = 'Estado';
+    document.getElementById('estadoButton').className = 'btn btn-secondary';
+}
+
+function generarCodigoUnico() {
+    const now = new Date();
+    const ts = now.getFullYear().toString()
+        + String(now.getMonth() + 1).padStart(2, '0')
+        + String(now.getDate()).padStart(2, '0')
+        + String(now.getHours()).padStart(2, '0')
+        + String(now.getMinutes()).padStart(2, '0')
+        + String(now.getSeconds()).padStart(2, '0')
+        + String(now.getMilliseconds()).padStart(3, '0');
+    const rand = Math.random().toString(36).substring(2, 10);
+    document.getElementById('codigo_tarea').value = `${ts}-${rand}`;
+}
+
+/* Submit de formulario (Crear = POST / Editar = PUT) */
+document.getElementById('formTarea').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const id     = document.getElementById('tareaId').value;
+    const method = id ? 'PUT' : 'POST';
+    const url    = id ? `/tareas/${id}` : '/outtareas';
+
+    const payload = {
+        empresa:          document.getElementById('Cempresa').value,
+        codigo_proyecto:  document.getElementById('codigo_proyecto').value,
+        codigo_tarea:     document.getElementById('codigo_tarea').value,
+        titulo:           document.getElementById('titulo').value,
+        descripcion:      document.getElementById('descripcion').value,
+        detalles_editor:  null,
+        fecha_inicio:     document.getElementById('fecha_inicio').value,
+        horas_estimadas:  parseFloat(document.getElementById('horas_estimadas').value) || 0,
+        horas_dedicadas:  parseFloat(document.getElementById('horas_dedicadas').value) || 0,
+        estado:           document.getElementById('Cestado').value,
+        responsable:      document.getElementById('Cresponsable').value,
+        tipo_consumo:     document.getElementById('consumo').value,
+        mes:              document.getElementById('mes').value
+    };
+
+    /* Campos opcionales — solo incluir si tienen valor para no pisar fechas con null */
+    const fechaFin = document.getElementById('fecha_fin').value;
+    if (fechaFin) payload.fecha_fin = fechaFin;
+
+    const fechaFact = document.getElementById('fecha_facturacion').value;
+    if (fechaFact) payload.fecha_facturacion = fechaFact;
+
+    fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    })
+    .then(r => {
+        if (r.ok) {
+            bootstrap.Modal.getInstance(document.getElementById('tareasform'))?.hide();
+            Swal.fire({
+                icon: 'success',
+                title: '¡Guardado!',
+                text: 'La tarea fue guardada correctamente.',
+                timer: 1500,
+                showConfirmButton: false
+            }).then(() => location.reload());
+        } else {
+            return r.json().then(err => { throw new Error(err.message || 'Error desconocido'); });
+        }
+    })
+    .catch(err => Swal.fire('Error', err.message || 'Ocurrió un problema al guardar la tarea.', 'error'));
+});
+
+{% if session['username'] == "admin" %}
+function eliminarTarea(id) {
+    Swal.fire({
+        title: '¿Eliminar tarea?',
+        text: 'Esta acción no puede revertirse.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e74a3b',
+        cancelButtonColor: '#858796',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then(result => {
+        if (result.isConfirmed) {
+            fetch(`/tareas/${id}`, { method: 'DELETE' })
+            .then(r => {
+                if (r.ok) {
+                    Swal.fire({
+                        icon: 'success', title: '¡Eliminado!',
+                        text: 'La tarea fue eliminada.',
+                        timer: 1200, showConfirmButton: false
+                    }).then(() => location.reload());
+                } else {
+                    Swal.fire('Error', 'No se pudo eliminar la tarea.', 'error');
+                }
+            });
+        }
+    });
+}
+{% else %}
+function eliminarTarea() {
+    Swal.fire('Acceso denegado', 'No tienes permisos para eliminar tareas.', 'error');
+}
+{% endif %}
+
+/* ── Inicialización ── */
+document.addEventListener('DOMContentLoaded', () => {
+    TimerManager.init();
+    /* Limpiar el campo readonly de código si el modal se abre para nuevo */
+    document.getElementById('tareasform').addEventListener('show.bs.modal', () => {
+        if (!document.getElementById('tareaId').value) {
+            document.getElementById('codigo_tarea').value = '';
+            generarCodigoUnico();
+        }
+    });
+});
 </script>
-
-<!-- Scripts de Bootstrap y dependencias -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-
-
 
 {% endblock %}

@@ -1,686 +1,1019 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/docs/5.3/assets/css/docs.css" rel="stylesheet">
-    <!--<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">-->
-    <link rel="icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}" type="image/x-icon">
-    <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.umd.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
-    <!-- Estilos globales -->
-    <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
-    <title>Fofigest</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <!--pwa-->
-  <!-- Favicon para navegadores -->
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}">
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}">
-
-  <!-- Icono para PWA y dispositivos Apple -->
-  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}" type="image/png">
-
-  <meta name="theme-color" content="#317EFB"/>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.ico')}}" type="image/png">
-  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.ico')}}" type="image/png">
-  <link rel="icon" href="{{url_for('static', filename='img/logo_F-Photoroom.ico')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
-  <link rel="apple-touch-icon" href="{{url_for('static', filename='img/logo_F-Photoroom.png')}}" type="image/png">
+  <title>Fofigest</title>
+
+  <!-- Favicon -->
+  <link rel="icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.ico') }}" type="image/x-icon">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo_F-Photoroom.png') }}">
   <link rel="manifest" href="{{ url_for('static', filename='js/manifest.json') }}">
-  <script src="{{ url_for('static', filename='js/sw.js') }}"></script>
 
-  <!-- Color de la barra del navegador en móviles Android (Chrome) -->
-  <meta name="theme-color" content="#000000">
-
-  <!-- Safari/iOS: color de la barra superior cuando está anclado como app web -->
+  <!-- PWA meta -->
+  <meta name="theme-color" content="#4e73df">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-  <!-- Windows (Internet Explorer/Edge) -->
-  <meta name="msapplication-TileColor" content="#000000">
+  <!-- Google Fonts: Nunito -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
 
-  </head>
-  <body class="p-3 m-0 border-0 bd-example m-0 border-0 fondo">
+  <!-- Font Awesome 5 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-     <!-- Estilos del Splash Screen -->
+  <!-- Bootstrap 5.3.3 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Frappe Gantt -->
+  <link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
-      /* Estilos para el Splash Screen */
-      #splash-screen {
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: linear-gradient(to right, rgba(93, 173, 226, 0.8), rgba(52, 152, 219, 0.8)),
-              url('https://cdn.pixabay.com/photo/2017/08/30/11/36/background-2698595_1280.jpg');
-          background-size: cover;
-          background-position: center;
-          z-index: 9999;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          color: white;
-          text-align: center;
-          opacity: 0;
-          animation: fadeIn 2s forwards;
-      }
-
-      /* Animaciones y estilos específicos */
-      #splash-logo {
-          width: 0;
-          background-color: white;
-          border-radius: 50%;
-          padding: 1rem;
-          animation: zoomIn 2s forwards;
-          animation-delay: 0.5s;
-          margin-bottom: 1.5rem;
-      }
-
-      #splash-title, #splash-text {
-          font-size: 0;
-          animation: textAppear 1s forwards;
-      }
-
-      #splash-title {
-          animation-delay: 1.5s;
-          margin-bottom: 1rem;
-      }
-
-      #splash-text {
-          animation-delay: 2s;
-          margin-bottom: 2rem;
-      }
-
-      /* Definición de las animaciones */
-      @keyframes fadeIn {
-          to {
-              opacity: 1;
-          }
-      }
-
-      @keyframes zoomIn {
-          to {
-              width: 200px;
-          }
-      }
-
-      @keyframes textAppear {
-          to {
-              font-size: initial;
-          }
-      }
-
-      /* Ocultar el contenido de la página mientras se muestra el splash */
-      #page-content {
-          display: none;
-      }
-  </style>
-
-  <!-- Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Script para controlar el Splash Screen -->
-  <script>
-      document.addEventListener("DOMContentLoaded", function() {
-          const splashScreen = document.getElementById('splash-screen');
-          const pageContent = document.getElementById('page-content');
-
-          // Tiempo total de las animaciones (en milisegundos)
-          const totalAnimationTime = 2000;
-
-          setTimeout(() => {
-              // Ocultar el splash
-              splashScreen.style.display = 'none';
-              // Mostrar el contenido de la página
-              pageContent.style.display = 'block';
-          }, totalAnimationTime);
-      });
-  </script>
-<style>
-
-.logo-fofigest {
-  max-width: 60%;
-  height: auto;
-}
-
-.logo-fofigest:hover {
-  transform: scale(1.05);
-}
-
-.logo-container {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-footer {
-  font-size: 0.9rem;
-}
-
-footer h5 {
-  font-weight: bold;
-}
-
-
-
-</style>
-
-
-
-    {% if session['username'] == "admin" %}
-        <!-- MENU ADMIN -->   
-        <!-- <nav class="navbar navbar-dark bg-dark fixed-top"> -->  
-        <nav class="navbar navbar-light bg-light fixed-top">
-
-          </div>
-          <div class="container-fluid">
-            <div class="logo-container">
-              <img src="{{ url_for('static', filename='img/Fofigest.png') }}" class="img-fluid logo-fofigest" alt="">
-            </div>
-            <a class="navbar-brand" href="#"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="offcanvas offcanvas-end bg-light text-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-              <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-              </div>
-              <div class="offcanvas-body">
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="gannt">Gannt
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
-                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z"></path>
-                      </svg>
-                    </a>
-                    <a class="nav-link active" aria-current="page" href="reporte_horas_sulfoquimica">Reporte sulfoquimica
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
-                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z"></path>
-                      </svg>
-                    </a>
-
-                    
-                  
-                    <a class="nav-link active" aria-current="page" href="tablero">Tablero
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet" viewBox="0 0 16 16">
-                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z"></path>
-                      </svg>
-                    </a>
-
-
-                    <a class="nav-link active" aria-current="page" href="tareas">Tareas
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"/>
-                        <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"/>
-                        <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"/>
-                      </svg>
-                    </a>
-
-                    <a class="nav-link active" aria-current="page" href="empresa">Empresas
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building" viewBox="0 0 16 16">
-                        <path d="M4 2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3 0a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zM4 5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM7.5 5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zM4.5 8a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm2.5.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5zm3.5-.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/>
-                        <path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1zm11 0H3v14h3v-2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5V15h3z"/>
-                      </svg>
-                    </a>
-
-                    <a class="nav-link active" aria-current="page" href="proyectos">Proyectos
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-kanban" viewBox="0 0 16 16">
-                        <path d="M13.5 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zm-11-1a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
-                        <path d="M6.5 3a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm-4 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1zm8 0a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1z"/>
-                      </svg>
-                    </a>
-
-                    <a class="nav-link active" aria-current="page" href="usuarios_admin">Administrador de usuarios
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-controller" viewBox="0 0 16 16">
-                        <path d="M11.5 6.027a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m2.5-.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m-1.5 1.5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1m-6.5-3h1v1h1v1h-1v1h-1v-1h-1v-1h1z"/>
-                        <path d="M3.051 3.26a.5.5 0 0 1 .354-.613l1.932-.518a.5.5 0 0 1 .62.39c.655-.079 1.35-.117 2.043-.117.72 0 1.443.041 2.12.126a.5.5 0 0 1 .622-.399l1.932.518a.5.5 0 0 1 .306.729q.211.136.373.297c.408.408.78 1.05 1.095 1.772.32.733.599 1.591.805 2.466s.34 1.78.364 2.606c.024.816-.059 1.602-.328 2.21a1.42 1.42 0 0 1-1.445.83c-.636-.067-1.115-.394-1.513-.773-.245-.232-.496-.526-.739-.808-.126-.148-.25-.292-.368-.423-.728-.804-1.597-1.527-3.224-1.527s-2.496.723-3.224 1.527c-.119.131-.242.275-.368.423-.243.282-.494.575-.739.808-.398.38-.877.706-1.513.773a1.42 1.42 0 0 1-1.445-.83c-.27-.608-.352-1.395-.329-2.21.024-.826.16-1.73.365-2.606.206-.875.486-1.733.805-2.466.315-.722.687-1.364 1.094-1.772a2.3 2.3 0 0 1 .433-.335l-.028-.079zm2.036.412c-.877.185-1.469.443-1.733.708-.276.276-.587.783-.885 1.465a14 14 0 0 0-.748 2.295 12.4 12.4 0 0 0-.339 2.406c-.022.755.062 1.368.243 1.776a.42.42 0 0 0 .426.24c.327-.034.61-.199.929-.502.212-.202.4-.423.615-.674.133-.156.276-.323.44-.504C4.861 9.969 5.978 9.027 8 9.027s3.139.942 3.965 1.855c.164.181.307.348.44.504.214.251.403.472.615.674.318.303.601.468.929.503a.42.42 0 0 0 .426-.241c.18-.408.265-1.02.243-1.776a12.4 12.4 0 0 0-.339-2.406 14 14 0 0 0-.748-2.295c-.298-.682-.61-1.19-.885-1.465-.264-.265-.856-.523-1.733-.708-.85-.179-1.877-.27-2.913-.27s-2.063.091-2.913.27"/>
-                      </svg>
-                    </a>
-
-                    
-                    <a class="nav-link active" aria-current="page" href="upload">Tareas Masivas 
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-database-down" viewBox="0 0 16 16">
-                        <path d="M12.5 9a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7m.354 5.854 1.5-1.5a.5.5 0 0 0-.708-.708l-.646.647V10.5a.5.5 0 0 0-1 0v2.793l-.646-.647a.5.5 0 0 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0"/>
-                        <path d="M12.096 6.223A5 5 0 0 0 13 5.698V7c0 .289-.213.654-.753 1.007a4.5 4.5 0 0 1 1.753.25V4c0-1.007-.875-1.755-1.904-2.223C11.022 1.289 9.573 1 8 1s-3.022.289-4.096.777C2.875 2.245 2 2.993 2 4v9c0 1.007.875 1.755 1.904 2.223C4.978 15.71 6.427 16 8 16c.536 0 1.058-.034 1.555-.097a4.5 4.5 0 0 1-.813-.927Q8.378 15 8 15c-1.464 0-2.766-.27-3.682-.687C3.356 13.875 3 13.373 3 13v-1.302c.271.202.58.378.904.525C4.978 12.71 6.427 13 8 13h.027a4.6 4.6 0 0 1 0-1H8c-1.464 0-2.766-.27-3.682-.687C3.356 10.875 3 10.373 3 10V8.698c.271.202.58.378.904.525C4.978 9.71 6.427 10 8 10q.393 0 .774-.024a4.5 4.5 0 0 1 1.102-1.132C9.298 8.944 8.666 9 8 9c-1.464 0-2.766-.27-3.682-.687C3.356 7.875 3 7.373 3 7V5.698c.271.202.58.378.904.525C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777M3 4c0-.374.356-.875 1.318-1.313C5.234 2.271 6.536 2 8 2s2.766.27 3.682.687C12.644 3.125 13 3.627 13 4c0 .374-.356.875-1.318 1.313C10.766 5.729 9.464 6 8 6s-2.766-.27-3.682-.687C3.356 4.875 3 4.373 3 4"/>
-                      </svg>
-
-                    <a class="nav-link active" aria-current="page" href="/Reporte-Horas{{ session['empresa'] }}">Reporte de horas 
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-database-down" viewBox="0 0 16 16">
-                        <path d="M12.5 9a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7m.354 5.854 1.5-1.5a.5.5 0 0 0-.708-.708l-.646.647V10.5a.5.5 0 0 0-1 0v2.793l-.646-.647a.5.5 0 0 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0"/>
-                        <path d="M12.096 6.223A5 5 0 0 0 13 5.698V7c0 .289-.213.654-.753 1.007a4.5 4.5 0 0 1 1.753.25V4c0-1.007-.875-1.755-1.904-2.223C11.022 1.289 9.573 1 8 1s-3.022.289-4.096.777C2.875 2.245 2 2.993 2 4v9c0 1.007.875 1.755 1.904 2.223C4.978 15.71 6.427 16 8 16c.536 0 1.058-.034 1.555-.097a4.5 4.5 0 0 1-.813-.927Q8.378 15 8 15c-1.464 0-2.766-.27-3.682-.687C3.356 13.875 3 13.373 3 13v-1.302c.271.202.58.378.904.525C4.978 12.71 6.427 13 8 13h.027a4.6 4.6 0 0 1 0-1H8c-1.464 0-2.766-.27-3.682-.687C3.356 10.875 3 10.373 3 10V8.698c.271.202.58.378.904.525C4.978 9.71 6.427 10 8 10q.393 0 .774-.024a4.5 4.5 0 0 1 1.102-1.132C9.298 8.944 8.666 9 8 9c-1.464 0-2.766-.27-3.682-.687C3.356 7.875 3 7.373 3 7V5.698c.271.202.58.378.904.525C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777M3 4c0-.374.356-.875 1.318-1.313C5.234 2.271 6.536 2 8 2s2.766.27 3.682.687C12.644 3.125 13 3.627 13 4c0 .374-.356.875-1.318 1.313C10.766 5.729 9.464 6 8 6s-2.766-.27-3.682-.687C3.356 4.875 3 4.373 3 4"/>
-                      </svg>
-                    </a>
-
-                    <a class="nav-link active" aria-current="page" href="download-backup">Descarga db
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-database" viewBox="0 0 16 16">
-                        <path d="M4.318 2.687C5.234 2.271 6.536 2 8 2s2.766.27 3.682.687C12.644 3.125 13 3.627 13 4c0 .374-.356.875-1.318 1.313C10.766 5.729 9.464 6 8 6s-2.766-.27-3.682-.687C3.356 4.875 3 4.373 3 4c0-.374.356-.875 1.318-1.313M13 5.698V7c0 .374-.356.875-1.318 1.313C10.766 8.729 9.464 9 8 9s-2.766-.27-3.682-.687C3.356 7.875 3 7.373 3 7V5.698c.271.202.58.378.904.525C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777A5 5 0 0 0 13 5.698M14 4c0-1.007-.875-1.755-1.904-2.223C11.022 1.289 9.573 1 8 1s-3.022.289-4.096.777C2.875 2.245 2 2.993 2 4v9c0 1.007.875 1.755 1.904 2.223C4.978 15.71 6.427 16 8 16s3.022-.289 4.096-.777C13.125 14.755 14 14.007 14 13zm-1 4.698V10c0 .374-.356.875-1.318 1.313C10.766 11.729 9.464 12 8 12s-2.766-.27-3.682-.687C3.356 10.875 3 10.373 3 10V8.698c.271.202.58.378.904.525C4.978 9.71 6.427 10 8 10s3.022-.289 4.096-.777A5 5 0 0 0 13 8.698m0 3V13c0 .374-.356.875-1.318 1.313C10.766 14.729 9.464 15 8 15s-2.766-.27-3.682-.687C3.356 13.875 3 13.373 3 13v-1.302c.271.202.58.378.904.525C4.978 12.71 6.427 13 8 13s3.022-.289 4.096-.777c.324-.147.633-.323.904-.525"/>
-                      </svg>
-                    </a>
-
-                    <a class="nav-link active" aria-current="page" href="log">Log
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-layout-text-window" viewBox="0 0 16 16">
-                        <path d="M3 6.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1z"/>
-                        <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v1H1V2a1 1 0 0 1 1-1zm1 3v10a1 1 0 0 1-1 1h-2V4zm-4 0v11H2a1 1 0 0 1-1-1V4z"/>
-                      </svg>
-                    </a>
-    
-
-                    <a class="nav-link active" aria-current="page" href="logout">Cerrar app 
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"></path>
-                      <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"></path>
-                    </svg>
-                    </a>
-
-
-
-                  </li>          
-              </div>
-            </div>
-          </div>
-        </nav>
-    {% elif session['username'] == "dev"%}           
-        <!-- MENU DEV --> 
-        <!-- <nav class="navbar navbar-dark bg-dark fixed-top"> -->  
-          <nav class="navbar navbar-light bg-light fixed-top">
-
-          </div>
-          <div class="container-fluid">
-            <div class="logo-container">
-              <img src="{{ url_for('static', filename='img/Fofigest.png') }}" class="img-fluid logo-fofigest" alt="">
-            </div>
-            <a class="navbar-brand" href="#"></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="offcanvas offcanvas-end bg-light text-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-              <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-              </div>
-              <div class="offcanvas-body">
-                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                  <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="gannt">Gannt
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
-                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z"></path>
-                      </svg>
-                    </a>
-                    <a class="nav-link active" aria-current="page" href="reporte_horas_sulfoquimica">Reporte sulfoquimica
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
-                        <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z"></path>
-                      </svg>
-                    </a>
-                    <a class="nav-link active" aria-current="page" href="tablero">Tablero
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-earmark-spreadsheet" viewBox="0 0 16 16">
-                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2M9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5zM3 12v-2h2v2zm0 1h2v2H4a1 1 0 0 1-1-1zm3 2v-2h3v2zm4 0v-2h3v1a1 1 0 0 1-1 1zm3-3h-3v-2h3zm-7 0v-2h3v2z"></path>
-                      </svg>
-                    </a>
-
-
-                    <a class="nav-link active" aria-current="page" href="tareas">Tareas
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list-task" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M2 2.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5V3a.5.5 0 0 0-.5-.5zM3 3H2v1h1z"/>
-                        <path d="M5 3.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5M5.5 7a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1zm0 4a.5.5 0 0 0 0 1h9a.5.5 0 0 0 0-1z"/>
-                        <path fill-rule="evenodd" d="M1.5 7a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5zM2 7h1v1H2zm0 3.5a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm1 .5H2v1h1z"/>
-                      </svg>
-                    </a>
-
-
-
-
-
-
-                    
-
-                    <a class="nav-link active" aria-current="page" href="/Reporte-Horas{{ session['empresa'] }}">Reporte de horas 
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-database-down" viewBox="0 0 16 16">
-                        <path d="M12.5 9a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7m.354 5.854 1.5-1.5a.5.5 0 0 0-.708-.708l-.646.647V10.5a.5.5 0 0 0-1 0v2.793l-.646-.647a.5.5 0 0 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0"/>
-                        <path d="M12.096 6.223A5 5 0 0 0 13 5.698V7c0 .289-.213.654-.753 1.007a4.5 4.5 0 0 1 1.753.25V4c0-1.007-.875-1.755-1.904-2.223C11.022 1.289 9.573 1 8 1s-3.022.289-4.096.777C2.875 2.245 2 2.993 2 4v9c0 1.007.875 1.755 1.904 2.223C4.978 15.71 6.427 16 8 16c.536 0 1.058-.034 1.555-.097a4.5 4.5 0 0 1-.813-.927Q8.378 15 8 15c-1.464 0-2.766-.27-3.682-.687C3.356 13.875 3 13.373 3 13v-1.302c.271.202.58.378.904.525C4.978 12.71 6.427 13 8 13h.027a4.6 4.6 0 0 1 0-1H8c-1.464 0-2.766-.27-3.682-.687C3.356 10.875 3 10.373 3 10V8.698c.271.202.58.378.904.525C4.978 9.71 6.427 10 8 10q.393 0 .774-.024a4.5 4.5 0 0 1 1.102-1.132C9.298 8.944 8.666 9 8 9c-1.464 0-2.766-.27-3.682-.687C3.356 7.875 3 7.373 3 7V5.698c.271.202.58.378.904.525C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777M3 4c0-.374.356-.875 1.318-1.313C5.234 2.271 6.536 2 8 2s2.766.27 3.682.687C12.644 3.125 13 3.627 13 4c0 .374-.356.875-1.318 1.313C10.766 5.729 9.464 6 8 6s-2.766-.27-3.682-.687C3.356 4.875 3 4.373 3 4"/>
-                      </svg>
-                    </a>
-
-
-
-                    <a class="nav-link active" aria-current="page" href="logout">Cerrar app 
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"></path>
-                      <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"></path>
-                    </svg>
-                    </a>
-
-
-
-                  </li>          
-              </div>
-            </div>
-          </div>
-        </nav>
-
-    {% elif session['username'] == "usuario" %}           
-      <!-- MENU usuario -->
-       <!-- <nav class="navbar navbar-dark bg-dark fixed-top"> -->  
-        <nav class="navbar navbar-light bg-light fixed-top">
-
-        </div>
-        <div class="container-fluid">
-          <div class="logo-container">
-            <img src="{{ url_for('static', filename='img/Fofigest.png') }}" class="img-fluid logo-fofigest" alt="">
-          </div>
-          <a class="navbar-brand" href="#"></a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="offcanvas offcanvas-end bg-light text-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
-            <div class="offcanvas-header">
-              <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">Menu</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-            </div>
-            <div class="offcanvas-body">
-              <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                <li class="nav-item">
-                  <a class="nav-link active" aria-current="page" href="gannt">Gantt
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bar-chart-line" viewBox="0 0 16 16">
-                      <path d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1zm1 12h2V2h-2zm-3 0V7H7v7zm-5 0v-3H2v3z"></path>
-                    </svg>
-                  </a>
-                
-
-
-                  <a class="nav-link active" aria-current="page" href="/Reporte-Horas{{ session['empresa'] }}">Reporte de horas 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-database-down" viewBox="0 0 16 16">
-                      <path d="M12.5 9a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7m.354 5.854 1.5-1.5a.5.5 0 0 0-.708-.708l-.646.647V10.5a.5.5 0 0 0-1 0v2.793l-.646-.647a.5.5 0 0 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0"/>
-                      <path d="M12.096 6.223A5 5 0 0 0 13 5.698V7c0 .289-.213.654-.753 1.007a4.5 4.5 0 0 1 1.753.25V4c0-1.007-.875-1.755-1.904-2.223C11.022 1.289 9.573 1 8 1s-3.022.289-4.096.777C2.875 2.245 2 2.993 2 4v9c0 1.007.875 1.755 1.904 2.223C4.978 15.71 6.427 16 8 16c.536 0 1.058-.034 1.555-.097a4.5 4.5 0 0 1-.813-.927Q8.378 15 8 15c-1.464 0-2.766-.27-3.682-.687C3.356 13.875 3 13.373 3 13v-1.302c.271.202.58.378.904.525C4.978 12.71 6.427 13 8 13h.027a4.6 4.6 0 0 1 0-1H8c-1.464 0-2.766-.27-3.682-.687C3.356 10.875 3 10.373 3 10V8.698c.271.202.58.378.904.525C4.978 9.71 6.427 10 8 10q.393 0 .774-.024a4.5 4.5 0 0 1 1.102-1.132C9.298 8.944 8.666 9 8 9c-1.464 0-2.766-.27-3.682-.687C3.356 7.875 3 7.373 3 7V5.698c.271.202.58.378.904.525C4.978 6.711 6.427 7 8 7s3.022-.289 4.096-.777M3 4c0-.374.356-.875 1.318-1.313C5.234 2.271 6.536 2 8 2s2.766.27 3.682.687C12.644 3.125 13 3.627 13 4c0 .374-.356.875-1.318 1.313C10.766 5.729 9.464 6 8 6s-2.766-.27-3.682-.687C3.356 4.875 3 4.373 3 4"/>
-                    </svg>
-                  </a>
-
-
-
-                  <a class="nav-link active" aria-current="page" href="logout">Cerrar app 
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"></path>
-                    <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"></path>
-                  </svg>
-                  </a>
-
-
-
-                </li>          
-            </div>
-          </div>
-        </div>
-      </nav>
-
-              </li>          
-          </div>
-        </div>
-      </div>
-    </nav>
-    
- 
-      
-    {% endif %}
-    <br><br><br><br><br><br><br>
-    <!-- BODY-->
-     <!--
-    <button class=" btn-success">Activar notificaciones </button>
-    <br><br><br>
-    -->
-    
-    {% block content %}{% endblock %}
-
-    <br><br>
-  </body>
-
-<!-- pie.html -->
-<footer class="bg-light text-center text-lg-start mt-5 border-top shadow-sm">
-  <div class="container p-4">
-    <div class="row align-items-center">
-      <div class="col-lg-6 mb-4 text-start d-flex flex-column flex-md-row align-items-center">
-        <img src="{{ url_for('static', filename='img/Fofigest.png') }}" alt="logo Fofigest" style="max-height: 60px; margin-right: 15px;">
-        <div>
-          <h5 class="text-uppercase mb-1">Fofigest</h5>
-          <p class="mb-0 text-muted">Gestión eficiente de tareas y proyectos.</p>
-        </div>
-      </div>
-
-      <div class="col-lg-3 mb-4 offset-lg-3 text-start text-lg-end">
-        <h5 class="text-uppercase">Contacto</h5>
-        <ul class="list-unstyled">
-          <li>
-            <a href="mailto:soporte@fofigest.com" class="text-dark text-decoration-none">
-              fofimaticsas@gmail.com
-            </a>
-          </li>
-          <li class="mt-2">
-            <span class="text-muted">© 2025 Fofimatic</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <div class="text-center p-3 bg-white border-top">
-    <small class="text-muted">Desarrollado con ❤️ por el equipo Fofimatic</small>
-  </div>
-</footer>
-
-
-
-
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/static/service-worker.js')
-          .then(function(registration) {
-            console.log('Service Worker registrado con éxito:', registration.scope);
-          })
-          .catch(function(error) {
-            console.log('Error en el registro del Service Worker:', error);
-          });
-      });
+    /* ══════════════════════════════════════
+       CSS CUSTOM PROPERTIES
+    ══════════════════════════════════════ */
+    :root {
+      --sidebar-width: 240px;
+      --sidebar-collapsed-width: 72px;
+      --topbar-height: 60px;
+
+      --color-primary:       #4e73df;
+      --color-primary-hover: #2e59d9;
+      --color-primary-dark:  #224abe;
+      --color-success:       #1cc88a;
+      --color-warning:       #f6c23e;
+      --color-danger:        #e74a3b;
+      --color-info:          #36b9cc;
+      --color-secondary:     #858796;
+
+      --bg-page:        #f8f9fc;
+      --bg-card:        #ffffff;
+      --border-color:   #e3e6f0;
+      --text-muted:     #858796;
+      --text-dark:      #5a5c69;
+      --text-heading:   #3a3b45;
+
+      --sidebar-bg-top:    #4e73df;
+      --sidebar-bg-bot:    #224abe;
+      --sidebar-text:      rgba(255,255,255,.75);
+      --sidebar-text-hover:#ffffff;
+      --sidebar-active-bg: rgba(255,255,255,.15);
+
+      --topbar-bg:     #ffffff;
+      --topbar-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
+      --card-shadow:   0 .15rem 1.75rem 0 rgba(58,59,69,.10);
+
+      --radius:     .35rem;
+      --transition: .25s ease;
     }
 
+    /* ══════════════════════════════════════
+       BASE
+    ══════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; }
 
-// Alerta con animación personalizada
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-color) transparent;
+    }
 
+    body {
+      font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+      background: var(--bg-page);
+      margin: 0;
+      padding: 0;
+    }
 
-  </script>
+    /* ══════════════════════════════════════
+       SPLASH SCREEN
+    ══════════════════════════════════════ */
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      text-align: center;
+      animation: splashFadeIn .5s ease forwards;
+    }
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-      var message = "{{ get_flashed_messages()[0] }}";
-      if (message) {
-          Swal.fire({
-              title: 'Mensaje',
-              text: message,
-              icon: 'success',
-              confirmButtonText: 'Aceptar'
-          });
+    #splash-logo {
+      width: 110px;
+      background: #fff;
+      border-radius: 50%;
+      padding: .9rem;
+      margin-bottom: 1.25rem;
+      animation: splashZoom .6s ease .2s both;
+    }
+
+    #splash-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      margin: 0 0 .25rem;
+      animation: splashSlideUp .5s ease .7s both;
+    }
+
+    #splash-text {
+      font-size: .9rem;
+      opacity: .85;
+      animation: splashSlideUp .5s ease .9s both;
+    }
+
+    @keyframes splashFadeIn  { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes splashZoom    { from { transform: scale(.3); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+    @keyframes splashSlideUp { from { transform: translateY(16px); opacity: 0 } to { transform: translateY(0); opacity: 1 } }
+
+    /* ══════════════════════════════════════
+       TOP NAVBAR
+    ══════════════════════════════════════ */
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: var(--topbar-height);
+      background: var(--topbar-bg);
+      box-shadow: var(--topbar-shadow);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+      gap: .5rem;
+    }
+
+    .topbar-toggle {
+      background: none;
+      border: none;
+      padding: .375rem .45rem;
+      cursor: pointer;
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      transition: background var(--transition), color var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .topbar-toggle:hover { background: var(--bg-page); color: var(--color-primary); }
+    .topbar-toggle svg   { width: 20px; height: 20px; stroke: currentColor; }
+
+    .topbar-brand {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      margin-left: .25rem;
+    }
+
+    .topbar-logo {
+      height: 34px;
+      width: auto;
+      transition: transform .2s ease;
+    }
+    .topbar-logo:hover { transform: scale(1.05); }
+
+    .topbar-spacer { flex: 1; }
+
+    .topbar-divider {
+      width: 0;
+      border-right: 1px solid var(--border-color);
+      height: 1.75rem;
+      margin: 0 .375rem;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: .125rem;
+    }
+
+    .topbar-btn {
+      background: none;
+      border: none;
+      padding: .375rem .5rem;
+      cursor: pointer;
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      transition: background var(--transition);
+      font-size: .95rem;
+      line-height: 1;
+    }
+    .topbar-btn:hover { background: var(--bg-page); color: var(--color-primary); }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .25rem .5rem;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      text-decoration: none;
+      color: var(--text-dark);
+      transition: border-color var(--transition), background var(--transition);
+    }
+    .topbar-user:hover {
+      border-color: var(--border-color);
+      background: var(--bg-page);
+      color: var(--text-dark);
+    }
+
+    .topbar-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 800;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+
+    .topbar-username {
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+
+    /* ══════════════════════════════════════
+       APP BODY LAYOUT
+    ══════════════════════════════════════ */
+    .app-body {
+      display: flex;
+      padding-top: var(--topbar-height);
+      min-height: 100vh;
+    }
+
+    /* ══════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════ */
+    .sidebar {
+      position: fixed;
+      top: var(--topbar-height);
+      left: 0;
+      width: var(--sidebar-width);
+      height: calc(100vh - var(--topbar-height));
+      background: linear-gradient(180deg, var(--sidebar-bg-top) 10%, var(--sidebar-bg-bot) 100%);
+      overflow-x: hidden;
+      overflow-y: auto;
+      z-index: 150;
+      transition: width var(--transition);
+      display: flex;
+      flex-direction: column;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,.15) transparent;
+    }
+    .sidebar::-webkit-scrollbar       { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 2px; }
+
+    /* Collapsed state */
+    .sidebar.is-collapsed { width: var(--sidebar-collapsed-width); }
+
+    /* ── Sidebar Nav ── */
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: .5rem 0;
+    }
+
+    .sidebar-menu {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sidebar-body { flex: 1; }
+
+    /* Section headings */
+    .sidebar-heading {
+      padding: .75rem 1rem .3rem;
+      font-size: .62rem;
+      font-weight: 800;
+      color: rgba(255,255,255,.4);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: opacity var(--transition), max-height var(--transition), padding var(--transition);
+    }
+    .sidebar.is-collapsed .sidebar-heading {
+      opacity: 0;
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    /* Nav items */
+    .sidebar-item { position: relative; }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      padding: .6rem 1rem;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      white-space: nowrap;
+      overflow: hidden;
+      transition: background var(--transition), color var(--transition), padding var(--transition);
+      position: relative;
+    }
+    .sidebar-link:hover {
+      background: rgba(255,255,255,.1);
+      color: var(--sidebar-text-hover);
+    }
+    .sidebar-link.is-active {
+      background: var(--sidebar-active-bg);
+      color: var(--sidebar-text-hover);
+      font-weight: 700;
+    }
+    .sidebar-link.is-active::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      background: rgba(255,255,255,.65);
+      border-radius: 0 2px 2px 0;
+    }
+
+    .sidebar-icon {
+      width: 20px;
+      min-width: 20px;
+      font-size: .88rem;
+      text-align: center;
+      margin-right: .75rem;
+      transition: margin var(--transition);
+    }
+
+    .sidebar-label {
+      font-size: .83rem;
+      transition: opacity var(--transition), width var(--transition);
+    }
+
+    /* Collapsed icon-only */
+    .sidebar.is-collapsed .sidebar-link {
+      justify-content: center;
+      padding: .65rem;
+    }
+    .sidebar.is-collapsed .sidebar-icon { margin-right: 0; }
+    .sidebar.is-collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; }
+
+    /* CSS tooltip on collapsed sidebar */
+    .sidebar.is-collapsed .sidebar-link::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      left: calc(var(--sidebar-collapsed-width) + 4px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--text-heading);
+      color: #fff;
+      padding: .25rem .55rem;
+      border-radius: var(--radius);
+      font-size: .75rem;
+      font-weight: 600;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .15s ease;
+      z-index: 300;
+    }
+    .sidebar.is-collapsed .sidebar-item:hover .sidebar-link::after { opacity: 1; }
+
+    /* Sidebar footer (logout) */
+    .sidebar-footer {
+      border-top: 1px solid rgba(255,255,255,.15);
+      padding: .5rem 0;
+    }
+
+    /* ══════════════════════════════════════
+       MAIN CONTENT
+    ══════════════════════════════════════ */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      transition: margin-left var(--transition);
+      min-height: calc(100vh - var(--topbar-height));
+      display: flex;
+      flex-direction: column;
+    }
+    .main-content.is-expanded { margin-left: var(--sidebar-collapsed-width); }
+
+    /* No sidebar present */
+    .main-content.no-sidebar { margin-left: 0; }
+
+    .content-wrapper {
+      flex: 1;
+      padding: 1.5rem;
+    }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      font-size: .85rem;
+      background: #fff;
+      border-top: 1px solid var(--border-color);
+    }
+    footer h5 { font-weight: 700; }
+
+    /* ══════════════════════════════════════
+       SIDEBAR OVERLAY (mobile)
+    ══════════════════════════════════════ */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 140;
+    }
+
+    /* ══════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════ */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: var(--sidebar-width) !important;
+        transform: translateX(-100%);
+        transition: transform var(--transition), width var(--transition);
       }
-  });
-</script>
-
-<!--pwa-->
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-      navigator.serviceWorker.register("/sw.js").then(function(registration) {
-        console.log('ServiceWorker registration successful with scope: ', registration.scope);
-      }, function(err) {
-        console.log('ServiceWorker registration failed: ', err);
-      });
-    });
-  }
-</script>
-
-<script>
-  if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register("{{ url_for('static', filename='js/sw.js') }}")
-      .then(function(registration) {
-          console.log('Service Worker registrado con éxito:', registration.scope);
-      })
-      .catch(function(error) {
-          console.log('Error en el registro del Service Worker:', error);
-      });
-  } else {
-      console.log('Service Worker no es compatible con este navegador.');
-  }
-</script>
-
-<!-- Scripts de JavaScript de Bootstrap y jQuery -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script>
-    function exportarSoloTablaVisible() {
-        const tabla = document.getElementById("dataTable");
-        let tablaHTML = "<table><thead><tr>";
-        
-        // Tomar solo los encabezados visibles
-        tabla.querySelectorAll("thead th.elemento-para-ocultar").forEach(th => {
-            tablaHTML += `<th>${th.innerText}</th>`;
-        });
-        tablaHTML += "</tr></thead><tbody>";
-    
-        // Recorrer las filas visibles del tbody
-        tabla.querySelectorAll("tbody tr").forEach(fila => {
-            const estilo = window.getComputedStyle(fila);
-            if (estilo.display !== "none") {
-                tablaHTML += "<tr>";
-                fila.querySelectorAll("td.elemento-para-ocultar").forEach(td => {
-                    tablaHTML += `<td>${td.innerText}</td>`;
-                });
-                tablaHTML += "</tr>";
-            }
-        });
-    
-        tablaHTML += "</tbody></table>";
-    
-        // Crear archivo .xls con Blob
-        const blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
-        const url = URL.createObjectURL(blob);
-    
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "Reporte_de_horas.xls";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+      .sidebar.is-mobile-open {
+        transform: translateX(0);
+      }
+      .sidebar.is-mobile-open ~ .sidebar-overlay { display: block; }
+      .main-content,
+      .main-content.is-expanded { margin-left: 0; }
+      .topbar-username { display: none; }
     }
 
-
-    function filtrarTabla() {
-    const input = document.getElementById('buscador');
-    const filtro = input.value.toLowerCase();
-    const filas = document.querySelectorAll('#dataTable tbody tr');
-
-    filas.forEach(fila => {
-        const texto = fila.innerText.toLowerCase();
-        if (texto.includes(filtro)) {
-            fila.style.display = '';
-        } else {
-            fila.style.display = 'none';
-        }
-    });
-
-
-
-
-}
-
-
-    function ordenarPorMes() {
-        const ordenMeses = {
-            "Enero": 1,
-            "Febrero": 2,
-            "Marzo": 3,
-            "Abril": 4,
-            "Mayo": 5,
-            "Junio": 6,
-            "Julio": 7,
-            "Agosto": 8,
-            "Septiembre": 9,
-            "Octubre": 10,
-            "Noviembre": 11,
-            "Diciembre": 12
-        };
-
-        const tabla = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-        const filas = Array.from(tabla.rows);
-
-        const filasOrdenadas = filas.sort((a, b) => {
-            const mesA = a.innerText.match(/(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)/gi)?.pop() || "";
-            const mesB = b.innerText.match(/(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)/gi)?.pop() || "";
-
-            return (ordenMeses[mesB] || 0) - (ordenMeses[mesA] || 0);
-        });
-
-        // Limpiar y reinsertar en orden
-        filasOrdenadas.forEach(fila => tabla.appendChild(fila));
-    }
-
-
-    function alternarModo() {
-    const body = document.body;
-    const toggle = document.getElementById("modoToggle");
-
-    body.classList.toggle("modo-oscuro");
-
-    if (body.classList.contains("modo-oscuro")) {
-        toggle.innerHTML = '<i class="bi bi-sun"></i> Día';
-    } else {
-        toggle.innerHTML = '<i class="bi bi-moon-stars"></i> Noche';
-    }
-}
-
-    </script>
-
-<style>
-    /* Modo oscuro */
-    .modo-oscuro {
-        background-color: #121212 !important;
-        color: #e0e0e0 !important;
-    }
-
+    /* ══════════════════════════════════════
+       DARK MODE
+    ══════════════════════════════════════ */
+    .modo-oscuro { background-color: #121212 !important; color: #e0e0e0 !important; }
+    .modo-oscuro .topbar,
+    .modo-oscuro footer         { background: #1e1e1e !important; border-color: #333 !important; }
+    .modo-oscuro .topbar-toggle,
+    .modo-oscuro .topbar-btn    { color: #ccc; }
+    .modo-oscuro .topbar-user   { color: #ccc; }
+    .modo-oscuro .topbar-username { color: #ccc; }
+    .modo-oscuro .main-content  { background: #121212; }
     .modo-oscuro .card,
     .modo-oscuro .modal-content,
-    .modo-oscuro .table {
-        background-color: #1e1e1e !important;
-        color: #e0e0e0;
-    }
-
+    .modo-oscuro .table         { background-color: #1e1e1e !important; color: #e0e0e0; }
     .modo-oscuro th,
-    .modo-oscuro td {
-        background-color: #2a2a2a !important;
-        color: #e0e0e0 !important;
-    }
-
+    .modo-oscuro td             { background-color: #2a2a2a !important; color: #e0e0e0 !important; }
     .modo-oscuro .form-control,
-    .modo-oscuro .btn {
-        background-color: #333 !important;
-        color: #fff !important;
-        border-color: #555 !important;
-    }
-
-    .modo-oscuro .btn-outline-secondary {
-        border-color: #888 !important;
-        color: #ccc !important;
-    }
-
+    .modo-oscuro .btn           { background-color: #333 !important; color: #fff !important; border-color: #555 !important; }
     .modo-oscuro select,
     .modo-oscuro textarea,
-    .modo-oscuro input {
-        background-color: #2e2e2e !important;
-        color: #fff !important;
+    .modo-oscuro input          { background-color: #2e2e2e !important; color: #fff !important; }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       SPLASH SCREEN
+  ══════════════════════════════════════ -->
+  <div id="splash-screen" aria-hidden="true">
+    <img id="splash-logo"
+         src="{{ url_for('static', filename='img/logo_F-Photoroom.png') }}"
+         alt="Fofigest">
+    <h1 id="splash-title">Fofigest</h1>
+    <p  id="splash-text">Gestión de Proyectos y Tareas</p>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       APP SHELL
+  ══════════════════════════════════════ -->
+  <div id="page-content" style="display:none">
+
+    <!-- ─────────────────────────────────
+         TOP NAVBAR
+    ───────────────────────────────────── -->
+    <nav class="topbar" role="banner" aria-label="Barra de navegación superior">
+
+      <button class="topbar-toggle" id="sidebar-toggle"
+              aria-label="Alternar menú lateral" title="Alternar menú">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="6"  x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+       
+
+      <a href="/" class="topbar-brand" aria-label="Fofigest — Inicio">
+        <img src="{{ url_for('static', filename='img/logo_F-Photoroom.png') }}"
+             class="topbar-logo" alt="Fofigest logo">
+      </a>
+
+      <div class="topbar-spacer"></div>
+
+      <div class="topbar-actions">
+
+        <!-- Dark mode toggle -->
+        <button class="topbar-btn" id="modoToggle"
+                onclick="alternarModo()" title="Alternar modo oscuro / claro"
+                aria-label="Alternar modo oscuro">
+          <i class="fas fa-moon"></i>
+        </button>
+
+        <div class="topbar-divider"></div>
+
+        <!-- User pill → logout -->
+        <a href="logout" class="topbar-user" title="Cerrar sesión">
+          <div class="topbar-avatar">
+            {{ session.get('username', '?')[0] | upper }}
+          </div>
+          <span class="topbar-username">
+            {{ session.get('username', '') }}
+          </span>
+        </a>
+
+      </div>
+    </nav>
+
+    <!-- ─────────────────────────────────
+         BODY WRAPPER
+    ───────────────────────────────────── -->
+    <div class="app-body">
+
+      <!-- ── SIDEBAR ── -->
+      {% if session.get('username') == "admin" %}
+
+      <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+        <nav class="sidebar-nav">
+
+          <ul class="sidebar-menu sidebar-body">
+
+            <li class="sidebar-heading">Principal</li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="tablero" data-tooltip="Tablero">
+                <i class="fas fa-tachometer-alt sidebar-icon"></i>
+                <span class="sidebar-label">Tablero</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="tareas" data-tooltip="Tareas">
+                <i class="fas fa-tasks sidebar-icon"></i>
+                <span class="sidebar-label">Tareas</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="proyectos" data-tooltip="Proyectos">
+                <i class="fas fa-project-diagram sidebar-icon"></i>
+                <span class="sidebar-label">Proyectos</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="gannt" data-tooltip="Gantt">
+                <i class="fas fa-chart-bar sidebar-icon"></i>
+                <span class="sidebar-label">Gantt</span>
+              </a>
+            </li>
+
+            <li class="sidebar-heading">Reportes</li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link"
+                 href="/Reporte-Horas{{ session['empresa'] }}"
+                 data-tooltip="Reporte de Horas">
+                <i class="fas fa-clock sidebar-icon"></i>
+                <span class="sidebar-label">Reporte de Horas</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link"
+                 href="reporte_horas_sulfoquimica"
+                 data-tooltip="Reporte Sulfoquímica">
+                <i class="fas fa-chart-line sidebar-icon"></i>
+                <span class="sidebar-label">Rpt. Sulfoquímica</span>
+              </a>
+            </li>
+
+            <li class="sidebar-heading">Administración</li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="empresa" data-tooltip="Empresas">
+                <i class="fas fa-building sidebar-icon"></i>
+                <span class="sidebar-label">Empresas</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="usuarios_admin" data-tooltip="Usuarios">
+                <i class="fas fa-users-cog sidebar-icon"></i>
+                <span class="sidebar-label">Usuarios</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="upload" data-tooltip="Tareas Masivas">
+                <i class="fas fa-database sidebar-icon"></i>
+                <span class="sidebar-label">Tareas Masivas</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="download-backup" data-tooltip="Descarga DB">
+                <i class="fas fa-download sidebar-icon"></i>
+                <span class="sidebar-label">Descarga DB</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="log" data-tooltip="Log del sistema">
+                <i class="fas fa-file-alt sidebar-icon"></i>
+                <span class="sidebar-label">Log del sistema</span>
+              </a>
+            </li>
+
+          </ul><!-- /.sidebar-body -->
+
+          <div class="sidebar-footer">
+            <ul class="sidebar-menu">
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="logout" data-tooltip="Cerrar sesión">
+                  <i class="fas fa-sign-out-alt sidebar-icon"></i>
+                  <span class="sidebar-label">Cerrar sesión</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+      </aside>
+
+      {% elif session.get('username') == "dev" %}
+
+      <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+        <nav class="sidebar-nav">
+
+          <ul class="sidebar-menu sidebar-body">
+
+            <li class="sidebar-heading">Principal</li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="tablero" data-tooltip="Tablero">
+                <i class="fas fa-tachometer-alt sidebar-icon"></i>
+                <span class="sidebar-label">Tablero</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="tareas" data-tooltip="Tareas">
+                <i class="fas fa-tasks sidebar-icon"></i>
+                <span class="sidebar-label">Tareas</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="gannt" data-tooltip="Gantt">
+                <i class="fas fa-chart-bar sidebar-icon"></i>
+                <span class="sidebar-label">Gantt</span>
+              </a>
+            </li>
+
+            <li class="sidebar-heading">Reportes</li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link"
+                 href="/Reporte-Horas{{ session['empresa'] }}"
+                 data-tooltip="Reporte de Horas">
+                <i class="fas fa-clock sidebar-icon"></i>
+                <span class="sidebar-label">Reporte de Horas</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link"
+                 href="reporte_horas_sulfoquimica"
+                 data-tooltip="Reporte Sulfoquímica">
+                <i class="fas fa-chart-line sidebar-icon"></i>
+                <span class="sidebar-label">Rpt. Sulfoquímica</span>
+              </a>
+            </li>
+
+          </ul><!-- /.sidebar-body -->
+
+          <div class="sidebar-footer">
+            <ul class="sidebar-menu">
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="logout" data-tooltip="Cerrar sesión">
+                  <i class="fas fa-sign-out-alt sidebar-icon"></i>
+                  <span class="sidebar-label">Cerrar sesión</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+      </aside>
+
+      {% elif session.get('username') == "usuario" %}
+
+      <aside class="sidebar" id="sidebar" aria-label="Navegación principal">
+        <nav class="sidebar-nav">
+
+          <ul class="sidebar-menu sidebar-body">
+
+            <li class="sidebar-heading">Principal</li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="gannt" data-tooltip="Gantt">
+                <i class="fas fa-chart-bar sidebar-icon"></i>
+                <span class="sidebar-label">Gantt</span>
+              </a>
+            </li>
+
+            <li class="sidebar-heading">Reportes</li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link"
+                 href="/Reporte-Horas{{ session['empresa'] }}"
+                 data-tooltip="Reporte de Horas">
+                <i class="fas fa-clock sidebar-icon"></i>
+                <span class="sidebar-label">Reporte de Horas</span>
+              </a>
+            </li>
+
+          </ul><!-- /.sidebar-body -->
+
+          <div class="sidebar-footer">
+            <ul class="sidebar-menu">
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="logout" data-tooltip="Cerrar sesión">
+                  <i class="fas fa-sign-out-alt sidebar-icon"></i>
+                  <span class="sidebar-label">Cerrar sesión</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+        </nav>
+      </aside>
+
+      {% endif %}
+
+      <!-- Mobile overlay -->
+      <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+      <!-- ── MAIN CONTENT ── -->
+      <main class="main-content {% if not session.get('username') %}no-sidebar{% endif %}"
+            id="main-content" role="main">
+
+        <div class="content-wrapper">
+          {% block content %}{% endblock %}
+        </div>
+
+        <!-- Footer -->
+        <footer>
+          <div class="container-fluid px-4 py-3">
+            <div class="row align-items-center">
+              <div class="col-lg-6 mb-3 mb-lg-0 d-flex align-items-center gap-3">
+                <img src="{{ url_for('static', filename='img/Fofigest.png') }}"
+                     alt="Fofigest" style="max-height:46px">
+                <div>
+                  <h5 class="mb-0 text-dark small">Fofigest</h5>
+                  <p class="mb-0 text-muted" style="font-size:.8rem">
+                    Gestión eficiente de proyectos y tareas.
+                  </p>
+                </div>
+              </div>
+              <div class="col-lg-3 offset-lg-3 text-start text-lg-end">
+                <h5 class="text-uppercase mb-1" style="font-size:.7rem;letter-spacing:.05em">Contacto</h5>
+                <a href="mailto:fofimaticsas@gmail.com"
+                   class="text-muted text-decoration-none d-block" style="font-size:.8rem">
+                  fofimaticsas@gmail.com
+                </a>
+                <span class="text-muted" style="font-size:.75rem">© 2025 Fofimatic</span>
+              </div>
+            </div>
+          </div>
+          <div class="text-center py-2"
+               style="background:var(--bg-page);border-top:1px solid var(--border-color)">
+            <small class="text-muted">Desarrollado con ❤️ por el equipo Fofimatic</small>
+          </div>
+        </footer>
+
+      </main><!-- /#main-content -->
+
+    </div><!-- /.app-body -->
+  </div><!-- /#page-content -->
+
+  <!-- ══════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════ -->
+  <!-- Bootstrap 5.3.3 bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- jQuery 3.6 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Frappe Gantt -->
+  <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.umd.js"></script>
+
+  <script>
+    /* ─────────────────────────────────────────
+       SPLASH SCREEN
+    ───────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(function () {
+        var splash  = document.getElementById('splash-screen');
+        var content = document.getElementById('page-content');
+        if (splash) {
+          splash.style.transition = 'opacity .4s ease';
+          splash.style.opacity = '0';
+          setTimeout(function () { splash.style.display = 'none'; }, 420);
+        }
+        if (content) content.style.display = 'block';
+      }, 1800);
+    });
+
+    /* ─────────────────────────────────────────
+       SIDEBAR — TOGGLE + LOCALSTORAGE
+    ───────────────────────────────────────── */
+    (function () {
+      var sidebar     = document.getElementById('sidebar');
+      var mainContent = document.getElementById('main-content');
+      var toggleBtn   = document.getElementById('sidebar-toggle');
+      var overlay     = document.getElementById('sidebar-overlay');
+
+      if (!sidebar) return;   // no sidebar for this role
+
+      var isMobile = function () { return window.innerWidth <= 768; };
+
+      function setCollapsed(collapsed) {
+        sidebar.classList.toggle('is-collapsed', collapsed);
+        if (mainContent) mainContent.classList.toggle('is-expanded', collapsed);
+        localStorage.setItem('sidebar-collapsed', collapsed ? '1' : '0');
+      }
+
+      function restoreState() {
+        if (isMobile()) return;
+        setCollapsed(localStorage.getItem('sidebar-collapsed') === '1');
+      }
+
+      function toggle() {
+        if (isMobile()) {
+          var open = sidebar.classList.toggle('is-mobile-open');
+          if (overlay) overlay.style.display = open ? 'block' : 'none';
+        } else {
+          setCollapsed(!sidebar.classList.contains('is-collapsed'));
+        }
+      }
+
+      restoreState();
+      if (toggleBtn) toggleBtn.addEventListener('click', toggle);
+      if (overlay)   overlay.addEventListener('click', function () {
+        sidebar.classList.remove('is-mobile-open');
+        overlay.style.display = 'none';
+      });
+
+      window.addEventListener('resize', function () {
+        if (!isMobile()) {
+          sidebar.classList.remove('is-mobile-open');
+          if (overlay) overlay.style.display = 'none';
+          restoreState();
+        }
+      });
+    }());
+
+    /* ─────────────────────────────────────────
+       ACTIVE LINK DETECTION
+    ───────────────────────────────────────── */
+    (function () {
+      var path = window.location.pathname.replace(/\/$/, '') || '/';
+      document.querySelectorAll('.sidebar-link').forEach(function (link) {
+        var href = link.getAttribute('href');
+        if (!href) return;
+        var normalized = '/' + href.replace(/^\//, '').replace(/\/$/, '');
+        if (path === normalized ||
+            (normalized.length > 1 && path.startsWith(normalized + '/')) ||
+            (normalized.length > 1 && path === normalized)) {
+          link.classList.add('is-active');
+        }
+      });
+    }());
+
+    /* ─────────────────────────────────────────
+       DARK MODE
+    ───────────────────────────────────────── */
+    function alternarModo() {
+      var body = document.body;
+      var btn  = document.getElementById('modoToggle');
+      body.classList.toggle('modo-oscuro');
+      var dark = body.classList.contains('modo-oscuro');
+      if (btn) btn.innerHTML = dark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      localStorage.setItem('dark-mode', dark ? '1' : '0');
     }
-</style>
- <!-- Scripts globales -->
- <script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.umd.js"></script>
-  
+
+    // Restore dark mode on load
+    if (localStorage.getItem('dark-mode') === '1') {
+      document.body.classList.add('modo-oscuro');
+      document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.getElementById('modoToggle');
+        if (btn) btn.innerHTML = '<i class="fas fa-sun"></i>';
+      });
+    }
+
+    /* ─────────────────────────────────────────
+       FLASH MESSAGES (SweetAlert2)
+    ───────────────────────────────────────── */
+    document.addEventListener('DOMContentLoaded', function () {
+      {% set msgs = get_flashed_messages() %}
+      {% if msgs %}
+      Swal.fire({
+        title: 'Mensaje',
+        text: {{ msgs[0] | tojson }},
+        icon: 'success',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#4e73df'
+      });
+      {% endif %}
+    });
+
+    /* ─────────────────────────────────────────
+       TABLE UTILITIES
+    ───────────────────────────────────────── */
+    function filtrarTabla() {
+      var input  = document.getElementById('buscador');
+      if (!input) return;
+      var filtro = input.value.toLowerCase();
+      document.querySelectorAll('#dataTable tbody tr').forEach(function (fila) {
+        fila.style.display = fila.innerText.toLowerCase().includes(filtro) ? '' : 'none';
+      });
+    }
+
+    function exportarSoloTablaVisible() {
+      var tabla = document.getElementById('dataTable');
+      if (!tabla) return;
+      var html = '<table><thead><tr>';
+      tabla.querySelectorAll('thead th.elemento-para-ocultar').forEach(function (th) {
+        html += '<th>' + th.innerText + '</th>';
+      });
+      html += '</tr></thead><tbody>';
+      tabla.querySelectorAll('tbody tr').forEach(function (fila) {
+        if (window.getComputedStyle(fila).display !== 'none') {
+          html += '<tr>';
+          fila.querySelectorAll('td.elemento-para-ocultar').forEach(function (td) {
+            html += '<td>' + td.innerText + '</td>';
+          });
+          html += '</tr>';
+        }
+      });
+      html += '</tbody></table>';
+      var blob = new Blob([html], { type: 'application/vnd.ms-excel' });
+      var url  = URL.createObjectURL(blob);
+      var a    = document.createElement('a');
+      a.href = url;
+      a.download = 'Reporte_de_horas.xls';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function ordenarPorMes() {
+      var orden = { Enero:1, Febrero:2, Marzo:3, Abril:4, Mayo:5, Junio:6,
+                    Julio:7, Agosto:8, Septiembre:9, Octubre:10, Noviembre:11, Diciembre:12 };
+      var tabla = document.getElementById('dataTable');
+      if (!tabla) return;
+      var tbody = tabla.getElementsByTagName('tbody')[0];
+      var reMes = /(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Octubre|Noviembre|Diciembre)/gi;
+      Array.from(tbody.rows).sort(function (a, b) {
+        var ma = (a.innerText.match(reMes) || []).pop() || '';
+        var mb = (b.innerText.match(reMes) || []).pop() || '';
+        return (orden[mb] || 0) - (orden[ma] || 0);
+      }).forEach(function (fila) { tbody.appendChild(fila); });
+    }
+
+    /* ─────────────────────────────────────────
+       SERVICE WORKER
+    ───────────────────────────────────────── */
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker
+          .register("{{ url_for('static', filename='js/sw.js') }}")
+          .then(function (r) { console.log('SW registrado:', r.scope); })
+          .catch(function (e) { console.warn('SW error:', e); });
+      });
+    }
+  </script>
+
+</body>
 </html>
