@@ -105,9 +105,11 @@ class Usuarios(UserMixin,db.Model):
     nombres = db.Column(db.String(50))
     apellidos = db.Column(db.String(50))
     correo = db.Column(db.String(100), unique=True)
-    contraseña = db.Column(db.String(100))
+    contraseña = db.Column(db.String(256))  # Ampliado para hashes werkzeug
     empresa = db.Column(db.String(50))
     permisos = db.Column(db.String(20))
+    otp_code = db.Column(db.String(6), nullable=True)
+    otp_expiry = db.Column(db.DateTime, nullable=True)
 
     def serialize(self):
         return {

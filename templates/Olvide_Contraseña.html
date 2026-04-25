@@ -129,24 +129,27 @@
             </div>
          
 
-            <form class="user" method="post" action="">
+            <form class="user" method="post" action="{{ url_for('olvidaste_post') }}">
                 <div class="form-group">
-                    <input type="email" class="form-control form-control-user" id="correo" name="correo" placeholder="Correo electrónico" required>
+                    <input type="email" class="form-control form-control-user" id="correo" name="correo"
+                           placeholder="Correo electrónico registrado" required>
                 </div>
-             
+
                 <div class="form-group">
                     <select class="form-control" id="Empresa" name="Empresa" required>
-                        <option value="" disabled selected>Selecciona la empresa</option>
+                        <option value="" disabled selected>Selecciona tu empresa</option>
                     {% for empresa in empresas %}
-                        <option value="{{empresa.id}}">{{ empresa.empresa }}</option>
+                        <option value="{{ empresa.id }}">{{ empresa.empresa }}</option>
                     {% endfor %}
                     </select>
                 </div>
 
-               
+                <button type="submit" class="btn btn-primary w-100 mt-2">
+                    <i class="fas fa-paper-plane me-1"></i> Enviar enlace de restablecimiento
+                </button>
             </form>
-            <div class="text-center">
-                <button  onclick="window.location.href='/'"  class="btn btn-google"> ¡Vuelve al inicio!</button>
+            <div class="text-center mt-3">
+                <button onclick="window.location.href='/'" class="btn btn-google">¡Vuelve al inicio!</button>
             </div>
             <br>
        
