@@ -401,7 +401,7 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
-                        {% if session['username'] == "admin" %}
+                        {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
                                 title="Eliminar tarea">
@@ -431,7 +431,7 @@ body { font-family: 'Nunito', sans-serif; }
                     </div>
                     <span class="kb-card__meta">
                         <i class="fas fa-calendar-alt"></i>
-                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                        {% if tarea.fecha_fin and tarea.fecha_fin.year >= 1900 %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
                     </span>
                 </div>
                 <div class="kb-card__timer">
@@ -490,7 +490,7 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
-                        {% if session['username'] == "admin" %}
+                        {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
                                 title="Eliminar tarea">
@@ -520,7 +520,7 @@ body { font-family: 'Nunito', sans-serif; }
                     </div>
                     <span class="kb-card__meta">
                         <i class="fas fa-calendar-alt"></i>
-                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                        {% if tarea.fecha_fin and tarea.fecha_fin.year >= 1900 %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
                     </span>
                 </div>
                 <div class="kb-card__timer">
@@ -579,7 +579,7 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
-                        {% if session['username'] == "admin" %}
+                        {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
                                 title="Eliminar tarea">
@@ -609,7 +609,7 @@ body { font-family: 'Nunito', sans-serif; }
                     </div>
                     <span class="kb-card__meta">
                         <i class="fas fa-calendar-alt"></i>
-                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                        {% if tarea.fecha_fin and tarea.fecha_fin.year >= 1900 %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
                     </span>
                 </div>
                 <div class="kb-card__timer">
@@ -668,7 +668,7 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
-                        {% if session['username'] == "admin" %}
+                        {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
                                 title="Eliminar tarea">
@@ -698,7 +698,7 @@ body { font-family: 'Nunito', sans-serif; }
                     </div>
                     <span class="kb-card__meta">
                         <i class="fas fa-calendar-alt"></i>
-                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                        {% if tarea.fecha_fin and tarea.fecha_fin.year >= 1900 %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
                     </span>
                 </div>
                 <div class="kb-card__timer">
@@ -725,7 +725,7 @@ body { font-family: 'Nunito', sans-serif; }
         </div>
     </div>
 
-    {% if session['username'] == "admin" %}
+    {% if session.get('username') == "admin" %}
     <!-- ─── COMPLETADOS (solo admin) ─── -->
     <div class="kb-col kb-col--completados">
         <div class="kb-col__head">
@@ -786,7 +786,7 @@ body { font-family: 'Nunito', sans-serif; }
                     </div>
                     <span class="kb-card__meta">
                         <i class="fas fa-calendar-alt"></i>
-                        {% if tarea.fecha_fin %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
+                        {% if tarea.fecha_fin and tarea.fecha_fin.year >= 1900 %}{{ tarea.fecha_fin.strftime('%d/%m/%y') }}{% else %}<em>Sin fecha</em>{% endif %}
                     </span>
                 </div>
                 <div class="kb-card__timer">
@@ -831,7 +831,7 @@ body { font-family: 'Nunito', sans-serif; }
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="tablero">
+                <form method="POST" action="/tablero">
                     <div class="row g-3">
                         <div class="col-sm-12 col-md-4">
                             <label class="fw-semibold mb-1">Responsable</label>
@@ -997,7 +997,7 @@ body { font-family: 'Nunito', sans-serif; }
                                     <option value="PROGRESO">PROGRESO</option>
                                     <option value="REVISIÓN">REVISIÓN</option>
                                     <option value="IMPEDIMENTOS">IMPEDIMENTOS</option>
-                                    {% if session['username'] == "admin" %}
+                                    {% if session.get('username') == "admin" %}
                                     <option value="COMPLETADOS">COMPLETADOS</option>
                                     {% endif %}
                                 </select>
@@ -1388,7 +1388,7 @@ document.getElementById('formTarea').addEventListener('submit', function(event) 
     .catch(err => Swal.fire('Error', err.message || 'Ocurrió un problema al guardar la tarea.', 'error'));
 });
 
-{% if session['username'] == "admin" %}
+{% if session.get('username') == "admin" %}
 function eliminarTarea(id) {
     Swal.fire({
         title: '¿Eliminar tarea?',
