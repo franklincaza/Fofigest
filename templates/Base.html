@@ -561,8 +561,15 @@
             <li class="sidebar-heading">Principal</li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="tablero" data-tooltip="Tablero">
+              <a class="sidebar-link" href="/dashboard" data-tooltip="Dashboard">
                 <i class="fas fa-tachometer-alt sidebar-icon"></i>
+                <span class="sidebar-label">Dashboard</span>
+              </a>
+            </li>
+
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="tablero" data-tooltip="Tablero">
+                <i class="fas fa-columns sidebar-icon"></i>
                 <span class="sidebar-label">Tablero</span>
               </a>
             </li>
@@ -596,15 +603,6 @@
                  data-tooltip="Reporte de Horas">
                 <i class="fas fa-clock sidebar-icon"></i>
                 <span class="sidebar-label">Reporte de Horas</span>
-              </a>
-            </li>
-
-            <li class="sidebar-item">
-              <a class="sidebar-link"
-                 href="reporte_horas_sulfoquimica"
-                 data-tooltip="Reporte Sulfoquímica">
-                <i class="fas fa-chart-line sidebar-icon"></i>
-                <span class="sidebar-label">Rpt. Sulfoquímica</span>
               </a>
             </li>
 
@@ -699,15 +697,6 @@
                  data-tooltip="Reporte de Horas">
                 <i class="fas fa-clock sidebar-icon"></i>
                 <span class="sidebar-label">Reporte de Horas</span>
-              </a>
-            </li>
-
-            <li class="sidebar-item">
-              <a class="sidebar-link"
-                 href="reporte_horas_sulfoquimica"
-                 data-tooltip="Reporte Sulfoquímica">
-                <i class="fas fa-chart-line sidebar-icon"></i>
-                <span class="sidebar-label">Rpt. Sulfoquímica</span>
               </a>
             </li>
 
@@ -1014,6 +1003,8 @@
       });
     }
   </script>
+
+  {% block scripts %}{% endblock %}
 
 </body>
 </html>

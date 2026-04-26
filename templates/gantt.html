@@ -1,191 +1,1278 @@
 {% extends 'Base.html' %}
 {% block content %}
 
-<!-- Estilos y scripts de Frappe Gantt -->
-<link rel="stylesheet" href="https://unpkg.com/frappe-gantt/dist/frappe-gantt.css">
-<script src="https://unpkg.com/frappe-gantt/dist/frappe-gantt.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
 <style>
-  #gantt {
-    overflow: auto;
-    cursor: grab;
-    height: 500px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    position: relative;
-  }
+/* === GANTT LAYOUT === */
+#gantt-wrap {
+  display: flex;
+  height: calc(100vh - 290px);
+  min-height: 480px;
+  overflow: hidden;
+  border: 1px solid #e3e6f0;
+  border-radius: 0 0 0.35rem 0.35rem;
+  background: #fff;
+}
+#gantt-left {
+  width: 490px;
+  min-width: 490px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border-right: 2px solid #e3e6f0;
+  flex-shrink: 0;
+}
+#gantt-right {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  cursor: grab;
+}
+#gantt-right.grabbing { cursor: grabbing; }
+#gantt-inner { position: relative; }
 
-  #gantt.grabbing {
-    cursor: grabbing;
-  }
+/* Left table */
+#task-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.78rem;
+  font-family: 'Nunito', sans-serif;
+}
+#task-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f8f9fc;
+  border-bottom: 2px solid #e3e6f0;
+  border-right: 1px solid #e3e6f0;
+  padding: 0 8px;
+  height: 44px;
+  font-weight: 800;
+  color: #5a5c69;
+  white-space: nowrap;
+  z-index: 5;
+  text-align: left;
+}
+#task-table td {
+  padding: 0 8px;
+  border-bottom: 1px solid #e3e6f0;
+  border-right: 1px solid #e3e6f0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#task-table tbody tr {
+  height: 38px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+#task-table tbody tr:hover { background: #f0f4ff; }
 
-  .scroll-button {
-    position: absolute;
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
+/* Status badge */
+.sbadge {
+  font-size: 0.63rem;
+  padding: 2px 7px;
+  border-radius: 10rem;
+  color: #fff;
+  font-weight: 800;
+  white-space: nowrap;
+  display: inline-block;
+}
 
-  .scroll-button:hover {
-    background-color: rgba(0, 0, 0, 0.6);
-  }
+/* Timeline header */
+#gantt-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f8f9fc;
+  border-bottom: 2px solid #e3e6f0;
+}
+.hdr-row { display: flex; }
+.hdr-cell {
+  border-right: 1px solid #e3e6f0;
+  border-bottom: 1px solid #e3e6f0;
+  padding: 0 6px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: #5a5c69;
+  white-space: nowrap;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #f8f9fc;
+  height: 22px;
+  display: flex;
+  align-items: center;
+}
+.hdr-cell.today-hdr { background: #fff3cd; color: #856404; }
+.hdr-cell.weekend    { background: #f0f2fa; }
 
-  .scroll-left { top: 50%; left: 10px; transform: translateY(-50%); }
-  .scroll-right { top: 50%; right: 10px; transform: translateY(-50%); }
+/* Gantt bars */
+.grow {
+  position: relative;
+  height: 38px;
+  border-bottom: 1px solid #e3e6f0;
+}
+.grow:hover { background: rgba(78,115,223,0.03); }
+.gbar {
+  position: absolute;
+  height: 24px;
+  top: 7px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  min-width: 4px;
+  transition: filter 0.15s;
+  z-index: 2;
+}
+.gbar:hover { filter: brightness(1.1); z-index: 3; }
+.gbar-prog {
+  position: absolute;
+  left: 0; top: 0;
+  height: 100%;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+.gbar-lbl {
+  position: relative;
+  z-index: 1;
+  font-size: 0.63rem;
+  color: #fff;
+  padding: 0 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+}
+.rhandle {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 8px;
+  cursor: ew-resize;
+  z-index: 4;
+}
+.rhandle.lh { left: 0; }
+.rhandle.rh { right: 0; }
+
+/* Today line */
+#today-line {
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 2px;
+  background: #e74a3b;
+  z-index: 1;
+  opacity: 0.75;
+  pointer-events: none;
+}
+#today-label {
+  position: absolute;
+  top: 2px;
+  font-size: 0.6rem;
+  background: #e74a3b;
+  color: #fff;
+  padding: 1px 4px;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+  font-weight: 700;
+}
+
+/* Tooltip */
+#gtip {
+  position: fixed;
+  background: #3a3b45;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  z-index: 9999;
+  pointer-events: none;
+  display: none;
+  line-height: 1.7;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  max-width: 240px;
+  font-family: 'Nunito', sans-serif;
+}
+
+/* View buttons */
+.vbtn { font-size: 0.78rem; padding: 4px 10px; }
+.vbtn.active { background: #4e73df; color: #fff; border-color: #4e73df; }
+
+/* Empty */
+#gantt-empty {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #858796;
+}
+
+/* Scrollbars */
+#gantt-right::-webkit-scrollbar,
+#gantt-left::-webkit-scrollbar  { width: 7px; height: 7px; }
+#gantt-right::-webkit-scrollbar-track,
+#gantt-left::-webkit-scrollbar-track  { background: #f8f9fc; }
+#gantt-right::-webkit-scrollbar-thumb,
+#gantt-left::-webkit-scrollbar-thumb  { background: #d1d3e2; border-radius: 4px; }
+
+/* Responsive */
+@media (max-width: 991px) {
+  #gantt-left { width: 320px; min-width: 220px; }
+  #task-table th:nth-child(n+4),
+  #task-table td:nth-child(n+4) { display: none; }
+}
+@media (max-width: 575px) {
+  #gantt-left { width: 180px; min-width: 180px; }
+  #task-table th:nth-child(n+3),
+  #task-table td:nth-child(n+3) { display: none; }
+  #gantt-wrap { height: calc(100vh - 340px); min-height: 360px; }
+}
+
+/* === PANEL DIVIDER === */
+#gantt-left  { border-right: none; }          /* el divisor toma el rol del borde */
+#gantt-divider {
+  width: 6px;
+  min-width: 6px;
+  background: #e3e6f0;
+  cursor: col-resize;
+  flex-shrink: 0;
+  position: relative;
+  transition: background 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#gantt-divider:hover,
+#gantt-divider.dragging { background: #4e73df; }
+#gantt-divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 2px;
+  height: 28px;
+  background: rgba(255,255,255,0.7);
+  border-radius: 1px;
+}
+
+/* === COLUMN RESIZE === */
+#task-table { table-layout: fixed; min-width: 100%; width: auto; }
+#task-table thead th { padding: 0; overflow: visible; }   /* padding movido al wrapper */
+.th-wrap {
+  position: relative;            /* contiene el resizer sin depender de sticky */
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 8px;
+}
+.col-resizer {
+  position: absolute;
+  right: -4px;                   /* centrado sobre el borde derecho de la columna */
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 10;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.col-resizer::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 15%;
+  bottom: 15%;
+  width: 2px;
+  background: #d1d3e2;
+  border-radius: 1px;
+  transition: background 0.15s;
+}
+.col-resizer:hover::after,
+.col-resizer.resizing::after { background: #4e73df; }
 </style>
 
-<style>
-  #gantt {
-    overflow: auto;
-    cursor: grab;
-    height: 500px;
-    border: 1px solid #ddd;
-    background-color: #fff;
-    position: relative;
-    text-align: left;           /* Asegura alineación izquierda */
-    display: block;             /* Asegura que no sea flex ni inline-flex */
-    margin: 0;                  /* Elimina centrado por margen */
-    padding: 0;                 /* Elimina padding innecesario */
-  }
+<!-- === PAGE HEADER === -->
+<div class="d-sm-flex align-items-center justify-content-between mb-3">
+  <h1 class="h3 mb-0" style="color:#5a5c69;font-weight:800">
+    <i class="fas fa-chart-bar text-primary me-2"></i>Gantt — Proyectos
+  </h1>
+  <button class="btn btn-primary btn-sm shadow-sm" id="btn-nueva-tarea">
+    <i class="fas fa-plus fa-sm me-1"></i>Nueva Tarea
+  </button>
+</div>
 
-  #gantt.grabbing {
-    cursor: grabbing;
-  }
+<!-- === TOOLBAR === -->
+<div class="card shadow mb-2">
+  <div class="card-body py-2 px-3">
+    <form method="POST" action="/gannt" id="form-proyecto">
+      <div class="row g-2 align-items-end flex-wrap">
 
-  .scroll-button {
-    position: absolute;
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  .scroll-button:hover {
-    background-color: rgba(0, 0, 0, 0.6);
-  }
-
-  .scroll-left { top: 50%; left: 10px; transform: translateY(-50%); }
-  .scroll-right { top: 50%; right: 10px; transform: translateY(-50%); }
-</style>
-
-<div class="container py-4">
-  <div class="card shadow-lg p-4">
-    <h2 class="text-center mb-4">📊 Reporte Gantt</h2>
-
-    <!-- Formulario de filtros -->
-    <form method="POST" action="/gannt">
-      <div class="row g-3 align-items-center justify-content-center">
-        <!-- Selector de proyecto -->
-        <div class="col-md-6">
-          <label for="proyecto_i" class="form-label fw-bold">Filtrar por Proyecto</label>
-          <select class="form-select" id="proyecto_i" name="proyecto_i">
+        <div class="col-auto">
+          <label class="form-label mb-1 small fw-bold">Proyecto</label>
+          <select class="form-select form-select-sm" name="proyecto_i" id="sel-proyecto" style="min-width:160px">
             <option value="">Todos los proyectos</option>
-            {% for proyecto_item in proyectos_ %}
-              <option value="{{ proyecto_item.nombre_proyecto }}">{{ proyecto_item.nombre_proyecto }}</option>
+            {% for p in proyectos_ %}
+            <option value="{{ p.codigo_proyecto }}">{{ p.nombre_proyecto }}</option>
             {% endfor %}
           </select>
         </div>
 
-        <!-- Botón de aplicar -->
-        <div class="col-md-3 d-flex align-items-center pt-md-4">
-          <button type="submit" class="btn btn-primary w-100">
-            <i class="bi bi-filter"></i> Aplicar Filtros
+        <div class="col-auto">
+          <label class="form-label mb-1 small fw-bold">Responsable</label>
+          <select class="form-select form-select-sm" id="sel-resp" style="min-width:130px">
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div class="col-auto">
+          <label class="form-label mb-1 small fw-bold">Estado</label>
+          <select class="form-select form-select-sm" id="sel-estado">
+            <option value="">Todos</option>
+            <option>PENDIENTE</option>
+            <option>PROGRESO</option>
+            <option>REVISIÓN</option>
+            <option>IMPEDIMENTOS</option>
+            <option>COMPLETADOS</option>
+          </select>
+        </div>
+
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary btn-sm">
+            <i class="fas fa-search me-1"></i>Filtrar
+          </button>
+          <a href="/gannt" class="btn btn-outline-secondary btn-sm ms-1">Ver todo</a>
+        </div>
+
+        <div class="col-auto ms-auto">
+          <div class="btn-group" role="group">
+            <button type="button" class="btn btn-outline-primary vbtn" data-view="Day">Día</button>
+            <button type="button" class="btn btn-outline-primary vbtn active" data-view="Week">Semana</button>
+            <button type="button" class="btn btn-outline-primary vbtn" data-view="Month">Mes</button>
+            <button type="button" class="btn btn-outline-primary vbtn" data-view="Quarter">Trimestre</button>
+          </div>
+        </div>
+
+        <div class="col-auto">
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-sl">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button type="button" class="btn btn-outline-secondary btn-sm ms-1" id="btn-sr">
+            <i class="fas fa-chevron-right"></i>
           </button>
         </div>
+
       </div>
     </form>
   </div>
+</div>
 
-  <!-- Contenedor del Gantt -->
-  <div class="card mt-4 shadow">
-    <div class="card-body position-relative">
-      <!-- Botones flotantes de scroll -->
-      <button class="scroll-button scroll-left"><i class="bi bi-arrow-left"></i></button>
-      <button class="scroll-button scroll-right"><i class="bi bi-arrow-right"></i></button>
+<!-- === GANTT CARD === -->
+<div class="card shadow mb-4">
+  <div class="card-header py-2 d-flex align-items-center">
+    <h6 class="m-0 font-weight-bold text-primary">
+      <i class="fas fa-project-diagram me-2"></i>Diagrama Gantt
+    </h6>
+    <span class="ms-auto small text-muted" id="task-count"></span>
+  </div>
+  <div class="card-body p-0">
 
-      <div id="gantt"></div>
+    <div id="gantt-wrap">
+      <!-- LEFT: task table -->
+      <div id="gantt-left">
+        <table id="task-table">
+          <thead>
+            <tr>
+              <th style="width:82px"><div class="th-wrap">Código<div class="col-resizer"></div></div></th>
+              <th style="width:130px"><div class="th-wrap">Título<div class="col-resizer"></div></div></th>
+              <th style="width:90px"><div class="th-wrap">Responsable<div class="col-resizer"></div></div></th>
+              <th style="width:78px"><div class="th-wrap">Inicio<div class="col-resizer"></div></div></th>
+              <th style="width:78px"><div class="th-wrap">Fin<div class="col-resizer"></div></div></th>
+              <th style="width:40px"><div class="th-wrap" style="justify-content:center">%<div class="col-resizer"></div></div></th>
+              <th style="width:96px"><div class="th-wrap">Estado<div class="col-resizer"></div></div></th>
+            </tr>
+          </thead>
+          <tbody id="task-tbody"></tbody>
+        </table>
+        <div id="gantt-empty">
+          <i class="fas fa-inbox fa-3x mb-3 text-secondary"></i>
+          <p class="mb-0">No hay tareas para mostrar.</p>
+        </div>
+      </div>
+
+      <!-- PANEL DIVIDER -->
+      <div id="gantt-divider" title="Arrastra para ajustar el ancho del panel"></div>
+
+      <!-- RIGHT: timeline -->
+      <div id="gantt-right">
+        <div id="gantt-inner">
+          <div id="gantt-header"></div>
+          <div id="gantt-bars">
+            <div id="today-line"></div>
+            <div id="today-label">Hoy</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Tooltip -->
+<div id="gtip"></div>
+
+<!-- === DETAIL MODAL === -->
+<div class="modal fade" id="modal-det" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">
+          <i class="fas fa-tasks me-2 text-primary"></i>Detalle de Tarea
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Código</label>
+            <input type="text" class="form-control form-control-sm" id="d-cod" readonly>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Proyecto</label>
+            <input type="text" class="form-control form-control-sm" id="d-proy" readonly>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold small">Título <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-sm" id="d-titulo" maxlength="100">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Responsable</label>
+            <input type="text" class="form-control form-control-sm" id="d-resp" maxlength="100">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Estado</label>
+            <select class="form-select form-select-sm" id="d-estado">
+              <option>PENDIENTE</option><option>PROGRESO</option>
+              <option>REVISIÓN</option><option>IMPEDIMENTOS</option><option>COMPLETADOS</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Fecha Inicio</label>
+            <input type="date" class="form-control form-control-sm" id="d-ini">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Fecha Fin</label>
+            <input type="date" class="form-control form-control-sm" id="d-fin">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Horas Estimadas</label>
+            <input type="number" class="form-control form-control-sm" id="d-hest" min="0" step="0.5">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Horas Dedicadas</label>
+            <input type="number" class="form-control form-control-sm" id="d-hded" min="0" step="0.5">
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold small">Progreso</label>
+            <div class="d-flex align-items-center gap-2">
+              <div class="progress flex-grow-1" style="height:12px;border-radius:6px">
+                <div class="progress-bar bg-primary" id="d-pbar" style="width:0%;transition:width 0.3s"></div>
+              </div>
+              <span id="d-ppct" class="small fw-bold" style="min-width:38px;color:#4e73df">0%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+        <button class="btn btn-danger btn-sm" id="btn-del">
+          <i class="fas fa-trash-alt me-1"></i>Eliminar
+        </button>
+        <div class="d-flex gap-2">
+          <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-primary btn-sm" id="btn-save">
+            <i class="fas fa-save me-1"></i>Guardar
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Script Gantt y scroll -->
+<!-- === NEW TASK MODAL === -->
+<div class="modal fade" id="modal-new" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">
+          <i class="fas fa-plus-circle me-2 text-success"></i>Nueva Tarea
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-semibold small">Proyecto <span class="text-danger">*</span></label>
+            <select class="form-select form-select-sm" id="n-proy">
+              {% for p in proyectos_ %}
+              <option value="{{ p.codigo_proyecto }}" data-empresa="{{ p.empresa }}">{{ p.nombre_proyecto }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold small">Título <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-sm" id="n-titulo" maxlength="100" placeholder="Nombre de la tarea">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Responsable <span class="text-danger">*</span></label>
+            <input type="text" class="form-control form-control-sm" id="n-resp" maxlength="100">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Estado</label>
+            <select class="form-select form-select-sm" id="n-estado">
+              <option selected>PENDIENTE</option><option>PROGRESO</option>
+              <option>REVISIÓN</option><option>IMPEDIMENTOS</option><option>COMPLETADOS</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Fecha Inicio <span class="text-danger">*</span></label>
+            <input type="date" class="form-control form-control-sm" id="n-ini">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Fecha Fin <span class="text-danger">*</span></label>
+            <input type="date" class="form-control form-control-sm" id="n-fin">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Horas Estimadas <span class="text-danger">*</span></label>
+            <input type="number" class="form-control form-control-sm" id="n-horas" value="8" min="1" step="0.5">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold small">Tipo Consumo</label>
+            <select class="form-select form-select-sm" id="n-tipo">
+              <option>Desarrollo</option>
+              <option>Reuniones</option>
+              <option>Desarrollo por control de cambio</option>
+              <option>Soporte</option>
+              <option>Oportunidad de mejora</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold small">Descripción</label>
+            <textarea class="form-control form-control-sm" id="n-desc" rows="2" placeholder="Opcional"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button class="btn btn-primary btn-sm" id="btn-create">
+          <i class="fas fa-plus me-1"></i>Crear Tarea
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-  const tasks = [
-    {% for tarea in tareas_jsons %}
-      {
-        id: '{{ tarea.id }}',
-        name: '{{ tarea.name }}',
-        start: '{{ tarea.start }}',
-        end: '{{ tarea.end }}',
-        progress: {{ tarea.progress }},
-        dependencies: '{{ tarea.dependencies | default("") }}'
-      }{% if not loop.last %},{% endif %}
-    {% endfor %}
-  ];
+// === DATA FROM SERVER ===
+const ALL_TASKS = {{ tareas_jsons | tojson | safe }};
 
-  const gantt = new Gantt("#gantt", tasks, {
-    view_mode: 'Day',
-    language: 'es',
-    custom_popup_html: null
+// === CONFIG ===
+const SC = {
+  PENDIENTE:    '#858796',
+  PROGRESO:     '#4e73df',
+  'REVISIÓN':   '#f6c23e',
+  IMPEDIMENTOS: '#e74a3b',
+  COMPLETADOS:  '#1cc88a'
+};
+const PX = { Day: 40, Week: 20, Month: 6, Quarter: 3 };
+const ROW_H = 38;
+
+// === STATE ===
+let tasks      = ALL_TASKS.map(t => ({ ...t }));
+let filtered   = [];
+let viewMode   = 'Week';
+let vStart     = null;
+let vEnd       = null;
+let selTask    = null;
+let vScroll    = false;
+let detModal, newModal;
+
+// === UTILS ===
+const el    = id => document.getElementById(id);
+const pd    = s  => { const [y,m,d] = s.split('-'); return new Date(+y, m-1, +d); };
+const fd    = d  => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const addD  = (d,n) => { const r = new Date(d); r.setDate(r.getDate()+n); return r; };
+const diff  = (a,b) => Math.round((b-a)/86400000);
+const pct   = t  => t.horas_estimadas ? Math.min(100, Math.round((t.horas_dedicadas/t.horas_estimadas)*100)) : 0;
+const x2d   = x  => addD(vStart, Math.round(x / PX[viewMode]));
+const d2x   = d  => diff(vStart, d) * PX[viewMode];
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', () => {
+  detModal = new bootstrap.Modal(el('modal-det'));
+  newModal = new bootstrap.Modal(el('modal-new'));
+
+  fillRespSelect();
+  applyFilters();
+  wireEvents();
+
+  const today = fd(new Date());
+  el('n-ini').value = today;
+  el('n-fin').value = fd(addD(new Date(), 7));
+});
+
+function fillRespSelect() {
+  const sel = el('sel-resp');
+  const uniq = [...new Set(tasks.map(t => t.responsable).filter(Boolean))].sort();
+  uniq.forEach(r => {
+    const o = document.createElement('option');
+    o.value = r; o.textContent = r; sel.appendChild(o);
   });
+}
 
-  // Scroll por clic y arrastre
-  const ganttContainer = document.getElementById('gantt');
-  let isDragging = false;
-  let startX, scrollLeft;
+// === FILTERS ===
+function applyFilters() {
+  const r = el('sel-resp').value;
+  const s = el('sel-estado').value;
+  filtered = tasks.filter(t =>
+    (!r || t.responsable === r) &&
+    (!s || t.estado === s)
+  );
+  calcRange();
+  render();
+}
 
-  ganttContainer.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    ganttContainer.classList.add('grabbing');
-    startX = e.pageX - ganttContainer.offsetLeft;
-    scrollLeft = ganttContainer.scrollLeft;
+function calcRange() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  let mn = today, mx = addD(today, 30);
+  filtered.forEach(t => {
+    const s = pd(t.start), e = pd(t.end);
+    if (s < mn) mn = s;
+    if (e > mx) mx = e;
   });
+  const pad = { Day: 7, Week: 14, Month: 30, Quarter: 60 };
+  vStart = addD(mn, -pad[viewMode]);
+  vEnd   = addD(mx,  pad[viewMode]);
+}
 
-  ganttContainer.addEventListener('mouseleave', () => {
-    isDragging = false;
-    ganttContainer.classList.remove('grabbing');
+// === RENDER ===
+function render() {
+  renderTable();
+  renderTimeline();
+  el('task-count').textContent = `${filtered.length} tarea${filtered.length!==1?'s':''}`;
+  el('gantt-empty').style.display = filtered.length ? 'none' : 'flex';
+}
+
+function renderTable() {
+  const tbody = el('task-tbody');
+  tbody.innerHTML = '';
+  filtered.forEach(task => {
+    const p   = pct(task);
+    const col = SC[task.estado] || '#858796';
+    const tr  = document.createElement('tr');
+    tr.innerHTML = `
+      <td title="${task.id}" style="font-size:0.69rem;color:#858796;max-width:82px">${task.id}</td>
+      <td title="${task.name}" style="max-width:130px;font-weight:600;color:#3a3b45">${task.name}</td>
+      <td title="${task.responsable}" style="max-width:90px;font-size:0.75rem">${task.responsable||'—'}</td>
+      <td style="font-size:0.71rem;color:#858796">${task.start}</td>
+      <td style="font-size:0.71rem;color:#858796">${task.end}</td>
+      <td style="text-align:center;font-weight:800;font-size:0.72rem;color:${col}">${p}%</td>
+      <td><span class="sbadge" style="background:${col}">${task.estado}</span></td>
+    `;
+    tr.addEventListener('click', () => openDet(task));
+    tbody.appendChild(tr);
   });
+}
 
-  ganttContainer.addEventListener('mouseup', () => {
-    isDragging = false;
-    ganttContainer.classList.remove('grabbing');
+// === TIMELINE ===
+function renderTimeline() {
+  const totalD = diff(vStart, vEnd);
+  const totalW = totalD * PX[viewMode];
+  el('gantt-inner').style.minWidth = totalW + 'px';
+  renderHdr(totalD, totalW);
+  renderBars(totalW);
+  renderToday();
+}
+
+function mkCell(text, w, extra) {
+  const d = document.createElement('div');
+  d.className = 'hdr-cell' + (extra ? ' ' + extra : '');
+  d.style.width = w + 'px';
+  d.textContent = text;
+  return d;
+}
+
+function renderHdr(totalD, totalW) {
+  const hdr = el('gantt-header');
+  hdr.innerHTML = '';
+  const r1 = document.createElement('div'); r1.className = 'hdr-row';
+  const r2 = document.createElement('div'); r2.className = 'hdr-row';
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  if (viewMode === 'Day') {
+    // Row1: months
+    let c = new Date(vStart.getFullYear(), vStart.getMonth(), 1);
+    while (c < vEnd) {
+      const me = new Date(c.getFullYear(), c.getMonth()+1, 0);
+      const from = c < vStart ? vStart : c;
+      const to   = me > vEnd ? vEnd : me;
+      const days = diff(from, to) + 1;
+      const lbl = c.toLocaleDateString('es',{month:'long',year:'numeric'});
+      const cell = mkCell(lbl, days * PX[viewMode]);
+      cell.style.textTransform = 'capitalize';
+      r1.appendChild(cell);
+      c = new Date(c.getFullYear(), c.getMonth()+1, 1);
+    }
+    // Row2: days
+    for (let i = 0; i < totalD; i++) {
+      const d = addD(vStart, i);
+      const isT = d.getTime() === today.getTime();
+      const isW = d.getDay()===0 || d.getDay()===6;
+      r2.appendChild(mkCell(String(d.getDate()), PX[viewMode], isT?'today-hdr':(isW?'weekend':'')));
+    }
+
+  } else if (viewMode === 'Week') {
+    // Row1: months
+    let c = new Date(vStart.getFullYear(), vStart.getMonth(), 1);
+    while (c < vEnd) {
+      const me = new Date(c.getFullYear(), c.getMonth()+1, 0);
+      const from = c < vStart ? vStart : c;
+      const to   = me > vEnd ? vEnd : me;
+      const days = diff(from, to) + 1;
+      const lbl = c.toLocaleDateString('es',{month:'short',year:'numeric'});
+      const cell = mkCell(lbl, days * PX[viewMode]);
+      cell.style.textTransform = 'capitalize';
+      r1.appendChild(cell);
+      c = new Date(c.getFullYear(), c.getMonth()+1, 1);
+    }
+    // Row2: weeks
+    for (let i = 0; i < totalD; i += 7) {
+      const d = addD(vStart, i);
+      const w = Math.min(7, totalD - i);
+      const isThisW = today >= d && today < addD(d, 7);
+      r2.appendChild(mkCell(`${d.getDate()}/${d.getMonth()+1}`, w*PX[viewMode], isThisW?'today-hdr':''));
+    }
+
+  } else if (viewMode === 'Month') {
+    // Row1: years
+    for (let yr = vStart.getFullYear(); yr <= vEnd.getFullYear(); yr++) {
+      const ys = new Date(yr,0,1), ye = new Date(yr,11,31);
+      const from = ys < vStart ? vStart : ys;
+      const to   = ye > vEnd   ? vEnd   : ye;
+      r1.appendChild(mkCell(String(yr), (diff(from,to)+1)*PX[viewMode]));
+    }
+    // Row2: months
+    const mns = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    let c = new Date(vStart.getFullYear(), vStart.getMonth(), 1);
+    while (c <= vEnd) {
+      const me = new Date(c.getFullYear(), c.getMonth()+1, 0);
+      const from = c < vStart ? vStart : c;
+      const to   = me > vEnd ? vEnd : me;
+      const days = diff(from, to) + 1;
+      const isT = today.getMonth()===c.getMonth() && today.getFullYear()===c.getFullYear();
+      r2.appendChild(mkCell(mns[c.getMonth()], days*PX[viewMode], isT?'today-hdr':''));
+      c = new Date(c.getFullYear(), c.getMonth()+1, 1);
+    }
+
+  } else { // Quarter
+    // Row1: years
+    for (let yr = vStart.getFullYear(); yr <= vEnd.getFullYear(); yr++) {
+      const ys = new Date(yr,0,1), ye = new Date(yr,11,31);
+      const from = ys < vStart ? vStart : ys;
+      const to   = ye > vEnd   ? vEnd   : ye;
+      r1.appendChild(mkCell(String(yr), (diff(from,to)+1)*PX[viewMode]));
+    }
+    // Row2: quarters
+    let c = new Date(vStart.getFullYear(), Math.floor(vStart.getMonth()/3)*3, 1);
+    while (c <= vEnd) {
+      const q   = Math.floor(c.getMonth()/3)+1;
+      const qe  = new Date(c.getFullYear(), c.getMonth()+3, 0);
+      const from = c < vStart ? vStart : c;
+      const to   = qe > vEnd ? vEnd : qe;
+      const days = diff(from, to) + 1;
+      const isT  = today >= c && today <= qe;
+      r2.appendChild(mkCell(`Q${q}`, days*PX[viewMode], isT?'today-hdr':''));
+      c = new Date(c.getFullYear(), c.getMonth()+3, 1);
+    }
+  }
+
+  hdr.appendChild(r1);
+  hdr.appendChild(r2);
+}
+
+function renderBars(totalW) {
+  const cont   = el('gantt-bars');
+  const tline  = el('today-line');
+  const tlabel = el('today-label');
+  cont.innerHTML = '';
+  cont.appendChild(tline);
+  cont.appendChild(tlabel);
+  cont.style.minHeight = Math.max(filtered.length * ROW_H, 80) + 'px';
+
+  filtered.forEach((task) => {
+    const row = document.createElement('div');
+    row.className = 'grow';
+    row.style.width = totalW + 'px';
+
+    const s = pd(task.start), e = pd(task.end);
+    const bx = d2x(s);
+    const bw = Math.max(4, (diff(s, e)+1) * PX[viewMode]);
+    const p  = pct(task);
+    const col = SC[task.estado] || '#858796';
+
+    const bar = document.createElement('div');
+    bar.className = 'gbar';
+    bar.style.cssText = `left:${bx}px;width:${bw}px;background:${col};`;
+    bar.dataset.id = task.id;
+
+    const prog = document.createElement('div');
+    prog.className = 'gbar-prog';
+    prog.style.width = p + '%';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'gbar-lbl';
+    lbl.textContent = task.name;
+
+    const lh = document.createElement('div');
+    lh.className = 'rhandle lh';
+    const rh = document.createElement('div');
+    rh.className = 'rhandle rh';
+
+    bar.append(prog, lbl, lh, rh);
+    row.appendChild(bar);
+    cont.appendChild(row);
+
+    wireBar(bar, lh, rh, task);
   });
+}
 
-  ganttContainer.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
+function renderToday() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const x = d2x(today);
+  const tl = el('today-line'), lb = el('today-label');
+  const vis = today >= vStart && today <= vEnd;
+  tl.style.display = lb.style.display = vis ? 'block' : 'none';
+  if (vis) { tl.style.left = x+'px'; lb.style.left = x+'px'; }
+}
+
+// === BAR INTERACTIONS ===
+function wireBar(bar, lh, rh, task) {
+  // Tooltip
+  bar.addEventListener('mouseenter', e => showTip(e, task));
+  bar.addEventListener('mousemove',  e => moveTip(e));
+  bar.addEventListener('mouseleave', hideTip);
+
+  // Move (drag body)
+  let didDrag = false;
+  bar.addEventListener('mousedown', e => {
+    if (e.target === lh || e.target === rh) return;
     e.preventDefault();
-    const x = e.pageX - ganttContainer.offsetLeft;
-    const walk = (x - startX) * 1.5; // velocidad
-    ganttContainer.scrollLeft = scrollLeft - walk;
+    didDrag = false;
+    const sx = e.clientX;
+    const os = pd(task.start), oe = pd(task.end);
+
+    const mv = ev => {
+      didDrag = true;
+      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
+      bar.style.left = d2x(addD(os, dd)) + 'px';
+    };
+    const up = ev => {
+      document.removeEventListener('mousemove', mv);
+      document.removeEventListener('mouseup', up);
+      if (!didDrag) return;
+      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
+      const ns = fd(addD(os, dd)), ne = fd(addD(oe, dd));
+      apiPatch(task.id, { fecha_inicio: ns, fecha_fin: ne }).then(ok => {
+        if (ok) { task.start = ns; task.end = ne; render(); }
+        else    { bar.style.left = d2x(os)+'px'; }
+      });
+    };
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
   });
 
-  // Scroll con teclas
-  document.addEventListener('keydown', (e) => {
-    const amount = 100;
-    if (e.key === 'ArrowRight') ganttContainer.scrollLeft += amount;
-    if (e.key === 'ArrowLeft') ganttContainer.scrollLeft -= amount;
+  // Click
+  bar.addEventListener('click', () => { if (!didDrag) openDet(task); });
+
+  // Resize left
+  lh.addEventListener('mousedown', e => {
+    e.preventDefault(); e.stopPropagation();
+    const sx = e.clientX, os = pd(task.start), oe = pd(task.end);
+    const mv = ev => {
+      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
+      const ns = addD(os, dd);
+      if (ns >= oe) return;
+      bar.style.left  = d2x(ns) + 'px';
+      bar.style.width = Math.max(4, (diff(ns,oe)+1)*PX[viewMode]) + 'px';
+    };
+    const up = ev => {
+      document.removeEventListener('mousemove', mv);
+      document.removeEventListener('mouseup', up);
+      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
+      const ns = addD(os, dd);
+      if (ns >= oe) return;
+      apiPatch(task.id, { fecha_inicio: fd(ns) }).then(ok => {
+        if (ok) { task.start = fd(ns); render(); }
+      });
+    };
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
   });
 
-  // Botones flotantes
-  document.querySelector('.scroll-left').addEventListener('click', () => {
-    ganttContainer.scrollLeft -= 100;
+  // Resize right
+  rh.addEventListener('mousedown', e => {
+    e.preventDefault(); e.stopPropagation();
+    const sx = e.clientX, os = pd(task.start), oe = pd(task.end);
+    const mv = ev => {
+      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
+      const ne = addD(oe, dd);
+      if (ne <= os) return;
+      bar.style.width = Math.max(4, (diff(os,ne)+1)*PX[viewMode]) + 'px';
+    };
+    const up = ev => {
+      document.removeEventListener('mousemove', mv);
+      document.removeEventListener('mouseup', up);
+      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
+      const ne = addD(oe, dd);
+      if (ne <= os) return;
+      apiPatch(task.id, { fecha_fin: fd(ne) }).then(ok => {
+        if (ok) { task.end = fd(ne); render(); }
+      });
+    };
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
+  });
+}
+
+// === TOOLTIP ===
+const tip = el('gtip');
+function showTip(e, t) {
+  const p = pct(t);
+  tip.innerHTML = `<strong>${t.id}</strong><br>${t.name}<br>
+    <span style="opacity:.8">Responsable: ${t.responsable||'—'}</span><br>
+    <span style="opacity:.8">${t.start} → ${t.end}</span><br>
+    <span style="opacity:.8">${t.horas_dedicadas}h / ${t.horas_estimadas}h (${p}%)</span>`;
+  tip.style.display = 'block';
+  moveTip(e);
+}
+function moveTip(e) {
+  tip.style.left = (e.clientX + 14) + 'px';
+  tip.style.top  = (e.clientY - 10) + 'px';
+}
+function hideTip() { tip.style.display = 'none'; }
+
+// === SCROLL SYNC ===
+function syncScroll() {
+  const L = el('gantt-left'), R = el('gantt-right');
+  L.addEventListener('scroll', () => {
+    if (vScroll) return; vScroll = true; R.scrollTop = L.scrollTop; vScroll = false;
+  });
+  R.addEventListener('scroll', () => {
+    if (vScroll) return; vScroll = true; L.scrollTop = R.scrollTop; vScroll = false;
+  });
+}
+
+function scrollToToday() {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const x = d2x(today);
+  const R = el('gantt-right');
+  R.scrollLeft = Math.max(0, x - R.clientWidth / 2);
+}
+
+// === API ===
+async function apiPatch(id, data) {
+  try {
+    const r = await fetch(`/api/gantt/tarea/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Error al actualizar');
+    return true;
+  } catch(err) {
+    Swal.fire({ icon:'error', title:'Error', text: err.message, confirmButtonColor:'#4e73df' });
+    return false;
+  }
+}
+
+async function apiDelete(id) {
+  try {
+    const r = await fetch(`/api/gantt/tarea/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Error al eliminar');
+    return true;
+  } catch(err) {
+    Swal.fire({ icon:'error', title:'Error', text: err.message, confirmButtonColor:'#4e73df' });
+    return false;
+  }
+}
+
+async function apiCreate(data) {
+  try {
+    const r = await fetch('/api/gantt/tarea', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const j = await r.json();
+    if (!j.ok) throw new Error(j.error || 'Error al crear');
+    return j.tarea;
+  } catch(err) {
+    Swal.fire({ icon:'error', title:'Error', text: err.message, confirmButtonColor:'#4e73df' });
+    return null;
+  }
+}
+
+// === DETAIL MODAL ===
+function openDet(task) {
+  selTask = task;
+  el('d-cod').value    = task.id;
+  el('d-proy').value   = task.codigo_proyecto;
+  el('d-titulo').value = task.name;
+  el('d-resp').value   = task.responsable || '';
+  el('d-estado').value = task.estado;
+  el('d-ini').value    = task.start;
+  el('d-fin').value    = task.end;
+  el('d-hest').value   = task.horas_estimadas || 0;
+  el('d-hded').value   = task.horas_dedicadas || 0;
+  refreshDetPct();
+  detModal.show();
+}
+
+function refreshDetPct() {
+  const est = parseFloat(el('d-hest').value) || 0;
+  const ded = parseFloat(el('d-hded').value) || 0;
+  const p   = est > 0 ? Math.min(100, Math.round((ded/est)*100)) : 0;
+  el('d-pbar').style.width  = p + '%';
+  el('d-ppct').textContent  = p + '%';
+}
+
+// === WIRE EVENTS ===
+function wireEvents() {
+  // View buttons
+  document.querySelectorAll('.vbtn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.vbtn').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      viewMode = b.dataset.view;
+      calcRange();
+      renderTimeline();
+    });
   });
 
-  document.querySelector('.scroll-right').addEventListener('click', () => {
-    ganttContainer.scrollLeft += 100;
+  // Filters
+  el('sel-resp').addEventListener('change', applyFilters);
+  el('sel-estado').addEventListener('change', applyFilters);
+
+  // Scroll buttons
+  el('btn-sl').addEventListener('click', () => el('gantt-right').scrollLeft -= 200);
+  el('btn-sr').addEventListener('click', () => el('gantt-right').scrollLeft += 200);
+
+  // Keyboard scroll
+  document.addEventListener('keydown', e => {
+    const tag = e.target.tagName;
+    if (tag==='INPUT'||tag==='SELECT'||tag==='TEXTAREA') return;
+    if (e.key==='ArrowRight') el('gantt-right').scrollLeft += 120;
+    if (e.key==='ArrowLeft')  el('gantt-right').scrollLeft -= 120;
   });
+
+  // Detail modal inputs
+  el('d-hest').addEventListener('input', refreshDetPct);
+  el('d-hded').addEventListener('input', refreshDetPct);
+
+  // Save task
+  el('btn-save').addEventListener('click', async () => {
+    if (!selTask) return;
+    const est  = parseFloat(el('d-hest').value) || 0;
+    const ded  = parseFloat(el('d-hded').value) || 0;
+    const prog = est > 0 ? (ded / est) * 100 : 0;
+    const tit  = el('d-titulo').value.trim();
+    if (!tit) {
+      Swal.fire({ icon:'warning', title:'Título requerido', confirmButtonColor:'#4e73df' }); return;
+    }
+    const payload = {
+      titulo:          tit,
+      responsable:     el('d-resp').value.trim(),
+      estado:          el('d-estado').value,
+      fecha_inicio:    el('d-ini').value,
+      fecha_fin:       el('d-fin').value,
+      horas_estimadas: est,
+      progress:        prog
+    };
+    const ok = await apiPatch(selTask.id, payload);
+    if (ok) {
+      Object.assign(selTask, {
+        name:            payload.titulo,
+        responsable:     payload.responsable,
+        estado:          payload.estado,
+        start:           payload.fecha_inicio,
+        end:             payload.fecha_fin,
+        horas_estimadas: est,
+        horas_dedicadas: ded,
+        progress:        prog
+      });
+      detModal.hide();
+      Swal.fire({ icon:'success', title:'Guardado', text:'Tarea actualizada correctamente.', timer:1500, showConfirmButton:false });
+      render();
+    }
+  });
+
+  // Delete task
+  el('btn-del').addEventListener('click', async () => {
+    if (!selTask) return;
+    const res = await Swal.fire({
+      title: '¿Eliminar tarea?',
+      text:  `"${selTask.name}" será eliminada permanentemente.`,
+      icon:  'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#e74a3b',
+      cancelButtonColor:  '#858796',
+      confirmButtonText:  'Sí, eliminar',
+      cancelButtonText:   'Cancelar'
+    });
+    if (!res.isConfirmed) return;
+    const ok = await apiDelete(selTask.id);
+    if (ok) {
+      tasks    = tasks.filter(t => t.id !== selTask.id);
+      detModal.hide();
+      Swal.fire({ icon:'success', title:'Tarea eliminada', timer:1200, showConfirmButton:false });
+      applyFilters();
+    }
+  });
+
+  // Open new task modal
+  el('btn-nueva-tarea').addEventListener('click', () => newModal.show());
+
+  // Create task
+  el('btn-create').addEventListener('click', async () => {
+    const tit   = el('n-titulo').value.trim();
+    const resp  = el('n-resp').value.trim();
+    const ini   = el('n-ini').value;
+    const fin   = el('n-fin').value;
+    const horas = parseFloat(el('n-horas').value) || 8;
+    const proy  = el('n-proy').value;
+    const opt   = el('n-proy').selectedOptions[0];
+    const emp   = opt ? (opt.dataset.empresa || '') : '';
+
+    if (!tit || !resp || !ini || !fin || !proy) {
+      Swal.fire({ icon:'warning', title:'Campos requeridos', text:'Completa todos los campos obligatorios.', confirmButtonColor:'#4e73df' }); return;
+    }
+    if (fin < ini) {
+      Swal.fire({ icon:'warning', title:'Fechas inválidas', text:'La fecha de fin debe ser posterior al inicio.', confirmButtonColor:'#4e73df' }); return;
+    }
+    const nueva = await apiCreate({
+      titulo:          tit,
+      responsable:     resp,
+      fecha_inicio:    ini,
+      fecha_fin:       fin,
+      horas_estimadas: horas,
+      codigo_proyecto: proy,
+      empresa:         emp,
+      estado:          el('n-estado').value,
+      tipo_consumo:    el('n-tipo').value,
+      descripcion:     el('n-desc').value.trim() || 'Tarea creada desde Gantt'
+    });
+    if (nueva) {
+      tasks.push(nueva);
+      newModal.hide();
+      el('n-titulo').value = el('n-resp').value = el('n-desc').value = '';
+      el('n-estado').value = 'PENDIENTE';
+      el('n-horas').value  = '8';
+      fillRespSelect();
+      Swal.fire({ icon:'success', title:'Tarea creada', timer:1500, showConfirmButton:false });
+      applyFilters();
+    }
+  });
+
+  // Drag-to-pan on right panel
+  const R = el('gantt-right');
+  let panning = false, panX = 0, panSL = 0;
+  R.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('gbar') || e.target.classList.contains('rhandle') ||
+        e.target.classList.contains('gbar-lbl') || e.target.classList.contains('gbar-prog')) return;
+    panning = true; panX = e.clientX; panSL = R.scrollLeft;
+    R.classList.add('grabbing');
+  });
+  document.addEventListener('mouseup',   () => { panning = false; R.classList.remove('grabbing'); });
+  document.addEventListener('mousemove', e => {
+    if (!panning) return;
+    R.scrollLeft = panSL - (e.clientX - panX);
+  });
+
+  syncScroll();
+  setTimeout(scrollToToday, 150);
+  initColResize();
+  initDividerResize();
+}
+
+// === COLUMN RESIZE ===
+function initColResize() {
+  const table = el('task-table');
+  const MIN_W = [30, 80, 30, 30, 30, 30, 30];
+
+  table.querySelectorAll('thead th').forEach((th, idx) => {
+    const handle = th.querySelector('.col-resizer');
+    if (!handle) return;
+    const minW = MIN_W[idx] ?? 30;
+
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      handle.classList.add('resizing');
+
+      const startX = e.clientX;
+      const startW = th.getBoundingClientRect().width;
+
+      const onMove = ev => {
+        const w = Math.max(minW, startW + (ev.clientX - startX));
+        th.style.width = w + 'px';
+      };
+
+      const onUp = () => {
+        handle.classList.remove('resizing');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup',   onUp);
+      };
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup',   onUp);
+    });
+  });
+}
+
+// === PANEL DIVIDER RESIZE ===
+function initDividerResize() {
+  const divider = el('gantt-divider');
+  const left    = el('gantt-left');
+  if (!divider || !left) return;
+
+  divider.addEventListener('mousedown', e => {
+    e.preventDefault();
+    divider.classList.add('dragging');
+
+    const startX = e.clientX;
+    const startW = left.getBoundingClientRect().width;
+
+    const onMove = ev => {
+      const newW = Math.max(180, Math.min(700, startW + (ev.clientX - startX)));
+      left.style.width    = newW + 'px';
+      left.style.minWidth = newW + 'px';
+    };
+
+    const onUp = () => {
+      divider.classList.remove('dragging');
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup',   onUp);
+    };
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup',   onUp);
+  });
+}
 </script>
 
 {% endblock %}

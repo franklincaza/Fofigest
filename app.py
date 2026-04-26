@@ -295,64 +295,6 @@ def gannt():
         return render_template('gantt.html', tareas_jsons=[], proyectos_=[])
 
 
-@app.route('/reporte_horas_chart', methods=['GET'])
-def reportes_horas_dev():
-    # Definir las claves de la API y el token
-   
-    # Crear una instancia de la clase
-    reporte = ReporteSulfoquimica(api_key, bearer_token)
-
-    # Obtener los datos de la API
-    reporte.obtener_datos()
-
-    # Limpiar las fechas
-    reporte.limpiar_fechas()
-
-    # Filtrar los datos
-    reporte.filtrar_datos()
-
-    # Generar el reporte
-    resultado_reporte = reporte.generar_reporte()
-
-    # Retornar el reporte como JSON
-    return jsonify(resultado_reporte)
-
-@app.route('/reporte_horas_chart_dev', methods=['GET'])
-def reportes_dev_consumo_horas():
-    try:
-        # Crear una instancia de la clase
-        reporte = ReporteSulfoquimica(api_key, bearer_token)
-        
-        # Obtener los datos de la API
-        reporte.obtener_datos()
-        
-        # Limpiar las fechas
-        reporte.limpiar_fechas()
-
-        # Generar la tabla por responsable
-        tabla_responsable = reporte.generar_tabla_por_responsable()
-        
-
-        reporte = ReporteSulfoquimica(api_key=api_key, bearer_token=bearer_token)
-
-        if tabla_responsable.empty:
-            return jsonify({'message': 'No se encontraron datos para el reporte'}), 404
-
-        # Convertir el DataFrame a lista de diccionarios
-        resultado = tabla_responsable.to_dict(orient='records')
-
-        # Retornar el reporte como JSON
-        return jsonify(resultado)
-    
-    except Exception as e:
-        # Manejar excepciones si algo falla
-        logging.error(f"Error al generar el reporte: {str(e)}")
-        return jsonify({'error': str(e)}), 500
-    
-@app.route('/reporte_horas_sulfoquimica')
-def ver_reporte_horas():
-    return render_template('Reporte_sulfoquimica.html')  
-
 # Reporte Gantt por proyecto
 @login_required
 @app.route('/gannt/<project>', methods=['GET', 'POST'])
@@ -1863,6 +1805,86 @@ def auto_crear_tarea():
 @app.route('/auto_crear_tarea', methods=['POST'])
 def ejecutar_auto_crear_tarea():
     return auto_crear_tarea()
+
+
+# ── DASHBOARD GENERAL DE PROYECTOS ──────────────────────────────────────────
+
+@app.route('/dashboard', methods=['GET'])
+@login_required
+def dashboard():
+    permisos = session.get('username')
+    empresa_usuario = session.get('empresa')
+
+    if permisos == 'usuario':
+        tareas = models.Tareas.query.filter_by(empresa=empresa_usuario).all()
+        proyectos = models.Proyecto.query.filter_by(empresa=empresa_usuario).all()
+    else:
+        tareas = models.Tareas.query.all()
+        proyectos = models.Proyecto.query.all()
+
+    empresas_rows = models.db.session.query(models.Tareas.empresa).distinct().all()
+    empresas = sorted({r[0] for r in empresas_rows if r[0]})
+
+    estados_enum = ['PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS']
+    meses_enum = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+    tipo_consumo_enum = ['Desarrollo', 'Reuniones', 'Desarrollo por control de cambio',
+                         'Soporte', 'Oportunidad de mejora']
+
+    return render_template('dashboard.html',
+                           tareas=tareas,
+                           proyectos=proyectos,
+                           empresas=empresas,
+                           estados_enum=estados_enum,
+                           meses_enum=meses_enum,
+                           tipo_consumo_enum=tipo_consumo_enum)
+
+
+@app.route('/dashboard/tarea/<int:id>', methods=['PUT'])
+@login_required
+def dashboard_actualizar_tarea(id):
+    tarea = models.Tareas.query.filter_by(id=id).first()
+    if not tarea:
+        return jsonify({'error': 'Tarea no encontrada'}), 404
+
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'Datos inválidos'}), 422
+
+    campos_texto = ['titulo', 'descripcion', 'responsable', 'estado', 'mes', 'tipo_consumo']
+    campos_numero = ['horas_dedicadas', 'horas_estimadas']
+    campos_fecha = ['fecha_inicio', 'fecha_fin', 'fecha_facturacion']
+
+    for campo in campos_texto:
+        if campo in data:
+            setattr(tarea, campo, data[campo])
+
+    for campo in campos_numero:
+        if campo in data and data[campo] is not None:
+            try:
+                setattr(tarea, campo, float(data[campo]))
+            except (ValueError, TypeError):
+                return jsonify({'error': f'Valor numérico inválido para {campo}'}), 422
+
+    for campo in campos_fecha:
+        if campo in data:
+            valor = data[campo]
+            if valor:
+                try:
+                    valor = datetime.strptime(valor, '%Y-%m-%d').date()
+                except ValueError:
+                    return jsonify({'error': f'Formato de fecha inválido para {campo}'}), 422
+            else:
+                valor = None
+            setattr(tarea, campo, valor)
+
+    try:
+        models.db.session.commit()
+        return jsonify(tarea.serialize()), 200
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f"Error actualizando tarea {id}: {str(e)}")
+        return jsonify({'error': 'Error interno del servidor'}), 500
 
 
 if __name__ == '__main__':
