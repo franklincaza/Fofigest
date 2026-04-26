@@ -114,6 +114,57 @@
   .modo-oscuro .col-filter-input:focus { border-color: #4e73df; }
 
   @media (max-width: 576px) { .btn { font-size: .8rem; } }
+
+  /* ── Timer en tabla ── */
+  .tbl-timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    margin-top: .3rem;
+    flex-wrap: nowrap;
+  }
+  .tbl-timer-display {
+    font-family: 'SFMono-Regular', Menlo, Monaco, Consolas, monospace;
+    font-size: .73rem;
+    color: #adb5bd;
+    min-width: 56px;
+    letter-spacing: .02em;
+    transition: color .15s;
+  }
+  .tbl-timer-display.is-running { color: #4e73df; font-weight: 700; }
+
+  .tbl-timer-btn {
+    background: transparent;
+    border: 1px solid #e3e6f0;
+    color: #adb5bd;
+    padding: .12rem .38rem;
+    border-radius: .25rem;
+    font-size: .7rem;
+    cursor: pointer;
+    transition: all .15s;
+    line-height: 1.5;
+  }
+  .tbl-timer-btn:hover            { background: #eaecf4; border-color: #4e73df; color: #4e73df; }
+  .tbl-timer-btn.is-running       { background: #4e73df; border-color: #4e73df; color: #fff; }
+  .tbl-timer-btn.is-running:hover { background: #2e59d9; }
+
+  .tbl-timer-save {
+    background: transparent;
+    border: none;
+    color: #d1d3e2;
+    font-size: .72rem;
+    cursor: pointer;
+    padding: .12rem .25rem;
+    border-radius: .2rem;
+    transition: all .15s;
+  }
+  .tbl-timer-save:hover { color: #1cc88a; background: #eaecf4; }
+
+  /* Modo oscuro — timer */
+  .modo-oscuro .tbl-timer-display            { color: #5a6075; }
+  .modo-oscuro .tbl-timer-display.is-running { color: #7b96f5; }
+  .modo-oscuro .tbl-timer-btn                { border-color: #3c3c50; color: #5a6075; }
+  .modo-oscuro .tbl-timer-btn:hover          { background: #2d2d3a; border-color: #4e73df; color: #7b96f5; }
 </style>
 
 <div class="container-fluid">
@@ -359,6 +410,20 @@
                   <i class="fas fa-trash"></i>
                 </button>
                 {% endif %}
+                <div class="tbl-timer-wrap mt-1">
+                  <i class="fas fa-stopwatch" style="color:#d1d3e2;font-size:.68rem;"></i>
+                  <span class="tbl-timer-display" data-id="{{ tarea.id }}">00:00:00</span>
+                  <button class="tbl-timer-btn" data-id="{{ tarea.id }}"
+                          onclick="TimerManagerTabla.toggle({{ tarea.id }}); event.stopPropagation();"
+                          title="Iniciar / Pausar cronómetro">
+                    <i class="fas fa-play"></i>
+                  </button>
+                  <button class="tbl-timer-save" data-id="{{ tarea.id }}"
+                          onclick="guardarTiempoTimerTabla({{ tarea.id }}); event.stopPropagation();"
+                          title="Guardar tiempo">
+                    <i class="fas fa-save"></i>
+                  </button>
+                </div>
               </td>
 
               <!-- Vista compacta — móviles -->
@@ -806,7 +871,7 @@ function editarTarea(id) {
     document.getElementById('editor-preview').innerHTML = '';
   }
 
-  fetch(`/tareas/${id}`)
+  return fetch(`/tareas/${id}`)
     .then(r => r.json())
     .then(data => {
       document.getElementById('tareaId').value           = data.id;
@@ -994,6 +1059,116 @@ function alternarModo() {
     else if (d.getTime() === tomorrow.getTime()) cell.classList.add('fecha-manana');
   });
 })();
+
+/* ── TimerManagerTabla: cronómetro para la vista de tabla ── */
+const TimerManagerTabla = {
+  _intervals: {},
+  _key(id) { return `fofigest_timer_${id}`; },
+  getState(id) {
+    try {
+      const raw = localStorage.getItem(this._key(id));
+      return raw ? JSON.parse(raw) : { accumulated: 0, startedAt: null, isRunning: false };
+    } catch { return { accumulated: 0, startedAt: null, isRunning: false }; }
+  },
+  _save(id, state) {
+    try { localStorage.setItem(this._key(id), JSON.stringify(state)); } catch {}
+  },
+  getElapsed(id) {
+    const s = this.getState(id);
+    let total = s.accumulated || 0;
+    if (s.isRunning && s.startedAt) {
+      total += Math.floor((Date.now() - s.startedAt) / 1000);
+    }
+    return total;
+  },
+  formatTime(secs) {
+    const h = Math.floor(secs / 3600);
+    const m = Math.floor((secs % 3600) / 60);
+    const s = secs % 60;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  },
+  start(id) {
+    const state = this.getState(id);
+    if (state.isRunning) return;
+    state.isRunning = true;
+    state.startedAt = Date.now();
+    this._save(id, state);
+    this._intervals[id] = setInterval(() => this._tick(id), 1000);
+    this._updateUI(id, true);
+  },
+  pause(id) {
+    const state = this.getState(id);
+    if (!state.isRunning) return;
+    state.accumulated = (state.accumulated || 0) + Math.floor((Date.now() - state.startedAt) / 1000);
+    state.isRunning = false;
+    state.startedAt = null;
+    this._save(id, state);
+    clearInterval(this._intervals[id]);
+    delete this._intervals[id];
+    this._updateDisplay(id);
+    this._updateUI(id, false);
+  },
+  toggle(id) {
+    const state = this.getState(id);
+    if (state.isRunning) this.pause(id);
+    else this.start(id);
+  },
+  _tick(id) { this._updateDisplay(id); },
+  _updateDisplay(id) {
+    const el = document.querySelector(`.tbl-timer-display[data-id="${id}"]`);
+    if (el) el.textContent = this.formatTime(this.getElapsed(id));
+  },
+  _updateUI(id, isRunning) {
+    const btn = document.querySelector(`.tbl-timer-btn[data-id="${id}"]`);
+    if (btn) {
+      btn.innerHTML = isRunning ? '<i class="fas fa-pause"></i>' : '<i class="fas fa-play"></i>';
+      btn.classList.toggle('is-running', isRunning);
+    }
+    const display = document.querySelector(`.tbl-timer-display[data-id="${id}"]`);
+    if (display) display.classList.toggle('is-running', isRunning);
+  },
+  init() {
+    document.querySelectorAll('.tbl-timer-display').forEach(el => {
+      const id = parseInt(el.getAttribute('data-id'), 10);
+      if (!id) return;
+      const state = this.getState(id);
+      this._updateDisplay(id);
+      if (state.isRunning) {
+        this._updateUI(id, true);
+        this._intervals[id] = setInterval(() => this._tick(id), 1000);
+      }
+    });
+  }
+};
+
+async function guardarTiempoTimerTabla(id) {
+  const elapsed = TimerManagerTabla.getElapsed(id);
+  if (elapsed === 0) {
+    Swal.fire('Sin tiempo', 'El cronómetro no ha registrado tiempo aún.', 'info');
+    return;
+  }
+  const hours         = parseFloat((elapsed / 3600).toFixed(2));
+  const timeFormatted = TimerManagerTabla.formatTime(elapsed);
+
+  const result = await Swal.fire({
+    title: 'Guardar tiempo registrado',
+    html: `Tiempo acumulado: <strong>${timeFormatted}</strong><br>= <strong>${hours} horas</strong><br><br>
+           ¿Abrir el formulario de edición con este valor?`,
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#4e73df',
+    confirmButtonText: '<i class="fas fa-edit me-1"></i>Editar y guardar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!result.isConfirmed) return;
+
+  await editarTarea(id);
+  document.getElementById('horas_dedicadas').value = hours;
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('tareasform')).show();
+}
+
+document.addEventListener('DOMContentLoaded', () => TimerManagerTabla.init());
 </script>
 
 {% endblock %}
