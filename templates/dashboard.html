@@ -1,0 +1,640 @@
+{% extends "Base.html" %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+
+  <!-- ── A. ENCABEZADO ──────────────────────────────────────── -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex align-items-center justify-content-between">
+      <div>
+        <h1 class="h3 mb-0 text-primary fw-bold">
+          <i class="fas fa-tachometer-alt me-2"></i>Dashboard de Proyectos
+        </h1>
+        <p class="mb-0 text-muted small">
+          {{ now().strftime('%d de %B de %Y') if now is defined else '' }}
+          <span id="fecha-actual"></span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── B. FILTROS ─────────────────────────────────────────── -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 fw-bold text-primary">Filtros</h6>
+    </div>
+    <div class="card-body">
+      <div class="row g-2 align-items-end">
+
+        <div class="col-sm-6 col-md-4 col-xl-2">
+          <label class="form-label small fw-semibold">Empresa</label>
+          <select id="filtro-empresa" class="form-select form-select-sm">
+            <option value="">Todas</option>
+            {% for emp in empresas %}
+            <option value="{{ emp }}">{{ emp }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-xl-2">
+          <label class="form-label small fw-semibold">Proyecto</label>
+          <select id="filtro-proyecto" class="form-select form-select-sm">
+            <option value="">Todos</option>
+            {% for p in proyectos %}
+            <option value="{{ p.codigo_proyecto }}">{{ p.codigo_proyecto }} — {{ p.nombre_proyecto }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-xl-2">
+          <label class="form-label small fw-semibold">Estado</label>
+          <select id="filtro-estado" class="form-select form-select-sm">
+            <option value="">Todos</option>
+            {% for est in estados_enum %}
+            <option value="{{ est }}">{{ est }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-xl-2">
+          <label class="form-label small fw-semibold">Mes</label>
+          <select id="filtro-mes" class="form-select form-select-sm">
+            <option value="">Todos</option>
+            {% for m in meses_enum %}
+            <option value="{{ m }}">{{ m }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-xl-2">
+          <label class="form-label small fw-semibold">Fecha inicio</label>
+          <input type="date" id="filtro-fecha" class="form-control form-control-sm">
+        </div>
+
+        <div class="col-sm-6 col-md-4 col-xl-1">
+          <label class="form-label small fw-semibold">Horas mín.</label>
+          <input type="number" id="filtro-horas" class="form-control form-control-sm"
+                 min="0" step="0.5" placeholder="0">
+        </div>
+
+        <div class="col-sm-12 col-xl-1 d-flex gap-2 mt-2 mt-xl-0">
+          <button class="btn btn-primary btn-sm w-100" onclick="aplicarFiltros()">
+            <i class="fas fa-filter me-1"></i>Filtrar
+          </button>
+          <button class="btn btn-secondary btn-sm w-100" onclick="limpiarFiltros()">
+            <i class="fas fa-times me-1"></i>Limpiar
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ── C. CARDS DE RESUMEN ───────────────────────────────── -->
+  <div class="row mb-4" id="cards-resumen">
+
+    <div class="col-sm-6 col-xl-2 mb-3">
+      <div class="card border-top border-4 shadow h-100" style="border-color:#f6c23e!important">
+        <div class="card-body text-center py-3">
+          <i class="fas fa-clock fa-2x mb-2" style="color:#f6c23e"></i>
+          <div class="h4 fw-bold mb-0" id="cnt-PENDIENTE">
+            {{ tareas | selectattr('estado','eq','PENDIENTE') | list | length }}
+          </div>
+          <div class="small text-muted">PENDIENTE</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-2 mb-3">
+      <div class="card border-top border-4 shadow h-100" style="border-color:#4e73df!important">
+        <div class="card-body text-center py-3">
+          <i class="fas fa-spinner fa-2x mb-2" style="color:#4e73df"></i>
+          <div class="h4 fw-bold mb-0" id="cnt-PROGRESO">
+            {{ tareas | selectattr('estado','eq','PROGRESO') | list | length }}
+          </div>
+          <div class="small text-muted">PROGRESO</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-2 mb-3">
+      <div class="card border-top border-4 shadow h-100" style="border-color:#36b9cc!important">
+        <div class="card-body text-center py-3">
+          <i class="fas fa-search fa-2x mb-2" style="color:#36b9cc"></i>
+          <div class="h4 fw-bold mb-0" id="cnt-REVISION">
+            {{ tareas | selectattr('estado','equalto','REVISIÓN') | list | length }}
+          </div>
+          <div class="small text-muted">REVISIÓN</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-2 mb-3">
+      <div class="card border-top border-4 shadow h-100" style="border-color:#e74a3b!important">
+        <div class="card-body text-center py-3">
+          <i class="fas fa-exclamation-triangle fa-2x mb-2" style="color:#e74a3b"></i>
+          <div class="h4 fw-bold mb-0" id="cnt-IMPEDIMENTOS">
+            {{ tareas | selectattr('estado','eq','IMPEDIMENTOS') | list | length }}
+          </div>
+          <div class="small text-muted">IMPEDIMENTOS</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-xl-2 mb-3">
+      <div class="card border-top border-4 shadow h-100" style="border-color:#1cc88a!important">
+        <div class="card-body text-center py-3">
+          <i class="fas fa-check-circle fa-2x mb-2" style="color:#1cc88a"></i>
+          <div class="h4 fw-bold mb-0" id="cnt-COMPLETADOS">
+            {{ tareas | selectattr('estado','eq','COMPLETADOS') | list | length }}
+          </div>
+          <div class="small text-muted">COMPLETADOS</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── D. GRÁFICO DE BARRAS ──────────────────────────────── -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 fw-bold text-primary">Horas consumidas por mes</h6>
+    </div>
+    <div class="card-body">
+      <canvas id="grafico-horas" height="80"></canvas>
+    </div>
+  </div>
+
+  <!-- ── E. TABLA DE REGISTROS ─────────────────────────────── -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-primary">Registros de tareas</h6>
+      <span class="badge bg-secondary" id="badge-total">
+        {{ tareas | length }} tareas
+      </span>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0" id="tabla-dashboard">
+          <thead class="table-dark">
+            <tr>
+              <th>Empresa</th>
+              <th>Proyecto</th>
+              <th>Código</th>
+              <th>Título</th>
+              <th>Responsable</th>
+              <th>Estado</th>
+              <th>Mes</th>
+              <th>Hs. Ded.</th>
+              <th>Hs. Est.</th>
+              <th>Fecha Inicio</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for t in tareas %}
+            <tr
+              data-id="{{ t.id }}"
+              data-empresa="{{ t.empresa }}"
+              data-proyecto="{{ t.codigo_proyecto }}"
+              data-estado="{{ t.estado }}"
+              data-mes="{{ t.mes }}"
+              data-fecha="{{ t.fecha_inicio.strftime('%Y-%m-%d') if t.fecha_inicio else '' }}"
+              data-horas="{{ t.horas_dedicadas or 0 }}"
+              data-titulo="{{ t.titulo | e }}"
+              data-descripcion="{{ t.descripcion | e }}"
+              data-responsable="{{ t.responsable | e }}"
+              data-horas-est="{{ t.horas_estimadas or 0 }}"
+              data-fecha-fin="{{ t.fecha_fin.strftime('%Y-%m-%d') if t.fecha_fin else '' }}"
+              data-fecha-fact="{{ t.fecha_facturacion.strftime('%Y-%m-%d') if t.fecha_facturacion else '' }}"
+              data-tipo-consumo="{{ t.tipo_consumo }}"
+            >
+              <td>{{ t.empresa }}</td>
+              <td><small>{{ t.codigo_proyecto }}</small></td>
+              <td><small class="text-muted">{{ t.codigo_tarea }}</small></td>
+              <td>{{ t.titulo }}</td>
+              <td>{{ t.responsable }}</td>
+              <td>
+                {% if t.estado == 'PENDIENTE' %}
+                  <span class="badge" style="background:#f6c23e;color:#000">PENDIENTE</span>
+                {% elif t.estado == 'PROGRESO' %}
+                  <span class="badge" style="background:#4e73df">PROGRESO</span>
+                {% elif t.estado == 'REVISIÓN' %}
+                  <span class="badge" style="background:#36b9cc">REVISIÓN</span>
+                {% elif t.estado == 'IMPEDIMENTOS' %}
+                  <span class="badge" style="background:#e74a3b">IMPEDIMENTOS</span>
+                {% elif t.estado == 'COMPLETADOS' %}
+                  <span class="badge" style="background:#1cc88a">COMPLETADOS</span>
+                {% else %}
+                  <span class="badge bg-secondary">{{ t.estado }}</span>
+                {% endif %}
+              </td>
+              <td>{{ t.mes }}</td>
+              <td class="text-end">{{ t.horas_dedicadas or 0 }}</td>
+              <td class="text-end">{{ t.horas_estimadas or 0 }}</td>
+              <td>{{ t.fecha_inicio.strftime('%d/%m/%Y') if t.fecha_inicio else '—' }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-warning" title="Editar" onclick="abrirModal(this)">
+                  <i class="fas fa-edit"></i>
+                </button>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="11" class="text-center text-muted py-4">Sin tareas registradas.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.container-fluid -->
+
+<!-- ── F. MODAL DE EDICIÓN ───────────────────────────────────── -->
+<div class="modal fade" id="modalEditarTarea" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold text-primary">
+          <i class="fas fa-edit me-2"></i>Editar Tarea
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <input type="hidden" id="edit-id">
+        <div class="row g-3">
+
+          <div class="col-md-8">
+            <label class="form-label small fw-semibold">Título</label>
+            <input type="text" id="edit-titulo" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Responsable</label>
+            <input type="text" id="edit-responsable" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-12">
+            <label class="form-label small fw-semibold">Descripción</label>
+            <textarea id="edit-descripcion" class="form-control form-control-sm" rows="3"></textarea>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Estado</label>
+            <select id="edit-estado" class="form-select form-select-sm">
+              {% for est in estados_enum %}
+              <option value="{{ est }}">{{ est }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Mes</label>
+            <select id="edit-mes" class="form-select form-select-sm">
+              {% for m in meses_enum %}
+              <option value="{{ m }}">{{ m }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold">Tipo de consumo</label>
+            <select id="edit-tipo-consumo" class="form-select form-select-sm">
+              {% for tc in tipo_consumo_enum %}
+              <option value="{{ tc }}">{{ tc }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label small fw-semibold">Horas dedicadas</label>
+            <input type="number" id="edit-horas-ded" class="form-control form-control-sm"
+                   min="0" step="0.5">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label small fw-semibold">Horas estimadas</label>
+            <input type="number" id="edit-horas-est" class="form-control form-control-sm"
+                   min="0" step="0.5">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label small fw-semibold">Fecha inicio</label>
+            <input type="date" id="edit-fecha-inicio" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label small fw-semibold">Fecha fin</label>
+            <input type="date" id="edit-fecha-fin" class="form-control form-control-sm">
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label small fw-semibold">Fecha facturación</label>
+            <input type="date" id="edit-fecha-fact" class="form-control form-control-sm">
+          </div>
+
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="guardarCambios()">
+          <i class="fas fa-save me-1"></i>Guardar cambios
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block scripts %}
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+/* ──────────────────────────────────────────────────────────────
+   DATOS DESDE JINJA
+────────────────────────────────────────────────────────────── */
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+               'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+const ESTADOS_COLORES = {
+  'PENDIENTE':    '#f6c23e',
+  'PROGRESO':     '#4e73df',
+  'REVISIÓN':     '#36b9cc',
+  'IMPEDIMENTOS': '#e74a3b',
+  'COMPLETADOS':  '#1cc88a'
+};
+
+const ESTADOS_IDS = {
+  'PENDIENTE':    'cnt-PENDIENTE',
+  'PROGRESO':     'cnt-PROGRESO',
+  'REVISIÓN':     'cnt-REVISION',
+  'IMPEDIMENTOS': 'cnt-IMPEDIMENTOS',
+  'COMPLETADOS':  'cnt-COMPLETADOS'
+};
+
+/* Fecha actual en encabezado */
+(function () {
+  const opts = { day: '2-digit', month: 'long', year: 'numeric' };
+  document.getElementById('fecha-actual').textContent =
+    new Date().toLocaleDateString('es-ES', opts);
+}());
+
+/* ──────────────────────────────────────────────────────────────
+   GRÁFICO
+────────────────────────────────────────────────────────────── */
+let grafico = null;
+
+function calcularDatosGrafico(filas) {
+  const horasDed  = new Array(12).fill(0);
+  const horasEst  = new Array(12).fill(0);
+
+  filas.forEach(function (tr) {
+    const mes = tr.dataset.mes;
+    const idx = MESES.indexOf(mes);
+    if (idx === -1) return;
+    horasDed[idx] += parseFloat(tr.dataset.horas) || 0;
+    horasEst[idx] += parseFloat(tr.dataset['horasEst'] || tr.querySelector('td:nth-child(9)').textContent) || 0;
+  });
+
+  return { horasDed, horasEst };
+}
+
+function renderGrafico(filas) {
+  const { horasDed, horasEst } = calcularDatosGrafico(filas);
+  const ctx = document.getElementById('grafico-horas').getContext('2d');
+
+  if (grafico) grafico.destroy();
+
+  grafico = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: MESES,
+      datasets: [
+        {
+          label: 'Horas dedicadas',
+          data: horasDed,
+          backgroundColor: '#4e73df',
+          borderRadius: 4
+        },
+        {
+          label: 'Horas estimadas',
+          data: horasEst,
+          backgroundColor: 'rgba(133,135,150,0.5)',
+          borderRadius: 4
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' }
+      },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 } }
+      }
+    }
+  });
+}
+
+/* ──────────────────────────────────────────────────────────────
+   FILTROS
+────────────────────────────────────────────────────────────── */
+function filasVisibles() {
+  return Array.from(document.querySelectorAll('#tabla-dashboard tbody tr[data-id]'));
+}
+
+function aplicarFiltros() {
+  const empresa  = document.getElementById('filtro-empresa').value;
+  const proyecto = document.getElementById('filtro-proyecto').value;
+  const estado   = document.getElementById('filtro-estado').value;
+  const mes      = document.getElementById('filtro-mes').value;
+  const fecha    = document.getElementById('filtro-fecha').value;
+  const horasMin = parseFloat(document.getElementById('filtro-horas').value) || 0;
+
+  let visibles = 0;
+
+  filasVisibles().forEach(function (tr) {
+    const ok =
+      (!empresa  || tr.dataset.empresa  === empresa)  &&
+      (!proyecto || tr.dataset.proyecto === proyecto) &&
+      (!estado   || tr.dataset.estado   === estado)   &&
+      (!mes      || tr.dataset.mes      === mes)      &&
+      (!fecha    || tr.dataset.fecha    >= fecha)     &&
+      (parseFloat(tr.dataset.horas) >= horasMin);
+
+    tr.style.display = ok ? '' : 'none';
+    if (ok) visibles++;
+  });
+
+  document.getElementById('badge-total').textContent = visibles + ' tareas';
+  actualizarCards();
+  renderGrafico(filasVisibles().filter(tr => tr.style.display !== 'none'));
+}
+
+function limpiarFiltros() {
+  ['filtro-empresa','filtro-proyecto','filtro-estado','filtro-mes'].forEach(function (id) {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('filtro-fecha').value  = '';
+  document.getElementById('filtro-horas').value  = '';
+
+  filasVisibles().forEach(function (tr) { tr.style.display = ''; });
+  document.getElementById('badge-total').textContent =
+    filasVisibles().length + ' tareas';
+  actualizarCards();
+  renderGrafico(filasVisibles());
+}
+
+function actualizarCards() {
+  const conteos = { PENDIENTE: 0, PROGRESO: 0, 'REVISIÓN': 0, IMPEDIMENTOS: 0, COMPLETADOS: 0 };
+
+  filasVisibles().forEach(function (tr) {
+    if (tr.style.display === 'none') return;
+    const est = tr.dataset.estado;
+    if (est in conteos) conteos[est]++;
+  });
+
+  document.getElementById('cnt-PENDIENTE').textContent    = conteos['PENDIENTE'];
+  document.getElementById('cnt-PROGRESO').textContent     = conteos['PROGRESO'];
+  document.getElementById('cnt-REVISION').textContent     = conteos['REVISIÓN'];
+  document.getElementById('cnt-IMPEDIMENTOS').textContent = conteos['IMPEDIMENTOS'];
+  document.getElementById('cnt-COMPLETADOS').textContent  = conteos['COMPLETADOS'];
+}
+
+/* ──────────────────────────────────────────────────────────────
+   MODAL DE EDICIÓN
+────────────────────────────────────────────────────────────── */
+let filaEditando = null;
+
+function abrirModal(btn) {
+  const tr = btn.closest('tr');
+  filaEditando = tr;
+
+  document.getElementById('edit-id').value          = tr.dataset.id;
+  document.getElementById('edit-titulo').value      = tr.dataset.titulo;
+  document.getElementById('edit-descripcion').value = tr.dataset.descripcion;
+  document.getElementById('edit-responsable').value = tr.dataset.responsable;
+  document.getElementById('edit-estado').value      = tr.dataset.estado;
+  document.getElementById('edit-mes').value         = tr.dataset.mes;
+  document.getElementById('edit-tipo-consumo').value = tr.dataset.tipoConsumo;
+  document.getElementById('edit-horas-ded').value   = tr.dataset.horas;
+  document.getElementById('edit-horas-est').value   = tr.dataset['horasEst'] ||
+    tr.querySelector('td:nth-child(9)').textContent.trim();
+  document.getElementById('edit-fecha-inicio').value = tr.dataset.fecha;
+  document.getElementById('edit-fecha-fin').value    = tr.dataset.fechaFin;
+  document.getElementById('edit-fecha-fact').value   = tr.dataset.fechaFact;
+
+  new bootstrap.Modal(document.getElementById('modalEditarTarea')).show();
+}
+
+function guardarCambios() {
+  const id = document.getElementById('edit-id').value;
+
+  const payload = {
+    titulo:           document.getElementById('edit-titulo').value,
+    descripcion:      document.getElementById('edit-descripcion').value,
+    responsable:      document.getElementById('edit-responsable').value,
+    estado:           document.getElementById('edit-estado').value,
+    mes:              document.getElementById('edit-mes').value,
+    tipo_consumo:     document.getElementById('edit-tipo-consumo').value,
+    horas_dedicadas:  parseFloat(document.getElementById('edit-horas-ded').value) || 0,
+    horas_estimadas:  parseFloat(document.getElementById('edit-horas-est').value) || 0,
+    fecha_inicio:     document.getElementById('edit-fecha-inicio').value || null,
+    fecha_fin:        document.getElementById('edit-fecha-fin').value || null,
+    fecha_facturacion: document.getElementById('edit-fecha-fact').value || null
+  };
+
+  fetch('/dashboard/tarea/' + id, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function (res) {
+    return res.json().then(function (data) {
+      return { ok: res.ok, data: data };
+    });
+  })
+  .then(function ({ ok, data }) {
+    bootstrap.Modal.getInstance(document.getElementById('modalEditarTarea')).hide();
+
+    if (ok) {
+      Swal.fire({ icon: 'success', title: 'Guardado', text: 'Tarea actualizada correctamente.', timer: 1800, showConfirmButton: false });
+      actualizarFila(data);
+    } else {
+      Swal.fire({ icon: 'error', title: 'Error', text: data.error || 'No se pudo guardar.' });
+    }
+  })
+  .catch(function () {
+    Swal.fire({ icon: 'error', title: 'Error', text: 'Error de conexión al guardar la tarea.' });
+  });
+}
+
+function badgeEstado(estado) {
+  const colores = {
+    'PENDIENTE':    'background:#f6c23e;color:#000',
+    'PROGRESO':     'background:#4e73df',
+    'REVISIÓN':     'background:#36b9cc',
+    'IMPEDIMENTOS': 'background:#e74a3b',
+    'COMPLETADOS':  'background:#1cc88a'
+  };
+  const estilo = colores[estado] || 'background:#858796';
+  return '<span class="badge" style="' + estilo + '">' + estado + '</span>';
+}
+
+function actualizarFila(data) {
+  if (!filaEditando) return;
+  const tr = filaEditando;
+
+  /* data-* */
+  tr.dataset.empresa    = data.empresa;
+  tr.dataset.proyecto   = data.codigo_proyecto;
+  tr.dataset.estado     = data.estado;
+  tr.dataset.mes        = data.mes;
+  tr.dataset.fecha      = data.fecha_inicio || '';
+  tr.dataset.horas      = data.horas_dedicadas;
+  tr.dataset.titulo     = data.titulo;
+  tr.dataset.descripcion = data.descripcion;
+  tr.dataset.responsable = data.responsable;
+  tr.dataset.horasEst   = data.horas_estimadas;
+  tr.dataset.fechaFin   = data.fecha_fin || '';
+  tr.dataset.fechaFact  = data.fecha_facturacion || '';
+  tr.dataset.tipoConsumo = data.tipo_consumo;
+
+  /* celdas visibles */
+  const celdas = tr.querySelectorAll('td');
+  celdas[0].textContent = data.empresa;
+  celdas[1].innerHTML   = '<small>' + data.codigo_proyecto + '</small>';
+  celdas[3].textContent = data.titulo;
+  celdas[4].textContent = data.responsable;
+  celdas[5].innerHTML   = badgeEstado(data.estado);
+  celdas[6].textContent = data.mes;
+  celdas[7].textContent = data.horas_dedicadas;
+  celdas[8].textContent = data.horas_estimadas;
+  celdas[9].textContent = data.fecha_inicio
+    ? data.fecha_inicio.split('-').reverse().join('/') : '—';
+
+  actualizarCards();
+  renderGrafico(filasVisibles().filter(function (r) { return r.style.display !== 'none'; }));
+}
+
+/* ──────────────────────────────────────────────────────────────
+   INIT
+────────────────────────────────────────────────────────────── */
+document.addEventListener('DOMContentLoaded', function () {
+  /* dataset horasEst desde la columna de la tabla para el gráfico */
+  document.querySelectorAll('#tabla-dashboard tbody tr[data-id]').forEach(function (tr) {
+    tr.dataset.horasEst = tr.querySelector('td:nth-child(9)').textContent.trim();
+    tr.dataset.tipoConsumo = tr.dataset.tipoConsumo || '';
+  });
+
+  renderGrafico(filasVisibles());
+});
+</script>
+{% endblock %}
