@@ -107,14 +107,18 @@ CKEDITOR_PKG_TYPE ="basic"
 with app.app_context():
     models.db.create_all()  # Crear todas las tablas definidas en los modelos de SQLAlchemy
     # Migración manual: agrega columnas OTP si no existen (SQLite no las crea automáticamente)
-    from sqlalchemy import inspect as sa_inspect
-    inspector = sa_inspect(models.db.engine)
-    existing_cols = [col['name'] for col in inspector.get_columns('usuarios')]
-    if 'otp_code' not in existing_cols:
-        models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_code VARCHAR(6)'))
-    if 'otp_expiry' not in existing_cols:
-        models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_expiry TIMESTAMP'))
-    models.db.session.commit()
+    try:
+        from sqlalchemy import inspect as sa_inspect
+        inspector = sa_inspect(models.db.engine)
+        existing_cols = [col['name'] for col in inspector.get_columns('usuarios')]
+        if 'otp_code' not in existing_cols:
+            models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_code VARCHAR(6)'))
+        if 'otp_expiry' not in existing_cols:
+            models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_expiry TIMESTAMP'))
+        models.db.session.commit()
+    except Exception as e:
+        models.db.session.rollback()
+        app.logger.warning(f'OTP migration skipped: {e}')
 
 # Cargar usuario
 @login_manager.user_loader
@@ -653,7 +657,7 @@ def proyecto():
     tareas_COMPLETADOS = tareas_COMPLETADOS.all()
 
     # Calcular las horas estimadas y de ejecución de todas las tareas
-    total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in models.Tareas.query.all())
+    total_horas_ejecucion = sum((tarea.horas_dedicadas or 0) for tarea in models.Tareas.query.all())
 
     # Renderizar la plantilla con los datos obtenidos
     return render_template('tablero.html',
@@ -972,7 +976,7 @@ def vista_tareas():
         tareas = models.Tareas.query.all()
 
     # Calcular las horas estimadas y de ejecución
-    total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in tareas)
+    total_horas_ejecucion = sum((tarea.horas_dedicadas or 0) for tarea in tareas)
 
     return render_template("tareas.html", tareas=tareas,
                                         empresas=empresas,
@@ -1147,7 +1151,7 @@ def vista_reporte_Horas(empresa):
 
     # Calcular las horas estimadas y de ejecución
     #total_horas_estimadas = sum(tarea.horas_estimadas for tarea in tareas)
-    total_horas_ejecucion = sum(tarea.horas_dedicadas for tarea in tareas)
+    total_horas_ejecucion = sum((tarea.horas_dedicadas or 0) for tarea in tareas)
     
 
     return render_template("Reporte de horas.html",
