@@ -120,6 +120,51 @@ with app.app_context():
         models.db.session.rollback()
         app.logger.warning(f'OTP migration skipped: {e}')
 
+    # Migración: columnas de facturación en tareas
+    try:
+        from sqlalchemy import inspect as sa_inspect
+        inspector2 = sa_inspect(models.db.engine)
+        existing_cols_tareas = [col['name'] for col in inspector2.get_columns('tareas')]
+        if 'facturada' not in existing_cols_tareas:
+            models.db.session.execute(text('ALTER TABLE tareas ADD COLUMN facturada BOOLEAN DEFAULT FALSE'))
+        if 'cuenta_cobro_id' not in existing_cols_tareas:
+            models.db.session.execute(text('ALTER TABLE tareas ADD COLUMN cuenta_cobro_id INTEGER'))
+        models.db.session.commit()
+    except Exception as e:
+        models.db.session.rollback()
+        app.logger.warning(f'Tareas billing migration skipped: {e}')
+
+    # Migración: columna firma_imagen en perfil_pago
+    try:
+        inspector3 = sa_inspect(models.db.engine)
+        existing_cols_perfil = [col['name'] for col in inspector3.get_columns('perfil_pago')]
+        if 'firma_imagen' not in existing_cols_perfil:
+            models.db.session.execute(text('ALTER TABLE perfil_pago ADD COLUMN firma_imagen TEXT'))
+            models.db.session.commit()
+    except Exception as e:
+        models.db.session.rollback()
+        app.logger.warning(f'PerfilPago firma_imagen migration skipped: {e}')
+
+    # Migración: sincronizar enum estado_cuenta con valores del modelo (solo PostgreSQL)
+    try:
+        required_enum_vals = ['PENDIENTE', 'REVISI\u00d3N', 'APROBADA', 'PAGADA', 'RECHAZADA']
+        with models.db.engine.connect() as raw_conn:
+            existing_rows = raw_conn.execute(
+                text("SELECT enumlabel FROM pg_enum e JOIN pg_type t ON e.enumtypid=t.oid WHERE t.typname='estado_cuenta'")
+            ).fetchall()
+            existing_enum_vals = {r[0] for r in existing_rows}
+        for val in required_enum_vals:
+            if val not in existing_enum_vals:
+                with models.db.engine.connect() as raw_conn2:
+                    raw_conn2.execution_options(isolation_level='AUTOCOMMIT')
+                    raw_conn2.execute(text(f"ALTER TYPE estado_cuenta ADD VALUE '{val}'"))
+                app.logger.info(f'estado_cuenta enum: added value {val!r}')
+    except Exception as e:
+        app.logger.warning(f'estado_cuenta enum migration skipped: {e}')
+
+    # Crear directorio de colillas si no existe
+    os.makedirs(os.path.join(app.root_path, 'static', 'colillas'), exist_ok=True)
+
 # Cargar usuario
 @login_manager.user_loader
 def load_user(user_id):
@@ -183,11 +228,61 @@ def serve_manifest():
 
 @app.route('/sw.js')
 def serve_sw():
-    return send_file('sw.js', mimetype='application/javascript')
+    return send_file(os.path.join('static', 'js', 'sw.js'), mimetype='application/javascript')
 
 @app.context_processor
 def inject_user():
     return dict(username=session.get('username'))
+
+
+# ─── Helpers de reglas de negocio — facturación ───────────────────────────────
+
+def _check_tarea_bloqueada(tarea):
+    """
+    Verifica si una tarea no puede modificarse por estar vinculada a una cuenta de cobro.
+
+    Reglas:
+      - Cuenta en estado PAGADA → bloqueada para TODOS (incluye admin).
+      - Facturada en otro estado → bloqueada solo para usuarios no-admin.
+
+    Retorna (True, (response, status_code)) si bloqueada; (False, None) si libre.
+    """
+    if not tarea.facturada and not tarea.cuenta_cobro_id:
+        return False, None
+    cuenta = None
+    if tarea.cuenta_cobro_id:
+        cuenta = models.CuentaCobro.query.get(tarea.cuenta_cobro_id)
+    if cuenta and cuenta.estado == 'PAGADA':
+        return True, (
+            jsonify({'ok': False, 'error': f'La tarea pertenece a la cuenta {cuenta.numero_cuenta} que ya fue PAGADA y no puede modificarse.'}),
+            403
+        )
+    if session.get('username') not in ['admin', 'superadmin']:
+        num = cuenta.numero_cuenta if cuenta else 'en cobro'
+        return True, (
+            jsonify({'ok': False, 'error': f'La tarea está incluida en la cuenta de cobro {num} y no puede modificarse.'}),
+            403
+        )
+    return False, None
+
+
+def _get_tareas_pagadas_ids(tareas_list):
+    """Retorna un set de IDs de tareas cuya cuenta de cobro está en estado PAGADA."""
+    if not tareas_list:
+        return set()
+    cc_ids = {t.cuenta_cobro_id for t in tareas_list if t.cuenta_cobro_id}
+    if not cc_ids:
+        return set()
+    pagadas_cc_ids = {
+        cc.id for cc in models.CuentaCobro.query.filter(
+            models.CuentaCobro.id.in_(cc_ids),
+            models.CuentaCobro.estado == 'PAGADA'
+        ).all()
+    }
+    return {t.id for t in tareas_list if t.cuenta_cobro_id in pagadas_cc_ids}
+
+# ─────────────────────────────────────────────────────────────────────────────
+
 
 def buscar_tareas(clave_busqueda):
     """
@@ -359,6 +454,10 @@ def gantt_update_tarea(codigo_tarea):
         if not tarea:
             return jsonify({"ok": False, "error": "Tarea no encontrada"}), 404
 
+        bloqueada, resp = _check_tarea_bloqueada(tarea)
+        if bloqueada:
+            return resp
+
         if 'titulo' in data and data['titulo'].strip():
             tarea.titulo = data['titulo'].strip()[:100]
         if 'fecha_inicio' in data:
@@ -471,6 +570,9 @@ def gantt_delete_tarea(codigo_tarea):
         tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first()
         if not tarea:
             return jsonify({"ok": False, "error": "Tarea no encontrada"}), 404
+        bloqueada, resp = _check_tarea_bloqueada(tarea)
+        if bloqueada:
+            return resp
         models.db.session.delete(tarea)
         models.db.session.commit()
         return jsonify({"ok": True})
@@ -602,6 +704,8 @@ def proyecto():
     total_horas_ejecucion = sum((tarea.horas_dedicadas or 0) for tarea in models.Tareas.query.all())
 
     # Renderizar la plantilla con los datos obtenidos
+    all_tareas_tablero = tareas_PENDIENTE + tareas_PROGRESO + tareas_REVISIÓN + tareas_IMPEDIMENTOS + tareas_COMPLETADOS
+    tareas_pagadas_ids = _get_tareas_pagadas_ids(all_tareas_tablero)
     return render_template('tablero.html',
                            empresas=empresas,
                            host=host,
@@ -612,7 +716,8 @@ def proyecto():
                            tareas_COMPLETADOS=tareas_COMPLETADOS,
                            proyectos=proyectos,
                            usuarios=usuarios,
-                           total_horas_ejecucion=total_horas_ejecucion)
+                           total_horas_ejecucion=total_horas_ejecucion,
+                           tareas_pagadas_ids=tareas_pagadas_ids)
 
 # Nuevo usuario 
 @app.route("/Nuevo_Usuario")
@@ -920,11 +1025,13 @@ def vista_tareas():
     # Calcular las horas estimadas y de ejecución
     total_horas_ejecucion = sum((tarea.horas_dedicadas or 0) for tarea in tareas)
 
+    tareas_pagadas_ids = _get_tareas_pagadas_ids(tareas)
     return render_template("tareas.html", tareas=tareas,
                                         empresas=empresas,
                                         proyectos=proyectos,
                                         usuarios=usuarios,
-                                        total_horas_ejecucion=total_horas_ejecucion)
+                                        total_horas_ejecucion=total_horas_ejecucion,
+                                        tareas_pagadas_ids=tareas_pagadas_ids)
 
 # usuarios vista 
 @app.route('/usuarios_admin', methods=['GET'])
@@ -1308,6 +1415,11 @@ def actualizar_estado_tarea(tarea_id):
     # Obtener la tarea por ID
     tarea = models.Tareas.query.get_or_404(tarea_id)
 
+    # Bloquear modificación por regla de facturación
+    bloqueada, resp = _check_tarea_bloqueada(tarea)
+    if bloqueada:
+        return resp
+
     # Validar que el nuevo estado es válido
     if nuevo_estado not in ['PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS']:
         return jsonify({'message': 'Estado inválido'}), 400
@@ -1377,7 +1489,10 @@ def actualizar_tarea(id):
     Actualizar una tarea existente por ID.
     Se espera un JSON con los campos que se desean actualizar.
     """
-    tarea =  models.Tareas.query.get_or_404(id)
+    tarea = models.Tareas.query.get_or_404(id)
+    bloqueada, resp = _check_tarea_bloqueada(tarea)
+    if bloqueada:
+        return resp
     data = request.get_json()
 
     tarea.empresa = data.get('empresa', tarea.empresa)
@@ -1404,6 +1519,9 @@ def eliminar_tarea(id):
     Eliminar una tarea por su ID.
     """
     tarea = models.Tareas.query.get_or_404(id)
+    bloqueada, resp = _check_tarea_bloqueada(tarea)
+    if bloqueada:
+        return resp
     models.db.session.delete(tarea)
     models.db.session.commit()
     return jsonify({'message': 'Tarea eliminada correctamente'}), 200
@@ -1416,6 +1534,9 @@ def actualizar_estado(id):
     Se espera un JSON con el campo 'estado'.
     """
     tarea = models.Tareas.query.get_or_404(id)
+    bloqueada, resp = _check_tarea_bloqueada(tarea)
+    if bloqueada:
+        return resp
     data = request.get_json()
 
     if 'estado' not in data:
@@ -1847,6 +1968,10 @@ def dashboard_actualizar_tarea(id):
     if not tarea:
         return jsonify({'error': 'Tarea no encontrada'}), 404
 
+    bloqueada, resp = _check_tarea_bloqueada(tarea)
+    if bloqueada:
+        return resp
+
     data = request.get_json()
     if not data:
         return jsonify({'error': 'Datos inválidos'}), 422
@@ -1885,6 +2010,591 @@ def dashboard_actualizar_tarea(id):
         models.db.session.rollback()
         logging.error(f"Error actualizando tarea {id}: {str(e)}")
         return jsonify({'error': 'Error interno del servidor'}), 500
+
+
+# ════════════════════════════════════════════════════════════════════════════
+# MÓDULO CUENTA DE COBROS
+# ════════════════════════════════════════════════════════════════════════════
+
+MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+            'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+EXTENSIONES_COLILLA = {'pdf', 'png', 'jpg', 'jpeg'}
+MAX_COLILLA_BYTES = 5 * 1024 * 1024  # 5 MB
+
+
+def _correo_usuario(usuario_id):
+    u = models.Usuarios.query.get(usuario_id)
+    return u.correo if u else None
+
+
+def _nombre_usuario(usuario_id):
+    u = models.Usuarios.query.get(usuario_id)
+    return f"{u.nombres} {u.apellidos}" if u else 'Usuario'
+
+
+def _generar_numero_cuenta(anio):
+    ultimo = models.CuentaCobro.query.filter(
+        models.CuentaCobro.numero_cuenta.like(f'CC-{anio}-%')
+    ).order_by(models.CuentaCobro.id.desc()).first()
+    if ultimo:
+        try:
+            n = int(ultimo.numero_cuenta.split('-')[-1]) + 1
+        except ValueError:
+            n = 1
+    else:
+        n = 1
+    return f'CC-{anio}-{n:03d}'
+
+
+def _enviar_email_nueva_cuenta(cuenta):
+    try:
+        admin_email = config.config['EMAIL']
+        detalles = cuenta.detalles
+        total_horas = sum(d.horas_dedicadas for d in detalles)
+        items_html = ''.join(
+            f'<li>{d.titulo_tarea} ({d.codigo_tarea}) — {d.horas_dedicadas}h × '
+            f'${float(d.precio_hora):,.0f} = ${float(d.subtotal):,.0f}</li>'
+            for d in detalles
+        )
+        msg = Message(
+            subject=f'Nueva cuenta de cobro #{cuenta.numero_cuenta} de {_nombre_usuario(cuenta.usuario_id)}',
+            recipients=[admin_email]
+        )
+        msg.html = f"""
+        <h2 style="color:#4e73df">Nueva Cuenta de Cobro</h2>
+        <p><strong>N°:</strong> {cuenta.numero_cuenta}</p>
+        <p><strong>Trabajador:</strong> {_nombre_usuario(cuenta.usuario_id)}</p>
+        <p><strong>Período:</strong> {cuenta.mes} {cuenta.anio}</p>
+        <p><strong>Empresa:</strong> {cuenta.empresa_pagadora}</p>
+        <p><strong>Total horas:</strong> {total_horas}h</p>
+        <p><strong>Valor total:</strong> ${float(cuenta.valor_total):,.0f} COP</p>
+        <p><strong>Tareas incluidas:</strong></p><ul>{items_html}</ul>
+        <p><a href="{host}admin/cuenta-cobro/{cuenta.id}" style="background:#4e73df;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
+            Ver en Fofigest
+        </a></p>"""
+        mail.send(msg)
+    except Exception as e:
+        logging.error(f'Error enviando email nueva cuenta: {e}')
+
+
+def _enviar_email_pago_procesado(cuenta, token):
+    try:
+        correo = _correo_usuario(cuenta.usuario_id)
+        if not correo:
+            return
+        perfil = models.PerfilPago.query.filter_by(usuario_id=cuenta.usuario_id).first()
+        datos_banco = ''
+        if perfil:
+            datos_banco = (f'<p>El pago se realizará en cuenta {perfil.tipo_cuenta} '
+                           f'N° {perfil.numero_cuenta} del banco {perfil.banco} '
+                           f'a nombre de {perfil.nombres_completos}.</p>')
+        enlace = f'{host}confirmar-pago/{token}'
+        msg = Message(
+            subject=f'Tu pago ha sido procesado — Cuenta #{cuenta.numero_cuenta}',
+            recipients=[correo]
+        )
+        msg.html = f"""
+        <h2 style="color:#1cc88a">Pago Procesado</h2>
+        <p>Hola {_nombre_usuario(cuenta.usuario_id)},</p>
+        <p>Tu cuenta de cobro <strong>{cuenta.numero_cuenta}</strong> ha sido marcada como PAGADA.</p>
+        <p><strong>Empresa:</strong> {cuenta.empresa_pagadora}</p>
+        <p><strong>Período:</strong> {cuenta.mes} {cuenta.anio}</p>
+        <p><strong>Valor:</strong> ${float(cuenta.valor_total):,.0f} COP</p>
+        {datos_banco}
+        <p>Por favor confirma que recibiste el pago haciendo clic en el siguiente enlace
+        (es de un solo uso):</p>
+        <p><a href="{enlace}" style="background:#1cc88a;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
+            Confirmar / Reportar inconveniente
+        </a></p>
+        <p style="font-size:.85rem;color:#858796">Si tienes algún inconveniente, puedes reportarlo desde el mismo enlace.</p>"""
+        mail.send(msg)
+    except Exception as e:
+        logging.error(f'Error enviando email pago procesado: {e}')
+
+
+def _enviar_email_confirmacion_admin(cuenta, tipo, inconveniente=None):
+    try:
+        admin_email = config.config['EMAIL']
+        nombre = _nombre_usuario(cuenta.usuario_id)
+        if tipo == 'confirmado':
+            asunto = f'Pago confirmado ✓ — #{cuenta.numero_cuenta}'
+            cuerpo = f'<p>{nombre} confirmó que recibió el pago de la cuenta {cuenta.numero_cuenta}.</p>'
+        else:
+            asunto = f'Inconveniente reportado — #{cuenta.numero_cuenta}'
+            cuerpo = (f'<p>{nombre} reportó un inconveniente en la cuenta {cuenta.numero_cuenta}:</p>'
+                      f'<blockquote>{inconveniente}</blockquote>')
+        msg = Message(subject=asunto, recipients=[admin_email])
+        msg.html = f"""
+        <h2 style="color:#4e73df">Fofigest — Cuenta de Cobro</h2>
+        {cuerpo}
+        <p><a href="{host}admin/cuenta-cobro/{cuenta.id}" style="background:#4e73df;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
+            Ver detalle
+        </a></p>"""
+        mail.send(msg)
+    except Exception as e:
+        logging.error(f'Error enviando email confirmación admin: {e}')
+
+
+# ── 2.1 Perfil de pago ───────────────────────────────────────────────────────
+
+@app.route('/mi-perfil-pago', methods=['GET', 'POST'])
+@login_required
+def mi_perfil_pago():
+    usuario = models.Usuarios.query.filter_by(correo=session.get('correo')).first_or_404()
+    perfil = models.PerfilPago.query.filter_by(usuario_id=usuario.id).first()
+
+    if request.method == 'POST':
+        try:
+            if perfil is None:
+                perfil = models.PerfilPago(usuario_id=usuario.id)
+                models.db.session.add(perfil)
+            perfil.nombres_completos = request.form.get('nombres_completos', '').strip()
+            perfil.documento = request.form.get('documento', '').strip()
+            perfil.tipo_cuenta = request.form.get('tipo_cuenta')
+            perfil.banco = request.form.get('banco', '').strip()
+            perfil.numero_cuenta = request.form.get('numero_cuenta', '').strip()
+            perfil.firma_texto = request.form.get('firma_texto', '').strip() or None
+            # firma_imagen se guarda por /api/guardar-firma (canvas JS) — no se sobreescribe aquí
+            perfil.fecha_actualizado = datetime.now()
+            models.db.session.commit()
+            flash('Datos bancarios guardados correctamente.', 'success')
+            logging.info(f'Perfil de pago actualizado para usuario {usuario.correo}')
+            return redirect(url_for('mi_perfil_pago'))
+        except Exception as e:
+            models.db.session.rollback()
+            logging.error(f'Error guardando perfil de pago: {e}')
+            flash('Error al guardar los datos. Intenta de nuevo.', 'danger')
+
+    return render_template('perfil_pago.html', perfil=perfil)
+
+
+# ── 2.2 Cuentas de cobro (trabajador) ────────────────────────────────────────
+
+@app.route('/mis-cuentas-cobro', methods=['GET'])
+@login_required
+def mis_cuentas_cobro():
+    usuario = models.Usuarios.query.filter_by(correo=session.get('correo')).first_or_404()
+    cuentas = models.CuentaCobro.query.filter_by(usuario_id=usuario.id)\
+        .order_by(models.CuentaCobro.fecha_creacion.desc()).all()
+    return render_template('mis_cuentas_cobro.html', cuentas=cuentas)
+
+
+@app.route('/nueva-cuenta-cobro', methods=['GET'])
+@login_required
+def nueva_cuenta_cobro_get():
+    usuario = models.Usuarios.query.filter_by(correo=session.get('correo')).first_or_404()
+    perfil = models.PerfilPago.query.filter_by(usuario_id=usuario.id).first()
+    if not perfil:
+        flash('Debes registrar tus datos bancarios antes de crear una cuenta de cobro.', 'warning')
+        return redirect(url_for('mi_perfil_pago'))
+    empresas = models.Empresas.query.order_by(models.Empresas.empresa).all()
+    anio_actual = datetime.now().year
+    return render_template('nueva_cuenta_cobro.html', meses=MESES_ES,
+                           perfil=perfil, empresas=empresas, anio_actual=anio_actual)
+
+
+@app.route('/api/tareas-facturables', methods=['GET'])
+@login_required
+def tareas_facturables():
+    mes = request.args.get('mes', '')
+    anio = request.args.get('anio', type=int)
+    usuario = models.Usuarios.query.filter_by(correo=session.get('correo')).first_or_404()
+    empresa = usuario.empresa
+
+    query = models.Tareas.query.filter(
+        models.Tareas.responsable == f"{usuario.nombres} {usuario.apellidos}",
+        models.Tareas.estado == 'COMPLETADOS',
+        models.Tareas.facturada == False
+    )
+    if mes:
+        query = query.filter(models.Tareas.mes == mes)
+    if anio:
+        query = query.filter(
+            models.db.extract('year', models.Tareas.fecha_inicio) == anio
+        )
+
+    tareas = query.all()
+    resultado = [{
+        'id': t.id,
+        'codigo_tarea': t.codigo_tarea,
+        'titulo': t.titulo,
+        'horas_dedicadas': t.horas_dedicadas,
+        'empresa': t.empresa,
+        'codigo_proyecto': t.codigo_proyecto
+    } for t in tareas]
+    return jsonify(resultado)
+
+
+@app.route('/api/guardar-firma', methods=['POST'])
+@login_required
+def guardar_firma():
+    usuario = models.Usuarios.query.filter_by(correo=session.get('correo')).first_or_404()
+    perfil = models.PerfilPago.query.filter_by(usuario_id=usuario.id).first()
+    if not perfil:
+        return jsonify({'ok': False, 'error': 'Perfil no encontrado'}), 404
+    data = request.get_json(silent=True) or {}
+    firma = data.get('firma_imagen', '').strip()
+    if firma and not firma.startswith('data:image/'):
+        return jsonify({'ok': False, 'error': 'Formato de imagen inválido'}), 422
+    perfil.firma_imagen = firma or None
+    try:
+        models.db.session.commit()
+        logging.info(f'Firma guardada para usuario {usuario.correo}')
+        return jsonify({'ok': True}), 200
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error guardando firma: {e}')
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+
+@app.route('/nueva-cuenta-cobro', methods=['POST'])
+@login_required
+def nueva_cuenta_cobro_post():
+    usuario = models.Usuarios.query.filter_by(correo=session.get('correo')).first_or_404()
+    perfil = models.PerfilPago.query.filter_by(usuario_id=usuario.id).first()
+    if not perfil:
+        flash('Debes registrar tus datos bancarios primero.', 'warning')
+        return redirect(url_for('mi_perfil_pago'))
+
+    empresa_pagadora = request.form.get('empresa_pagadora', '').strip()
+    nit_pagadora = request.form.get('nit_pagadora', '').strip()
+    mes = request.form.get('mes', '')
+    anio = request.form.get('anio', type=int)
+    tareas_ids = request.form.getlist('tareas_ids[]')
+
+    if not tareas_ids:
+        flash('Debes seleccionar al menos una tarea.', 'danger')
+        return redirect(url_for('nueva_cuenta_cobro_get'))
+
+    if not empresa_pagadora or not nit_pagadora or not mes or not anio:
+        flash('Completa todos los campos requeridos.', 'danger')
+        return redirect(url_for('nueva_cuenta_cobro_get'))
+
+    # Recolectar y validar tareas
+    detalles_data = []
+    for tid in tareas_ids:
+        tarea = models.Tareas.query.get(int(tid))
+        if not tarea or tarea.facturada:
+            flash(f'La tarea ID {tid} no está disponible para facturar.', 'danger')
+            return redirect(url_for('nueva_cuenta_cobro_get'))
+        precio_hora_raw = request.form.get(f'precio_hora_{tid}', '0').replace(',', '.')
+        try:
+            precio_hora = float(precio_hora_raw)
+        except ValueError:
+            precio_hora = 0
+        if precio_hora <= 0 or precio_hora > 10_000_000:
+            flash('El precio por hora debe ser mayor a 0 y máximo 10.000.000 COP.', 'danger')
+            return redirect(url_for('nueva_cuenta_cobro_get'))
+        subtotal = round(tarea.horas_dedicadas * precio_hora, 2)
+        detalles_data.append({
+            'tarea': tarea,
+            'precio_hora': precio_hora,
+            'subtotal': subtotal
+        })
+
+    valor_total = sum(d['subtotal'] for d in detalles_data)
+
+    # Aviso si ya existe cuenta en ese mes/año
+    existe = models.CuentaCobro.query.filter(
+        models.CuentaCobro.usuario_id == usuario.id,
+        models.CuentaCobro.mes == mes,
+        models.CuentaCobro.anio == anio,
+        models.CuentaCobro.estado.in_(['PENDIENTE', 'REVISIÓN'])
+    ).first()
+    if existe:
+        flash(f'Ya tienes una cuenta en estado {existe.estado} para {mes} {anio}. Se creará de todas formas.', 'warning')
+
+    try:
+        numero_cuenta = _generar_numero_cuenta(anio)
+        concepto_items = '; '.join(
+            f"{d['tarea'].titulo} ({d['tarea'].codigo_tarea})" for d in detalles_data
+        )
+        cuenta = models.CuentaCobro(
+            numero_cuenta=numero_cuenta,
+            usuario_id=usuario.id,
+            empresa_pagadora=empresa_pagadora,
+            nit_pagadora=nit_pagadora,
+            concepto=concepto_items,
+            valor_total=valor_total,
+            mes=mes,
+            anio=anio,
+            estado='PENDIENTE'
+        )
+        models.db.session.add(cuenta)
+        models.db.session.flush()
+
+        for d in detalles_data:
+            detalle = models.DetalleCuentaCobro(
+                cuenta_cobro_id=cuenta.id,
+                tarea_id=d['tarea'].id,
+                codigo_tarea=d['tarea'].codigo_tarea,
+                titulo_tarea=d['tarea'].titulo,
+                horas_dedicadas=d['tarea'].horas_dedicadas,
+                precio_hora=d['precio_hora'],
+                subtotal=d['subtotal']
+            )
+            models.db.session.add(detalle)
+            d['tarea'].facturada = True
+            d['tarea'].cuenta_cobro_id = cuenta.id
+
+        models.db.session.commit()
+        logging.info(f'Cuenta de cobro {numero_cuenta} creada por {usuario.correo}')
+        _enviar_email_nueva_cuenta(cuenta)
+        flash(f'Cuenta de cobro {numero_cuenta} creada exitosamente.', 'success')
+        return redirect(url_for('mis_cuentas_cobro'))
+    except IntegrityError:
+        models.db.session.rollback()
+        flash('Error: número de cuenta duplicado. Intenta de nuevo.', 'danger')
+        return redirect(url_for('nueva_cuenta_cobro_get'))
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error creando cuenta de cobro: {e}')
+        flash('Error interno al crear la cuenta de cobro.', 'danger')
+        return redirect(url_for('nueva_cuenta_cobro_get'))
+
+
+@app.route('/cuenta-cobro/<int:id>', methods=['GET'])
+@login_required
+def detalle_cuenta_cobro(id):
+    usuario = models.Usuarios.query.filter_by(correo=session.get('correo')).first_or_404()
+    permisos = session.get('username')
+    if permisos in ['admin', 'superadmin']:
+        cuenta = models.CuentaCobro.query.get_or_404(id)
+    else:
+        cuenta = models.CuentaCobro.query.filter_by(id=id, usuario_id=usuario.id).first_or_404()
+    perfil = models.PerfilPago.query.filter_by(usuario_id=cuenta.usuario_id).first()
+    return render_template('detalle_cuenta_cobro.html', cuenta=cuenta, perfil=perfil)
+
+
+# ── 2.3 Panel admin de cuentas de cobro ──────────────────────────────────────
+
+def _check_admin():
+    if session.get('username') not in ['admin', 'superadmin']:
+        abort(403)
+
+
+@app.route('/admin/cuentas-cobro', methods=['GET'])
+@login_required
+def admin_cuentas_cobro():
+    _check_admin()
+    estado_f = request.args.get('estado', '')
+    mes_f = request.args.get('mes', '')
+    anio_f = request.args.get('anio', type=int)
+    busqueda = request.args.get('q', '')
+
+    query = models.CuentaCobro.query
+    if estado_f:
+        query = query.filter(models.CuentaCobro.estado == estado_f)
+    if mes_f:
+        query = query.filter(models.CuentaCobro.mes == mes_f)
+    if anio_f:
+        query = query.filter(models.CuentaCobro.anio == anio_f)
+    if busqueda:
+        ids_match = [u.id for u in models.Usuarios.query.filter(
+            or_(models.Usuarios.nombres.ilike(f'%{busqueda}%'),
+                models.Usuarios.apellidos.ilike(f'%{busqueda}%'))
+        ).all()]
+        query = query.filter(models.CuentaCobro.usuario_id.in_(ids_match))
+
+    cuentas = query.order_by(models.CuentaCobro.fecha_creacion.desc()).all()
+    return render_template('admin_cuentas_cobro.html',
+                           cuentas=cuentas, meses=MESES_ES,
+                           estado_f=estado_f, mes_f=mes_f,
+                           anio_f=anio_f or '', busqueda=busqueda)
+
+
+@app.route('/admin/cuenta-cobro/<int:id>', methods=['GET'])
+@login_required
+def admin_detalle_cuenta_cobro(id):
+    _check_admin()
+    cuenta = models.CuentaCobro.query.get_or_404(id)
+    perfil = models.PerfilPago.query.filter_by(usuario_id=cuenta.usuario_id).first()
+    return render_template('admin_detalle_cuenta_cobro.html', cuenta=cuenta, perfil=perfil)
+
+
+@app.route('/admin/cuenta-cobro/<int:id>/estado', methods=['POST'])
+@login_required
+def admin_cambiar_estado_cuenta(id):
+    _check_admin()
+    cuenta = models.CuentaCobro.query.get_or_404(id)
+    nuevo_estado = request.form.get('estado')
+    observacion = request.form.get('observacion_admin', '').strip() or None
+
+    estados_validos = ['PENDIENTE', 'REVISIÓN', 'APROBADA', 'PAGADA', 'RECHAZADA']
+    if nuevo_estado not in estados_validos:
+        flash('Estado inválido.', 'danger')
+        return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+    try:
+        cuenta.estado = nuevo_estado
+        cuenta.observacion_admin = observacion
+
+        if nuevo_estado == 'PAGADA':
+            cuenta.fecha_pago = datetime.now()
+            token = str(uuid.uuid4())
+            confirmacion = models.ConfirmacionPago.query.filter_by(cuenta_cobro_id=cuenta.id).first()
+            if confirmacion is None:
+                confirmacion = models.ConfirmacionPago(cuenta_cobro_id=cuenta.id)
+                models.db.session.add(confirmacion)
+            confirmacion.confirmado = False
+            confirmacion.token_confirmacion = token
+            confirmacion.fecha_confirmacion = None
+            models.db.session.commit()
+            logging.info(f'Cuenta {cuenta.numero_cuenta} marcada PAGADA por {session.get("correo")}')
+            _enviar_email_pago_procesado(cuenta, token)
+            flash(f'Estado actualizado a PAGADA. Se envió email de confirmación al trabajador.', 'success')
+
+        elif nuevo_estado == 'RECHAZADA':
+            tareas_liberadas = []
+            for detalle in cuenta.detalles:
+                if detalle.tarea_id:
+                    t = models.Tareas.query.get(detalle.tarea_id)
+                    if t:
+                        t.facturada = False
+                        t.cuenta_cobro_id = None
+                        tareas_liberadas.append(t.codigo_tarea)
+            models.db.session.commit()
+            logging.info(
+                f'Cuenta {cuenta.numero_cuenta} RECHAZADA por {session.get("correo")}. '
+                f'Tareas liberadas: {tareas_liberadas}'
+            )
+            flash(f'Cuenta rechazada. {len(tareas_liberadas)} tarea(s) liberadas para re-facturación.', 'success')
+        else:
+            models.db.session.commit()
+            flash('Estado actualizado correctamente.', 'success')
+
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error cambiando estado cuenta {id}: {e}')
+        flash('Error al actualizar el estado.', 'danger')
+
+    return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+
+@app.route('/admin/cuenta-cobro/<int:id>/colilla', methods=['POST'])
+@login_required
+def admin_subir_colilla(id):
+    _check_admin()
+    cuenta = models.CuentaCobro.query.get_or_404(id)
+    archivo = request.files.get('colilla')
+    if not archivo or archivo.filename == '':
+        flash('No se seleccionó ningún archivo.', 'danger')
+        return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+    ext = archivo.filename.rsplit('.', 1)[-1].lower() if '.' in archivo.filename else ''
+    if ext not in EXTENSIONES_COLILLA:
+        flash('Extensión no permitida. Use PDF, PNG, JPG o JPEG.', 'danger')
+        return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+    archivo.seek(0, 2)
+    tamaño = archivo.tell()
+    archivo.seek(0)
+    if tamaño > MAX_COLILLA_BYTES:
+        flash('El archivo supera el límite de 5 MB.', 'danger')
+        return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+    try:
+        nombre_seguro = secure_filename(archivo.filename)
+        nombre_unico = f'{cuenta.numero_cuenta}_{uuid.uuid4().hex[:8]}_{nombre_seguro}'
+        ruta = os.path.join(app.root_path, 'static', 'colillas', nombre_unico)
+        archivo.save(ruta)
+        colilla = models.ColillaPago(
+            cuenta_cobro_id=cuenta.id,
+            archivo_nombre=nombre_seguro,
+            archivo_url=f'/static/colillas/{nombre_unico}',
+            subido_por=session.get('correo', 'admin')
+        )
+        models.db.session.add(colilla)
+        models.db.session.commit()
+        logging.info(f'Colilla subida para cuenta {cuenta.numero_cuenta} por {session.get("correo")}')
+        flash('Colilla subida correctamente.', 'success')
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error subiendo colilla: {e}')
+        flash('Error al subir el archivo.', 'danger')
+
+    return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+
+@app.route('/admin/cuenta-cobro/<int:id>/desbloquear-tarea/<int:tarea_id>', methods=['POST'])
+@login_required
+def admin_desbloquear_tarea(id, tarea_id):
+    _check_admin()
+    cuenta = models.CuentaCobro.query.get_or_404(id)
+    detalle = models.DetalleCuentaCobro.query.filter_by(
+        cuenta_cobro_id=cuenta.id, tarea_id=tarea_id).first_or_404()
+    try:
+        tarea = models.Tareas.query.get(tarea_id)
+        if tarea:
+            tarea.facturada = False
+            tarea.cuenta_cobro_id = None
+        models.db.session.delete(detalle)
+        models.db.session.flush()
+        cuenta.valor_total = sum(d.subtotal for d in cuenta.detalles)
+        models.db.session.commit()
+        logging.info(
+            f'Tarea {tarea_id} desvinculada de cuenta {cuenta.numero_cuenta} '
+            f'por {session.get("correo")}'
+        )
+        return jsonify({'ok': True, 'nuevo_total': float(cuenta.valor_total)})
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error desvinculando tarea {tarea_id}: {e}')
+        return jsonify({'ok': False, 'error': 'Error interno'}), 500
+
+
+# ── 2.4 Confirmación de pago (pública vía token) ─────────────────────────────
+
+@app.route('/confirmar-pago/<token>', methods=['GET'])
+def confirmar_pago_get(token):
+    conf = models.ConfirmacionPago.query.filter_by(token_confirmacion=token).first_or_404()
+    cuenta = conf.cuenta
+    ya_usado = conf.confirmado or conf.inconveniente is not None
+    return render_template('confirmar_pago.html', conf=conf, cuenta=cuenta, ya_usado=ya_usado)
+
+
+@app.route('/confirmar-pago/<token>/aceptar', methods=['POST'])
+def confirmar_pago_aceptar(token):
+    conf = models.ConfirmacionPago.query.filter_by(token_confirmacion=token).first_or_404()
+    if conf.confirmado or conf.inconveniente:
+        return redirect(url_for('confirmar_pago_get', token=token))
+    try:
+        conf.confirmado = True
+        conf.fecha_confirmacion = datetime.now()
+        models.db.session.commit()
+        logging.info(f'Pago confirmado para cuenta {conf.cuenta.numero_cuenta}')
+        _enviar_email_confirmacion_admin(conf.cuenta, 'confirmado')
+        return render_template('confirmar_pago.html', conf=conf, cuenta=conf.cuenta,
+                               ya_usado=True, mensaje='¡Gracias! Confirmación registrada exitosamente.')
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error confirmando pago token {token}: {e}')
+        return render_template('confirmar_pago.html', conf=conf, cuenta=conf.cuenta,
+                               ya_usado=False, error='Error al procesar la confirmación.')
+
+
+@app.route('/confirmar-pago/<token>/inconveniente', methods=['POST'])
+def confirmar_pago_inconveniente(token):
+    conf = models.ConfirmacionPago.query.filter_by(token_confirmacion=token).first_or_404()
+    if conf.confirmado or conf.inconveniente:
+        return redirect(url_for('confirmar_pago_get', token=token))
+    texto = request.form.get('inconveniente', '').strip()
+    if not texto:
+        return redirect(url_for('confirmar_pago_get', token=token))
+    try:
+        conf.inconveniente = texto
+        conf.fecha_inconveniente = datetime.now()
+        conf.cuenta.estado = 'REVISIÓN'
+        models.db.session.commit()
+        logging.info(f'Inconveniente reportado para cuenta {conf.cuenta.numero_cuenta}')
+        _enviar_email_confirmacion_admin(conf.cuenta, 'inconveniente', inconveniente=texto)
+        return render_template('confirmar_pago.html', conf=conf, cuenta=conf.cuenta,
+                               ya_usado=True, mensaje='Inconveniente reportado. El administrador revisará tu caso.')
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error reportando inconveniente token {token}: {e}')
+        return render_template('confirmar_pago.html', conf=conf, cuenta=conf.cuenta,
+                               ya_usado=False, error='Error al reportar el inconveniente.')
 
 
 if __name__ == '__main__':

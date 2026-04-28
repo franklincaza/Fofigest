@@ -1,0 +1,91 @@
+{% extends "Base.html" %}
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color:var(--text-heading)">
+      <i class="fas fa-file-invoice me-2 text-primary"></i>Mis Cuentas de Cobro
+    </h1>
+    <a href="{{ url_for('nueva_cuenta_cobro_get') }}" class="btn btn-primary btn-sm">
+      <i class="fas fa-plus me-1"></i>Nueva Cuenta de Cobro
+    </a>
+  </div>
+
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-list me-2"></i>Historial de Cobros
+      </h6>
+    </div>
+    <div class="card-body">
+      {% if cuentas %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="dataTable">
+          <thead class="table-light">
+            <tr>
+              <th>N° Cuenta</th>
+              <th>Empresa</th>
+              <th>Período</th>
+              <th class="text-center">Horas</th>
+              <th class="text-end">Valor Total</th>
+              <th class="text-center">Estado</th>
+              <th class="text-center">Fecha</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in cuentas %}
+            <tr>
+              <td class="fw-bold">{{ c.numero_cuenta }}</td>
+              <td>{{ c.empresa_pagadora }}</td>
+              <td>{{ c.mes }} {{ c.anio }}</td>
+              <td class="text-center">
+                {{ c.detalles | sum(attribute='horas_dedicadas') | round(1) }}h
+              </td>
+              <td class="text-end fw-bold">
+                ${{ '{:,.0f}'.format(c.valor_total) }} COP
+              </td>
+              <td class="text-center">
+                {% if c.estado == 'PENDIENTE' %}
+                  <span class="badge bg-warning text-dark">PENDIENTE</span>
+                {% elif c.estado == 'REVISIÓN' %}
+                  <span class="badge bg-info text-dark">REVISIÓN</span>
+                {% elif c.estado == 'APROBADA' %}
+                  <span class="badge bg-primary">APROBADA</span>
+                {% elif c.estado == 'PAGADA' %}
+                  <span class="badge bg-success">PAGADA</span>
+                {% elif c.estado == 'RECHAZADA' %}
+                  <span class="badge bg-danger">RECHAZADA</span>
+                {% endif %}
+                {% if c.estado == 'PAGADA' and c.confirmacion and not c.confirmacion.confirmado and not c.confirmacion.inconveniente %}
+                  <br><small class="text-warning"><i class="fas fa-exclamation-triangle"></i> Pendiente confirmar</small>
+                {% endif %}
+              </td>
+              <td class="text-center small">
+                {{ c.fecha_creacion.strftime('%d/%m/%Y') if c.fecha_creacion else '—' }}
+              </td>
+              <td class="text-center">
+                <a href="{{ url_for('detalle_cuenta_cobro', id=c.id) }}"
+                   class="btn btn-primary btn-sm" title="Ver detalle">
+                  <i class="fas fa-eye"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <i class="fas fa-file-invoice fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Aún no tienes cuentas de cobro registradas.</p>
+        <a href="{{ url_for('nueva_cuenta_cobro_get') }}" class="btn btn-primary">
+          <i class="fas fa-plus me-1"></i>Crear mi primera cuenta de cobro
+        </a>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}

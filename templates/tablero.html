@@ -196,6 +196,11 @@ body { font-family: 'Nunito', sans-serif; }
 .kb-act.edit:hover    { color: #4e73df; }
 .kb-act.delete:hover  { color: #e74a3b; }
 
+/* Tareas facturadas — ocultar acciones y resaltar bloqueo PAGADA */
+.kb-card[data-facturada="true"] .kb-act.edit,
+.kb-card[data-facturada="true"] .kb-act.delete { display: none !important; }
+.kb-card[data-pagada="true"] .fa-lock { color: #e74a3b !important; }
+
 /* Card body */
 .kb-card__title {
     font-size: .85rem;
@@ -390,7 +395,9 @@ body { font-family: 'Nunito', sans-serif; }
                  id="{{ tarea.id }}"
                  draggable="true"
                  ondragstart="drag(event)"
-                 data-estado="{{ tarea.estado }}">
+                 data-estado="{{ tarea.estado }}"
+                 data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -410,7 +417,9 @@ body { font-family: 'Nunito', sans-serif; }
                         {% endif %}
                     </div>
                 </div>
-                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                <div class="kb-card__title">
+                  {% if tarea.facturada %}<i class="fas fa-lock text-secondary me-1" style="font-size:.72rem" title="Tarea facturada"></i>{% endif %}{{ tarea.titulo }}
+                </div>
                 {% if tarea.descripcion %}
                 <div class="kb-card__desc">{{ tarea.descripcion }}</div>
                 {% endif %}
@@ -479,7 +488,9 @@ body { font-family: 'Nunito', sans-serif; }
                  id="{{ tarea.id }}"
                  draggable="true"
                  ondragstart="drag(event)"
-                 data-estado="{{ tarea.estado }}">
+                 data-estado="{{ tarea.estado }}"
+                 data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -499,7 +510,9 @@ body { font-family: 'Nunito', sans-serif; }
                         {% endif %}
                     </div>
                 </div>
-                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                <div class="kb-card__title">
+                  {% if tarea.facturada %}<i class="fas fa-lock text-secondary me-1" style="font-size:.72rem" title="Tarea facturada"></i>{% endif %}{{ tarea.titulo }}
+                </div>
                 {% if tarea.descripcion %}
                 <div class="kb-card__desc">{{ tarea.descripcion }}</div>
                 {% endif %}
@@ -568,7 +581,9 @@ body { font-family: 'Nunito', sans-serif; }
                  id="{{ tarea.id }}"
                  draggable="true"
                  ondragstart="drag(event)"
-                 data-estado="{{ tarea.estado }}">
+                 data-estado="{{ tarea.estado }}"
+                 data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -588,7 +603,9 @@ body { font-family: 'Nunito', sans-serif; }
                         {% endif %}
                     </div>
                 </div>
-                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                <div class="kb-card__title">
+                  {% if tarea.facturada %}<i class="fas fa-lock text-secondary me-1" style="font-size:.72rem" title="Tarea facturada"></i>{% endif %}{{ tarea.titulo }}
+                </div>
                 {% if tarea.descripcion %}
                 <div class="kb-card__desc">{{ tarea.descripcion }}</div>
                 {% endif %}
@@ -657,7 +674,9 @@ body { font-family: 'Nunito', sans-serif; }
                  id="{{ tarea.id }}"
                  draggable="true"
                  ondragstart="drag(event)"
-                 data-estado="{{ tarea.estado }}">
+                 data-estado="{{ tarea.estado }}"
+                 data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -677,7 +696,9 @@ body { font-family: 'Nunito', sans-serif; }
                         {% endif %}
                     </div>
                 </div>
-                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                <div class="kb-card__title">
+                  {% if tarea.facturada %}<i class="fas fa-lock text-secondary me-1" style="font-size:.72rem" title="Tarea facturada"></i>{% endif %}{{ tarea.titulo }}
+                </div>
                 {% if tarea.descripcion %}
                 <div class="kb-card__desc">{{ tarea.descripcion }}</div>
                 {% endif %}
@@ -747,7 +768,9 @@ body { font-family: 'Nunito', sans-serif; }
                  id="{{ tarea.id }}"
                  draggable="true"
                  ondragstart="drag(event)"
-                 data-estado="{{ tarea.estado }}">
+                 data-estado="{{ tarea.estado }}"
+                 data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -765,7 +788,9 @@ body { font-family: 'Nunito', sans-serif; }
                         </button>
                     </div>
                 </div>
-                <div class="kb-card__title">{{ tarea.titulo }}</div>
+                <div class="kb-card__title">
+                  {% if tarea.facturada %}<i class="fas fa-lock text-secondary me-1" style="font-size:.72rem" title="Tarea facturada"></i>{% endif %}{{ tarea.titulo }}
+                </div>
                 {% if tarea.descripcion %}
                 <div class="kb-card__desc">{{ tarea.descripcion }}</div>
                 {% endif %}
@@ -1187,6 +1212,8 @@ function allowDrop(event) {
     event.preventDefault();
 }
 
+const USER_ROLE = '{{ session.get("username", "") }}';
+
 function drag(event) {
     /* Bloquear arrastre si el clic fue en un botón de acción */
     if (event.target.closest('.kb-act') || event.target.closest('.kb-timer-btn') || event.target.closest('.kb-timer-save')) {
@@ -1194,6 +1221,21 @@ function drag(event) {
         return;
     }
     const card = event.currentTarget;
+    /* Bloquear arrastre de tareas facturadas para todos los roles */
+    if (card.dataset.facturada === 'true') {
+        event.preventDefault();
+        const msg = card.dataset.pagada === 'true'
+            ? 'Esta tarea pertenece a una cuenta de cobro PAGADA y no puede modificarse.'
+            : 'Esta tarea está incluida en una cuenta de cobro y no puede modificarse.';
+        Swal.fire({
+            title: 'Tarea bloqueada',
+            text: msg,
+            icon: 'warning',
+            confirmButtonColor: '#4e73df',
+            confirmButtonText: 'Entendido'
+        });
+        return;
+    }
     event.dataTransfer.setData('tareaId', card.id);
     event.dataTransfer.effectAllowed = 'move';
     /* Dar feedback visual ligero */

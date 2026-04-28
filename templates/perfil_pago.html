@@ -1,0 +1,98 @@
+{% extends "Base.html" %}
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color:var(--text-heading)">
+      <i class="fas fa-university me-2 text-primary"></i>Mi Perfil de Pago
+    </h1>
+    <a href="{{ url_for('mis_cuentas_cobro') }}" class="btn btn-secondary btn-sm">
+      <i class="fas fa-arrow-left me-1"></i>Mis Cobros
+    </a>
+  </div>
+
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-id-card me-2"></i>Datos Bancarios
+          </h6>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-4">
+            Estos datos se usarán para generar tus cuentas de cobro y para que el
+            administrador realice los pagos correspondientes.
+          </p>
+          <form method="POST" action="{{ url_for('mi_perfil_pago') }}">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Nombres y apellidos completos</label>
+              <input type="text" name="nombres_completos" class="form-control" required
+                     maxlength="150"
+                     value="{{ perfil.nombres_completos if perfil else '' }}"
+                     placeholder="Ej: Cristian Felipe Pabon Osorio">
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">N° de documento (CC)</label>
+                <input type="text" name="documento" class="form-control" required
+                       maxlength="20"
+                       value="{{ perfil.documento if perfil else '' }}"
+                       placeholder="Ej: 1234567890">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Tipo de cuenta</label>
+                <select name="tipo_cuenta" class="form-control" required>
+                  <option value="">Selecciona...</option>
+                  <option value="Ahorros" {% if perfil and perfil.tipo_cuenta == 'Ahorros' %}selected{% endif %}>Ahorros</option>
+                  <option value="Corriente" {% if perfil and perfil.tipo_cuenta == 'Corriente' %}selected{% endif %}>Corriente</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Banco</label>
+                <input type="text" name="banco" class="form-control" required
+                       maxlength="100"
+                       value="{{ perfil.banco if perfil else '' }}"
+                       placeholder="Ej: Bancolombia">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label fw-semibold">Número de cuenta</label>
+                <input type="text" name="numero_cuenta" class="form-control" required
+                       maxlength="50"
+                       value="{{ perfil.numero_cuenta if perfil else '' }}"
+                       placeholder="Ej: 123-456789-00">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Texto de firma <span class="text-muted">(opcional)</span></label>
+              <textarea name="firma_texto" class="form-control" rows="2" maxlength="200"
+                        placeholder="Ej: Cristian Felipe Pabon Osorio">{{ perfil.firma_texto if perfil else '' }}</textarea>
+              <div class="form-text">Este texto aparecerá en la línea de firma del documento de cuenta de cobro.</div>
+            </div>
+
+            {% if perfil and perfil.fecha_actualizado %}
+            <p class="text-muted small">
+              <i class="fas fa-clock me-1"></i>
+              Última actualización: {{ perfil.fecha_actualizado.strftime('%d/%m/%Y %H:%M') }}
+            </p>
+            {% endif %}
+
+            <div class="d-flex justify-content-end gap-2">
+              <a href="{{ url_for('mis_cuentas_cobro') }}" class="btn btn-secondary">Cancelar</a>
+              <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save me-1"></i>Guardar datos bancarios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

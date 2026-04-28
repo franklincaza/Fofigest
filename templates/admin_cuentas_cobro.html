@@ -1,0 +1,136 @@
+{% extends "Base.html" %}
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color:var(--text-heading)">
+      <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Cuentas de Cobro
+    </h1>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 fw-bold text-primary"><i class="fas fa-filter me-2"></i>Filtros</h6>
+    </div>
+    <div class="card-body">
+      <form method="GET" action="{{ url_for('admin_cuentas_cobro') }}" class="row g-3">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Estado</label>
+          <select name="estado" class="form-control">
+            <option value="">Todos</option>
+            {% for e in ['PENDIENTE','REVISIÓN','APROBADA','PAGADA','RECHAZADA'] %}
+            <option value="{{ e }}" {% if e == estado_f %}selected{% endif %}>{{ e }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-semibold">Mes</label>
+          <select name="mes" class="form-control">
+            <option value="">Todos</option>
+            {% for m in meses %}
+            <option value="{{ m }}" {% if m == mes_f %}selected{% endif %}>{{ m }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <label class="form-label fw-semibold">Año</label>
+          <input type="number" name="anio" class="form-control"
+                 value="{{ anio_f }}" placeholder="Ej: 2025" min="2020" max="2099">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Buscar trabajador</label>
+          <input type="text" name="q" class="form-control"
+                 value="{{ busqueda }}" placeholder="Nombre o apellido">
+        </div>
+        <div class="col-md-2 d-flex align-items-end gap-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search me-1"></i>Filtrar
+          </button>
+          <a href="{{ url_for('admin_cuentas_cobro') }}" class="btn btn-secondary">
+            <i class="fas fa-times"></i>
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-list me-2"></i>{{ cuentas | length }} cuenta(s)
+      </h6>
+    </div>
+    <div class="card-body">
+      {% if cuentas %}
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>N° Cuenta</th>
+              <th>Trabajador</th>
+              <th>Empresa</th>
+              <th>Período</th>
+              <th class="text-center">Horas</th>
+              <th class="text-end">Valor Total</th>
+              <th class="text-center">Estado</th>
+              <th class="text-center">Fecha</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in cuentas %}
+            <tr>
+              <td class="fw-bold">{{ c.numero_cuenta }}</td>
+              <td>
+                {% if c.usuario %}
+                  {{ c.usuario.nombres }} {{ c.usuario.apellidos }}
+                {% else %}
+                  <span class="text-muted">—</span>
+                {% endif %}
+              </td>
+              <td>{{ c.empresa_pagadora }}</td>
+              <td>{{ c.mes }} {{ c.anio }}</td>
+              <td class="text-center">
+                {{ c.detalles | sum(attribute='horas_dedicadas') | round(1) }}h
+              </td>
+              <td class="text-end fw-bold">${{ '{:,.0f}'.format(c.valor_total) }} COP</td>
+              <td class="text-center">
+                {% if c.estado == 'PENDIENTE' %}
+                  <span class="badge bg-warning text-dark">PENDIENTE</span>
+                {% elif c.estado == 'REVISIÓN' %}
+                  <span class="badge bg-info text-dark">REVISIÓN</span>
+                {% elif c.estado == 'APROBADA' %}
+                  <span class="badge bg-primary">APROBADA</span>
+                {% elif c.estado == 'PAGADA' %}
+                  <span class="badge bg-success">PAGADA</span>
+                {% elif c.estado == 'RECHAZADA' %}
+                  <span class="badge bg-danger">RECHAZADA</span>
+                {% endif %}
+              </td>
+              <td class="text-center small">
+                {{ c.fecha_creacion.strftime('%d/%m/%Y') if c.fecha_creacion else '—' }}
+              </td>
+              <td class="text-center">
+                <a href="{{ url_for('admin_detalle_cuenta_cobro', id=c.id) }}"
+                   class="btn btn-primary btn-sm" title="Ver detalle">
+                  <i class="fas fa-eye"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No hay cuentas que coincidan con los filtros.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
