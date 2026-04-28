@@ -103,11 +103,13 @@ def registrar_trazabilidad(codigo_tarea, accion, cambios=None):
 host = config.config["host"]
 
 # Configurar el logger
+# En modo desktop FOFIGEST_LOG_PATH apunta a Fofigest_data/fofigest.log
+_log_file = os.environ.get('FOFIGEST_LOG_PATH', 'log.log')
 logging.basicConfig(
-    filename='log.log',  # Nombre del archivo de log
-    level=logging.INFO,  # Nivel de registro (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    filename=_log_file,
+    level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s - %(filename)s - %(lineno)d',
-    encoding='utf-8' # Formato del mensaje
+    encoding='utf-8'
 )
 
 # supabase reportes
@@ -123,19 +125,37 @@ app.secret_key = 'GDSGODSGFY56D4F8asc8assS6854DCSX85Z13ZXC8478SD94C6XZ1asSDA6F48
 # Generador de tokens seguros
 serializer = URLSafeTimedSerializer(app.secret_key)
 
-# Configuración de la base de datos usando SQLite
+# Configuración de la base de datos
+# Prioridad de decisión:
+#   1. FOFIGEST_DB_URI definido → usar esa URI tal cual (SQLite o PostgreSQL)
+#   2. debug=True sin override  → SQLite de desarrollo local
+#   3. Resto                    → Supabase PostgreSQL (producción / desktop online)
+_SUPABASE_URI = (
+    'postgresql://postgres.wlvgmwuhfunnpddcgvzu:I0P2EdBGUabioCtA'
+    '@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+)
+_SUPABASE_ENGINE_OPTIONS = {
+    'pool_pre_ping': True,   # descarta conexiones muertas (pgbouncer)
+    'pool_recycle':  280,    # rota antes del cierre por inactividad de Supabase
+}
 
 debug = config.config["debug"]
+_db_uri_override = os.environ.get('FOFIGEST_DB_URI')
 
-if debug:
-
-    # SQLALCHEMY_DATABASE_URI define la ubicación de la base de datos
+if _db_uri_override:
+    # Desktop offline (SQLite) o desktop online apuntando a otra BD vía env var
+    app.config['SQLALCHEMY_DATABASE_URI'] = _db_uri_override
+    if _db_uri_override.startswith('postgresql'):
+        app.config['SQLALCHEMY_ENGINE_OPTIONS'] = _SUPABASE_ENGINE_OPTIONS
+elif debug:
+    # Desarrollo local sin env var → SQLite relativo
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Empresas.db'
 else:
-    # Configuración de la base de datos Supabase
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.wlvgmwuhfunnpddcgvzu:I0P2EdBGUabioCtA@aws-0-us-west-1.pooler.supabase.com:6543/postgres'
+    # Producción web o desktop con db.mode=online
+    app.config['SQLALCHEMY_DATABASE_URI'] = _SUPABASE_URI
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = _SUPABASE_ENGINE_OPTIONS
 
-# SQLALCHEMY_TRACK_MODIFICATIONS deshabilita el rastreo de modificaciones de objetos, 
+# SQLALCHEMY_TRACK_MODIFICATIONS deshabilita el rastreo de modificaciones de objetos,
 # ya que es innecesario y consume recursos. Es recomendable establecerlo en False.
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Servidor de correo (Gmail en este caso)
@@ -201,21 +221,22 @@ with app.app_context():
         app.logger.warning(f'PerfilPago firma_imagen migration skipped: {e}')
 
     # Migración: sincronizar enum estado_cuenta con valores del modelo (solo PostgreSQL)
-    try:
-        required_enum_vals = ['PENDIENTE', 'REVISI\u00d3N', 'APROBADA', 'PAGADA', 'RECHAZADA']
-        with models.db.engine.connect() as raw_conn:
-            existing_rows = raw_conn.execute(
-                text("SELECT enumlabel FROM pg_enum e JOIN pg_type t ON e.enumtypid=t.oid WHERE t.typname='estado_cuenta'")
-            ).fetchall()
-            existing_enum_vals = {r[0] for r in existing_rows}
-        for val in required_enum_vals:
-            if val not in existing_enum_vals:
-                with models.db.engine.connect() as raw_conn2:
-                    raw_conn2.execution_options(isolation_level='AUTOCOMMIT')
-                    raw_conn2.execute(text(f"ALTER TYPE estado_cuenta ADD VALUE '{val}'"))
-                app.logger.info(f'estado_cuenta enum: added value {val!r}')
-    except Exception as e:
-        app.logger.warning(f'estado_cuenta enum migration skipped: {e}')
+    if models.db.engine.dialect.name == 'postgresql':
+        try:
+            required_enum_vals = ['PENDIENTE', 'REVISI\u00d3N', 'APROBADA', 'PAGADA', 'RECHAZADA']
+            with models.db.engine.connect() as raw_conn:
+                existing_rows = raw_conn.execute(
+                    text("SELECT enumlabel FROM pg_enum e JOIN pg_type t ON e.enumtypid=t.oid WHERE t.typname='estado_cuenta'")
+                ).fetchall()
+                existing_enum_vals = {r[0] for r in existing_rows}
+            for val in required_enum_vals:
+                if val not in existing_enum_vals:
+                    with models.db.engine.connect() as raw_conn2:
+                        raw_conn2.execution_options(isolation_level='AUTOCOMMIT')
+                        raw_conn2.execute(text(f"ALTER TYPE estado_cuenta ADD VALUE '{val}'"))
+                    app.logger.info(f'estado_cuenta enum: added value {val!r}')
+        except Exception as e:
+            app.logger.warning(f'estado_cuenta enum migration skipped: {e}')
 
     # Crear directorio de colillas si no existe
     os.makedirs(os.path.join(app.root_path, 'static', 'colillas'), exist_ok=True)
@@ -1353,11 +1374,14 @@ def descargar_reporte_excel(empresa):
 @login_required
 def download_backup():
 
-    # Ruta del archivo original de la base de datos
-    DATABASE_PATH = os.path.join(app.root_path, 'instance', 'Empresas.db')
-
-    # Ruta temporal para almacenar el respaldo de la base de datos
-    BACKUP_PATH = os.path.join(app.root_path, 'instance', 'Empresas_backup.db')
+    # En modo desktop la DB real está en FOFIGEST_DB_URI (ruta absoluta fuera del exe)
+    _db_uri = os.environ.get('FOFIGEST_DB_URI', '')
+    if _db_uri.startswith('sqlite:///'):
+        DATABASE_PATH = _db_uri[len('sqlite:///'):]
+        BACKUP_PATH   = DATABASE_PATH.replace('Empresas.db', 'Empresas_backup.db')
+    else:
+        DATABASE_PATH = os.path.join(app.root_path, 'instance', 'Empresas.db')
+        BACKUP_PATH   = os.path.join(app.root_path, 'instance', 'Empresas_backup.db')
 
     try:
         # Generar un respaldo de la base de datos
