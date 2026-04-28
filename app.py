@@ -44,6 +44,61 @@ from sqlalchemy import text
 from feature.Reporte_sulfoquimica import ReporteSulfoquimica  # Importar la clase
 import json
 
+
+# ──────────────────────────────────────────────────────────
+# TRAZABILIDAD — función auxiliar de registro inmutable
+# ──────────────────────────────────────────────────────────
+def registrar_trazabilidad(codigo_tarea, accion, cambios=None):
+    """
+    Registra un evento de auditoría sobre una tarea.
+
+    :param codigo_tarea: str — código único de la tarea afectada.
+    :param accion: str — 'CREACIÓN' | 'MODIFICACIÓN' | 'CAMBIO_ESTADO' | 'ELIMINACIÓN'
+    :param cambios: list[dict] | None — cada dict: {'campo': str, 'anterior': str, 'nuevo': str}
+                    Si es None se inserta un único registro sin campo/valores (usado en CREACIÓN y ELIMINACIÓN).
+    """
+    try:
+        correo  = session.get('correo', 'sistema')
+        rol     = session.get('username', 'sistema')
+        empresa = session.get('empresa', None)
+        ip      = request.remote_addr
+
+        if not cambios:
+            registro = models.TrazabilidadTarea(
+                codigo_tarea=codigo_tarea,
+                accion=accion,
+                campo=None,
+                valor_anterior=None,
+                valor_nuevo=None,
+                usuario_correo=correo,
+                usuario_rol=rol,
+                empresa_usuario=empresa,
+                ip_address=ip,
+            )
+            models.db.session.add(registro)
+        else:
+            for c in cambios:
+                val_ant = str(c.get('anterior', ''))[:500] if c.get('anterior') is not None else None
+                val_nvo = str(c.get('nuevo', ''))[:500] if c.get('nuevo') is not None else None
+                registro = models.TrazabilidadTarea(
+                    codigo_tarea=codigo_tarea,
+                    accion=accion,
+                    campo=c.get('campo'),
+                    valor_anterior=val_ant,
+                    valor_nuevo=val_nvo,
+                    usuario_correo=correo,
+                    usuario_rol=rol,
+                    empresa_usuario=empresa,
+                    ip_address=ip,
+                )
+                models.db.session.add(registro)
+
+        models.db.session.commit()
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f"Error al registrar trazabilidad [{accion}] tarea={codigo_tarea}: {str(e)}")
+
+
 # Definimos el endpoint principal
 host = config.config["host"]
 
@@ -458,6 +513,13 @@ def gantt_update_tarea(codigo_tarea):
         if bloqueada:
             return resp
 
+        _gsnap = {
+            'titulo': tarea.titulo, 'fecha_inicio': str(tarea.fecha_inicio),
+            'fecha_fin': str(tarea.fecha_fin), 'estado': tarea.estado,
+            'responsable': tarea.responsable, 'horas_estimadas': tarea.horas_estimadas,
+            'horas_dedicadas': tarea.horas_dedicadas,
+        }
+
         if 'titulo' in data and data['titulo'].strip():
             tarea.titulo = data['titulo'].strip()[:100]
         if 'fecha_inicio' in data:
@@ -477,6 +539,17 @@ def gantt_update_tarea(codigo_tarea):
             tarea.horas_dedicadas = round((prog / 100.0) * (tarea.horas_estimadas or 0), 2)
 
         models.db.session.commit()
+        _gsnap_new = {
+            'titulo': tarea.titulo, 'fecha_inicio': str(tarea.fecha_inicio),
+            'fecha_fin': str(tarea.fecha_fin), 'estado': tarea.estado,
+            'responsable': tarea.responsable, 'horas_estimadas': tarea.horas_estimadas,
+            'horas_dedicadas': tarea.horas_dedicadas,
+        }
+        _gcambios = [{'campo': k, 'anterior': _gsnap[k], 'nuevo': _gsnap_new[k]}
+                     for k in _gsnap if str(_gsnap[k]) != str(_gsnap_new[k])]
+        if _gcambios:
+            _gaccion = 'CAMBIO_ESTADO' if len(_gcambios) == 1 and _gcambios[0]['campo'] == 'estado' else 'MODIFICACIÓN'
+            registrar_trazabilidad(codigo_tarea, _gaccion, _gcambios)
         return jsonify({"ok": True})
 
     except (ValueError, KeyError) as e:
@@ -532,6 +605,7 @@ def gantt_create_tarea():
         )
         models.db.session.add(nueva)
         models.db.session.commit()
+        registrar_trazabilidad(codigo_tarea, 'CREACIÓN')
 
         return jsonify({
             "ok": True,
@@ -573,6 +647,7 @@ def gantt_delete_tarea(codigo_tarea):
         bloqueada, resp = _check_tarea_bloqueada(tarea)
         if bloqueada:
             return resp
+        registrar_trazabilidad(codigo_tarea, 'ELIMINACIÓN')
         models.db.session.delete(tarea)
         models.db.session.commit()
         return jsonify({"ok": True})
@@ -1425,11 +1500,14 @@ def actualizar_estado_tarea(tarea_id):
         return jsonify({'message': 'Estado inválido'}), 400
 
     # Actualizar el estado de la tarea
+    estado_anterior = tarea.estado
     tarea.estado = nuevo_estado
 
     # Guardar cambios en la base de datos
     try:
         models.db.session.commit()
+        registrar_trazabilidad(tarea.codigo_tarea, 'CAMBIO_ESTADO',
+                               [{'campo': 'estado', 'anterior': estado_anterior, 'nuevo': nuevo_estado}])
         return jsonify({'message': 'Estado actualizado correctamente'}), 200
     except Exception as e:
         models.db.session.rollback()
@@ -1481,6 +1559,7 @@ def crear_tarea():
 
     models.db.session.add(nueva_tarea)
     models.db.session.commit()
+    registrar_trazabilidad(nueva_tarea.codigo_tarea, 'CREACIÓN')
     return jsonify(nueva_tarea.serialize()), 201
 
 @app.route('/tareas/<int:id>', methods=['PUT'])
@@ -1494,6 +1573,17 @@ def actualizar_tarea(id):
     if bloqueada:
         return resp
     data = request.get_json()
+
+    _snap = {
+        'empresa': tarea.empresa, 'codigo_proyecto': tarea.codigo_proyecto,
+        'codigo_tarea': tarea.codigo_tarea, 'titulo': tarea.titulo,
+        'descripcion': tarea.descripcion,
+        'detalles_editor': str(tarea.detalles_editor)[:500] if tarea.detalles_editor else None,
+        'fecha_inicio': str(tarea.fecha_inicio), 'fecha_fin': str(tarea.fecha_fin),
+        'responsable': tarea.responsable, 'horas_dedicadas': tarea.horas_dedicadas,
+        'horas_estimadas': tarea.horas_estimadas,
+        'fecha_facturacion': str(tarea.fecha_facturacion), 'estado': tarea.estado, 'mes': tarea.mes,
+    }
 
     tarea.empresa = data.get('empresa', tarea.empresa)
     tarea.codigo_proyecto = data.get('codigo_proyecto', tarea.codigo_proyecto)
@@ -1511,6 +1601,21 @@ def actualizar_tarea(id):
     tarea.mes = data.get('mes', tarea.mes)
 
     models.db.session.commit()
+    _snap_new = {
+        'empresa': tarea.empresa, 'codigo_proyecto': tarea.codigo_proyecto,
+        'codigo_tarea': tarea.codigo_tarea, 'titulo': tarea.titulo,
+        'descripcion': tarea.descripcion,
+        'detalles_editor': str(tarea.detalles_editor)[:500] if tarea.detalles_editor else None,
+        'fecha_inicio': str(tarea.fecha_inicio), 'fecha_fin': str(tarea.fecha_fin),
+        'responsable': tarea.responsable, 'horas_dedicadas': tarea.horas_dedicadas,
+        'horas_estimadas': tarea.horas_estimadas,
+        'fecha_facturacion': str(tarea.fecha_facturacion), 'estado': tarea.estado, 'mes': tarea.mes,
+    }
+    _campos_mod = [{'campo': k, 'anterior': _snap[k], 'nuevo': _snap_new[k]}
+                   for k in _snap if str(_snap[k]) != str(_snap_new[k])]
+    if _campos_mod:
+        _solo_estado = (len(_campos_mod) == 1 and _campos_mod[0]['campo'] == 'estado')
+        registrar_trazabilidad(tarea.codigo_tarea, 'CAMBIO_ESTADO' if _solo_estado else 'MODIFICACIÓN', _campos_mod)
     return jsonify(tarea.serialize()), 200
 
 @app.route('/tareas/<int:id>', methods=['DELETE'])
@@ -1522,6 +1627,7 @@ def eliminar_tarea(id):
     bloqueada, resp = _check_tarea_bloqueada(tarea)
     if bloqueada:
         return resp
+    registrar_trazabilidad(tarea.codigo_tarea, 'ELIMINACIÓN')
     models.db.session.delete(tarea)
     models.db.session.commit()
     return jsonify({'message': 'Tarea eliminada correctamente'}), 200
@@ -1542,10 +1648,12 @@ def actualizar_estado(id):
     if 'estado' not in data:
         return jsonify({'error': 'El campo estado es requerido'}), 400
 
+    estado_anterior = tarea.estado
     tarea.estado = data['estado']
 
     models.db.session.commit()
-
+    registrar_trazabilidad(tarea.codigo_tarea, 'CAMBIO_ESTADO',
+                           [{'campo': 'estado', 'anterior': estado_anterior, 'nuevo': data['estado']}])
     return jsonify(tarea.serialize()), 200
 
 @app.route('/b/api/tareas', methods=['GET'])
@@ -2595,6 +2703,63 @@ def confirmar_pago_inconveniente(token):
         logging.error(f'Error reportando inconveniente token {token}: {e}')
         return render_template('confirmar_pago.html', conf=conf, cuenta=conf.cuenta,
                                ya_usado=False, error='Error al reportar el inconveniente.')
+
+
+# ──────────────────────────────────────────────────────────
+# TRAZABILIDAD — rutas de consulta (solo lectura)
+# ──────────────────────────────────────────────────────────
+
+@app.route('/trazabilidad', methods=['GET'])
+@login_required
+def vista_trazabilidad():
+    permisos = session.get('username', '')
+    if permisos not in ('admin', 'dev', 'superadmin'):
+        abort(403)
+
+    codigo_tarea = request.args.get('codigo_tarea', '').strip()
+    accion       = request.args.get('accion', '').strip()
+    usuario      = request.args.get('usuario', '').strip()
+    desde        = request.args.get('desde', '').strip()
+    hasta        = request.args.get('hasta', '').strip()
+
+    q = models.TrazabilidadTarea.query
+
+    if codigo_tarea:
+        q = q.filter(models.TrazabilidadTarea.codigo_tarea.ilike(f'%{codigo_tarea}%'))
+    if accion:
+        q = q.filter(models.TrazabilidadTarea.accion == accion)
+    if usuario:
+        q = q.filter(models.TrazabilidadTarea.usuario_correo.ilike(f'%{usuario}%'))
+    if desde:
+        try:
+            q = q.filter(models.TrazabilidadTarea.fecha_hora >= datetime.strptime(desde, '%Y-%m-%d'))
+        except ValueError:
+            pass
+    if hasta:
+        try:
+            q = q.filter(models.TrazabilidadTarea.fecha_hora < datetime.strptime(hasta, '%Y-%m-%d') + timedelta(days=1))
+        except ValueError:
+            pass
+
+    registros = q.order_by(models.TrazabilidadTarea.fecha_hora.desc()).limit(500).all()
+
+    return render_template('trazabilidad.html',
+                           registros=registros,
+                           filtros={'codigo_tarea': codigo_tarea, 'accion': accion,
+                                    'usuario': usuario, 'desde': desde, 'hasta': hasta})
+
+
+@app.route('/trazabilidad/<string:codigo_tarea>/json', methods=['GET'])
+@login_required
+def trazabilidad_tarea_json(codigo_tarea):
+    permisos = session.get('username', '')
+    if permisos not in ('admin', 'dev', 'superadmin'):
+        abort(403)
+    registros = (models.TrazabilidadTarea.query
+                 .filter_by(codigo_tarea=codigo_tarea)
+                 .order_by(models.TrazabilidadTarea.fecha_hora.asc())
+                 .all())
+    return jsonify([r.serialize() for r in registros]), 200
 
 
 if __name__ == '__main__':
