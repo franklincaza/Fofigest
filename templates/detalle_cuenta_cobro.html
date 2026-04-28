@@ -1,0 +1,247 @@
+{% extends "Base.html" %}
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color:var(--text-heading)">
+      <i class="fas fa-file-invoice me-2 text-primary"></i>
+      Cuenta de Cobro — {{ cuenta.numero_cuenta }}
+    </h1>
+    <a href="{{ url_for('mis_cuentas_cobro') }}" class="btn btn-secondary btn-sm">
+      <i class="fas fa-arrow-left me-1"></i>Mis Cobros
+    </a>
+  </div>
+
+  {% if cuenta.estado == 'PAGADA' and cuenta.confirmacion and not cuenta.confirmacion.confirmado and not cuenta.confirmacion.inconveniente %}
+  <div class="alert alert-warning d-flex align-items-center mb-4">
+    <i class="fas fa-exclamation-triangle fa-lg me-3"></i>
+    <div>
+      <strong>Confirmación pendiente.</strong>
+      Se envió un enlace a tu correo para confirmar que recibiste el pago.
+      Revisa tu bandeja de entrada.
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="row">
+    <!-- Datos de la cuenta -->
+    <div class="col-lg-5 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i>Información</h6>
+        </div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-sm-5">N° Cuenta</dt>
+            <dd class="col-sm-7 fw-bold">{{ cuenta.numero_cuenta }}</dd>
+            <dt class="col-sm-5">Empresa</dt>
+            <dd class="col-sm-7">{{ cuenta.empresa_pagadora }}</dd>
+            <dt class="col-sm-5">NIT</dt>
+            <dd class="col-sm-7">{{ cuenta.nit_pagadora }}</dd>
+            <dt class="col-sm-5">Período</dt>
+            <dd class="col-sm-7">{{ cuenta.mes }} {{ cuenta.anio }}</dd>
+            <dt class="col-sm-5">Valor Total</dt>
+            <dd class="col-sm-7 fw-bold text-success" style="font-size:1.1rem">
+              ${{ '{:,.0f}'.format(cuenta.valor_total) }} COP
+            </dd>
+            <dt class="col-sm-5">Estado</dt>
+            <dd class="col-sm-7">
+              {% if cuenta.estado == 'PENDIENTE' %}
+                <span class="badge bg-warning text-dark">PENDIENTE</span>
+              {% elif cuenta.estado == 'REVISIÓN' %}
+                <span class="badge bg-info text-dark">REVISIÓN</span>
+              {% elif cuenta.estado == 'APROBADA' %}
+                <span class="badge bg-primary">APROBADA</span>
+              {% elif cuenta.estado == 'PAGADA' %}
+                <span class="badge bg-success">PAGADA</span>
+              {% elif cuenta.estado == 'RECHAZADA' %}
+                <span class="badge bg-danger">RECHAZADA</span>
+              {% endif %}
+            </dd>
+            <dt class="col-sm-5">Creada</dt>
+            <dd class="col-sm-7 small">
+              {{ cuenta.fecha_creacion.strftime('%d/%m/%Y %H:%M') if cuenta.fecha_creacion else '—' }}
+            </dd>
+            {% if cuenta.fecha_pago %}
+            <dt class="col-sm-5">Fecha pago</dt>
+            <dd class="col-sm-7 small">{{ cuenta.fecha_pago.strftime('%d/%m/%Y %H:%M') }}</dd>
+            {% endif %}
+            {% if cuenta.observacion_admin %}
+            <dt class="col-sm-5">Observación</dt>
+            <dd class="col-sm-7 small text-muted">{{ cuenta.observacion_admin }}</dd>
+            {% endif %}
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colillas -->
+    <div class="col-lg-7 mb-4">
+      <div class="card shadow h-100">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary"><i class="fas fa-paperclip me-2"></i>Colillas de Pago</h6>
+        </div>
+        <div class="card-body">
+          {% if cuenta.colillas %}
+          <ul class="list-group list-group-flush">
+            {% for col in cuenta.colillas %}
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+              <div>
+                <i class="fas fa-file-alt text-primary me-2"></i>
+                {{ col.archivo_nombre }}
+                <br><small class="text-muted">
+                  Subido: {{ col.fecha_subida.strftime('%d/%m/%Y') if col.fecha_subida else '—' }}
+                </small>
+              </div>
+              <a href="{{ col.archivo_url }}" target="_blank" class="btn btn-outline-success btn-sm">
+                <i class="fas fa-download me-1"></i>Descargar
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+          {% else %}
+          <p class="text-muted text-center py-3">
+            <i class="fas fa-inbox me-2"></i>Sin colillas adjuntas aún.
+          </p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tareas incluidas -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-tasks me-2"></i>Tareas Incluidas
+      </h6>
+      <button class="btn btn-outline-success btn-sm" onclick="window.print()">
+        <i class="fas fa-print me-1"></i>Imprimir / PDF
+      </button>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Código</th>
+              <th>Título</th>
+              <th class="text-center">Horas</th>
+              <th class="text-end">Precio/h</th>
+              <th class="text-end">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for d in cuenta.detalles %}
+            <tr>
+              <td><code>{{ d.codigo_tarea }}</code></td>
+              <td>{{ d.titulo_tarea }}</td>
+              <td class="text-center">{{ d.horas_dedicadas }}h</td>
+              <td class="text-end">${{ '{:,.0f}'.format(d.precio_hora) }}</td>
+              <td class="text-end fw-bold">${{ '{:,.0f}'.format(d.subtotal) }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr class="table-secondary fw-bold">
+              <td colspan="2" class="text-end">Total</td>
+              <td class="text-center">
+                {{ cuenta.detalles | sum(attribute='horas_dedicadas') | round(1) }}h
+              </td>
+              <td></td>
+              <td class="text-end text-success" style="font-size:1.05rem">
+                ${{ '{:,.0f}'.format(cuenta.valor_total) }} COP
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Documento imprimible -->
+      <div id="documentoImprimible" class="documento-cuenta mx-auto mt-4" style="display:none">
+        {% if perfil %}
+        <h2>CUENTA DE COBRO</h2>
+        <p class="doc-num">N°: {{ cuenta.numero_cuenta }}</p>
+        <hr>
+        <p><strong>{{ cuenta.empresa_pagadora }}</strong><br>NIT: {{ cuenta.nit_pagadora }}</p>
+        <p><strong>DEBE A:</strong><br>
+          {{ perfil.nombres_completos }}<br>CC: {{ perfil.documento }}
+        </p>
+        <hr>
+        <p><strong>Por concepto de:</strong></p>
+        <ul>
+          {% for d in cuenta.detalles %}
+          <li>{{ d.titulo_tarea }} ({{ d.codigo_tarea }}) —
+            {{ d.horas_dedicadas }}h × ${{ '{:,.0f}'.format(d.precio_hora) }} =
+            ${{ '{:,.0f}'.format(d.subtotal) }}
+          </li>
+          {% endfor %}
+        </ul>
+        <hr>
+        <p><strong>Total horas:</strong>
+          {{ cuenta.detalles | sum(attribute='horas_dedicadas') | round(1) }}h</p>
+        <p style="font-size:1.1rem">
+          <strong>La suma de ${{ '{:,.0f}'.format(cuenta.valor_total) }} COP</strong>
+        </p>
+        <p>Favor consignar en cuenta de {{ perfil.tipo_cuenta }} {{ perfil.banco }}<br>
+          N° {{ perfil.numero_cuenta }}<br>
+          a nombre de: {{ perfil.nombres_completos }}
+        </p>
+        <p style="font-size:.85rem;font-style:italic">
+          Favor no practicar retención en la fuente, soy persona natural con
+          contrato o pago anual inferior a 3.300 UVT
+        </p>
+        <div class="firma-line"></div>
+        <div class="firma-center">
+          {% if perfil.firma_imagen %}
+          <img src="{{ perfil.firma_imagen }}" alt="Firma" style="max-height:80px;max-width:260px;display:block;margin:0 auto .4rem;">
+          {% else %}
+          {{ perfil.firma_texto or '________________________________' }}<br>
+          {% endif %}
+          {{ perfil.nombres_completos }}<br>
+          CC: {{ perfil.documento }}
+        </div>
+        <p class="mt-3">
+          <strong>Fecha:</strong>
+          {{ cuenta.fecha_creacion.strftime('%d de %B de %Y') if cuenta.fecha_creacion else '—' }}<br>
+          <strong>Período:</strong> {{ cuenta.mes }} {{ cuenta.anio }}
+        </p>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+.documento-cuenta {
+  max-width: 620px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 2rem;
+  background: #fff;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: #222;
+}
+.documento-cuenta h2 {
+  text-align:center; font-size:1.1rem; font-weight:800;
+  letter-spacing:.05em; margin-bottom:1rem; text-transform:uppercase;
+}
+.documento-cuenta .doc-num { text-align:center; font-size:.9rem; margin-bottom:1.5rem; color:#555; }
+.documento-cuenta hr { border-color:#555; margin:1rem 0; }
+.documento-cuenta .firma-line { border-top:1px solid #333; width:80%; margin:1.5rem auto .5rem; }
+.documento-cuenta .firma-center { text-align:center; }
+@media print {
+  .sidebar,.topbar,footer,.btn,.card-header,.breadcrumb { display:none !important; }
+  #documentoImprimible { display:block !important; border:none; }
+  .card,.table-responsive,.documento-cuenta { box-shadow:none !important; }
+  #page-content { display:block !important; }
+  #splash-screen { display:none !important; }
+}
+</style>
+{% endblock %}

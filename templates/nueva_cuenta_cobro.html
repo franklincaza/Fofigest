@@ -1,0 +1,475 @@
+{% extends "Base.html" %}
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color:var(--text-heading)">
+      <i class="fas fa-file-invoice-dollar me-2 text-primary"></i>Nueva Cuenta de Cobro
+    </h1>
+    <a href="{{ url_for('mis_cuentas_cobro') }}" class="btn btn-secondary btn-sm">
+      <i class="fas fa-arrow-left me-1"></i>Volver
+    </a>
+  </div>
+
+  <form method="POST" action="{{ url_for('nueva_cuenta_cobro_post') }}" id="formCuenta">
+
+    <!-- Fase 0: Firma manual (opcional) -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 fw-bold text-primary"><i class="fas fa-signature me-2"></i>0. Tu firma <small class="text-muted fw-normal">(opcional)</small></h6>
+      </div>
+      <div class="card-body">
+        <p class="text-muted small mb-2">Dibuja tu firma con el mouse o el dedo. Se incluirá en el PDF de la cuenta de cobro y quedará guardada para futuras cuentas.</p>
+        <canvas id="firmaCanvas" width="420" height="120"
+                style="border:1px solid #d1d3e2;border-radius:.35rem;cursor:crosshair;background:#fff;max-width:100%"></canvas>
+        <div class="mt-2 d-flex gap-2">
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="btnLimpiarFirma">
+            <i class="fas fa-eraser me-1"></i>Limpiar
+          </button>
+          <button type="button" class="btn btn-outline-primary btn-sm" id="btnGuardarFirma">
+            <i class="fas fa-save me-1"></i>Guardar firma
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fase 1: Parámetros generales -->
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 fw-bold text-primary">
+          <i class="fas fa-cog me-2"></i>1. Datos generales
+        </h6>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Empresa pagadora</label>
+            <select name="empresa_pagadora" id="empresa_pagadora" class="form-control" required>
+              {% for emp in empresas %}
+              <option value="{{ emp.empresa }}" data-nit="{{ emp.nit }}"
+                {% if 'Fofimatic' in emp.empresa %}selected{% endif %}>
+                {{ emp.empresa }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">NIT de la empresa</label>
+            <input type="text" name="nit_pagadora" id="nit_pagadora" class="form-control"
+                   required maxlength="20" placeholder="Ej: 900123456-1">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-semibold">Mes</label>
+            <select name="mes" id="select_mes" class="form-control" required>
+              <option value="">Selecciona el mes...</option>
+              {% for m in meses %}
+              <option value="{{ m }}">{{ m }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-semibold">Año</label>
+            <input type="number" name="anio" id="select_anio" class="form-control"
+                   required min="2020" max="2099"
+                   value="{{ anio_actual }}" placeholder="Ej: 2025">
+          </div>
+          <div class="col-md-4 mb-3">
+            <label class="form-label fw-semibold">Precio por hora (COP) — por defecto</label>
+            <input type="number" id="precio_hora_default" class="form-control"
+                   min="1" max="10000000" step="1000"
+                   placeholder="Ej: 25000">
+          </div>
+        </div>
+        <div class="text-end">
+          <button type="button" class="btn btn-primary" id="btnCargarTareas">
+            <i class="fas fa-search me-1"></i>Cargar tareas del período
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fase 2: Selección de tareas -->
+    <div class="card shadow mb-4" id="seccionTareas" style="display:none">
+      <div class="card-header py-3">
+        <h6 class="m-0 fw-bold text-primary">
+          <i class="fas fa-tasks me-2"></i>2. Selección de tareas
+        </h6>
+      </div>
+      <div class="card-body">
+        <div id="alertaSinTareas" class="alert alert-info" style="display:none">
+          <i class="fas fa-info-circle me-2"></i>
+          No hay tareas completadas y no facturadas para el período seleccionado.
+        </div>
+        <div id="contenedorTablaTareas" style="display:none">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover" id="tablaTareas">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:40px">
+                    <input type="checkbox" id="selectAll" title="Seleccionar todas">
+                  </th>
+                  <th>Tarea</th>
+                  <th>Proyecto</th>
+                  <th>Empresa</th>
+                  <th class="text-center">Horas</th>
+                  <th style="width:160px">Precio/hora (COP)</th>
+                  <th class="text-end">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody id="bodyTareas"></tbody>
+              <tfoot>
+                <tr class="table-secondary fw-bold">
+                  <td colspan="4" class="text-end">Totales seleccionadas:</td>
+                  <td class="text-center" id="totalHoras">0h</td>
+                  <td></td>
+                  <td class="text-end" id="totalCOP">$0</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fase 3: Preview documento -->
+    <div class="card shadow mb-4" id="seccionPreview" style="display:none">
+      <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 fw-bold text-primary">
+          <i class="fas fa-eye me-2"></i>3. Vista previa del documento
+        </h6>
+        <button type="button" class="btn btn-outline-success btn-sm" onclick="window.print()">
+          <i class="fas fa-print me-1"></i>Imprimir / PDF
+        </button>
+      </div>
+      <div class="card-body">
+        <div id="previsualizacion" class="documento-cuenta mx-auto"></div>
+      </div>
+    </div>
+
+    <!-- Botón enviar -->
+    <div class="text-end mb-4" id="seccionEnviar" style="display:none">
+      <a href="{{ url_for('mis_cuentas_cobro') }}" class="btn btn-secondary me-2">Cancelar</a>
+      <button type="submit" class="btn btn-primary" id="btnEnviar" disabled>
+        <i class="fas fa-paper-plane me-1"></i>Crear Cuenta de Cobro
+      </button>
+    </div>
+
+  </form>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+/* ── Documento cuenta de cobro ─── */
+.documento-cuenta {
+  max-width: 620px;
+  border: 2px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 2rem;
+  background: #fff;
+  font-family: 'Times New Roman', Times, serif;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: #222;
+}
+.documento-cuenta h2 {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: .05em;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+}
+.documento-cuenta .doc-num {
+  text-align: center;
+  font-size: .9rem;
+  margin-bottom: 1.5rem;
+  color: #555;
+}
+.documento-cuenta hr { border-color: #555; margin: 1rem 0; }
+.documento-cuenta .firma-line {
+  border-top: 1px solid #333;
+  width: 80%;
+  margin: 1.5rem auto .5rem;
+}
+.documento-cuenta .firma-center { text-align: center; }
+
+@media print {
+  .sidebar, .topbar, footer, #seccionTareas .card-header,
+  .btn, #seccionEnviar, #seccionTareas .card-header { display: none !important; }
+  .documento-cuenta { border: none; max-width: 100%; }
+  #page-content { display: block !important; }
+  #splash-screen { display: none !important; }
+}
+</style>
+
+<script>
+/* ── Datos del perfil de pago (inyectados desde Flask) ── */
+const PERFIL_NOMBRES       = {{ (perfil.nombres_completos if perfil else '') | tojson }};
+const PERFIL_DOCUMENTO     = {{ (perfil.documento         if perfil else '') | tojson }};
+const PERFIL_TIPO_CUENTA   = {{ (perfil.tipo_cuenta       if perfil else '') | tojson }};
+const PERFIL_BANCO         = {{ (perfil.banco             if perfil else '') | tojson }};
+const PERFIL_NUMERO_CUENTA = {{ (perfil.numero_cuenta     if perfil else '') | tojson }};
+let   PERFIL_FIRMA_IMG     = {{ (perfil.firma_imagen      if perfil and perfil.firma_imagen else '') | tojson }};
+
+let tareasDisponibles = [];
+
+/* ── Empresa pagadora → NIT auto-relleno ── */
+(function initNit() {
+  const sel = document.getElementById('empresa_pagadora');
+  if (!sel) return;
+  const syncNit = () => {
+    const opt = sel.options[sel.selectedIndex];
+    document.getElementById('nit_pagadora').value = (opt && opt.dataset.nit) || '';
+    actualizarPreview();
+  };
+  sel.addEventListener('change', syncNit);
+  syncNit();
+})();
+
+/* ── Canvas de firma ── */
+(function initCanvas() {
+  const canvas = document.getElementById('firmaCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = '#222';
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  let dibujando = false;
+
+  function getPos(e) {
+    const r = canvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+
+  canvas.addEventListener('mousedown', e => {
+    dibujando = true; ctx.beginPath();
+    const p = getPos(e); ctx.moveTo(p.x, p.y);
+  });
+  canvas.addEventListener('mousemove', e => {
+    if (!dibujando) return;
+    const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+  });
+  canvas.addEventListener('mouseup',    () => { dibujando = false; });
+  canvas.addEventListener('mouseleave', () => { dibujando = false; });
+  canvas.addEventListener('touchstart', e => {
+    e.preventDefault(); dibujando = true; ctx.beginPath();
+    const p = getPos(e); ctx.moveTo(p.x, p.y);
+  }, { passive: false });
+  canvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!dibujando) return;
+    const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke();
+  }, { passive: false });
+  canvas.addEventListener('touchend', () => { dibujando = false; });
+
+  document.getElementById('btnLimpiarFirma').addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    PERFIL_FIRMA_IMG = '';
+    actualizarPreview();
+  });
+
+  document.getElementById('btnGuardarFirma').addEventListener('click', async () => {
+    const dataUrl = canvas.toDataURL('image/png');
+    PERFIL_FIRMA_IMG = dataUrl;
+    try {
+      const resp = await fetch('/api/guardar-firma', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firma_imagen: dataUrl })
+      });
+      if (resp.ok) {
+        Swal.fire({ icon: 'success', title: 'Firma guardada', timer: 1500, showConfirmButton: false });
+      } else {
+        throw new Error('respuesta no ok');
+      }
+    } catch {
+      Swal.fire('Error', 'No se pudo guardar la firma en el servidor.', 'error');
+    }
+    actualizarPreview();
+  });
+
+  // Cargar firma guardada previamente
+  if (PERFIL_FIRMA_IMG) {
+    const img = new Image();
+    img.onload = () => ctx.drawImage(img, 0, 0);
+    img.src = PERFIL_FIRMA_IMG;
+  }
+})();
+
+function formatCOP(v) {
+  return new Intl.NumberFormat('es-CO', {
+    style: 'currency', currency: 'COP', maximumFractionDigits: 0
+  }).format(v);
+}
+
+document.getElementById('btnCargarTareas').addEventListener('click', cargarTareas);
+
+async function cargarTareas() {
+  const mes = document.getElementById('select_mes').value;
+  const anio = document.getElementById('select_anio').value;
+  if (!mes || !anio) {
+    Swal.fire('Atención', 'Selecciona mes y año antes de cargar las tareas.', 'warning');
+    return;
+  }
+  try {
+    const resp = await fetch(`/api/tareas-facturables?mes=${mes}&anio=${anio}`);
+    tareasDisponibles = await resp.json();
+  } catch {
+    Swal.fire('Error', 'No se pudieron cargar las tareas.', 'error');
+    return;
+  }
+  const seccion = document.getElementById('seccionTareas');
+  const alertaSin = document.getElementById('alertaSinTareas');
+  const contenedor = document.getElementById('contenedorTablaTareas');
+  seccion.style.display = '';
+  if (!tareasDisponibles.length) {
+    alertaSin.style.display = '';
+    contenedor.style.display = 'none';
+    document.getElementById('seccionPreview').style.display = 'none';
+    document.getElementById('seccionEnviar').style.display = 'none';
+    document.getElementById('btnEnviar').disabled = true;
+    return;
+  }
+  alertaSin.style.display = 'none';
+  contenedor.style.display = '';
+  renderizarFilas(tareasDisponibles);
+  document.getElementById('seccionPreview').style.display = '';
+  document.getElementById('seccionEnviar').style.display = '';
+  actualizarTotales();
+  actualizarPreview();
+}
+
+function renderizarFilas(tareas) {
+  const tbody = document.getElementById('bodyTareas');
+  const precioDefault = parseFloat(document.getElementById('precio_hora_default').value) || 0;
+  tbody.innerHTML = '';
+  tareas.forEach(t => {
+    const sub = t.horas_dedicadas * precioDefault;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="text-center">
+        <input type="checkbox" name="tareas_ids[]" value="${t.id}" class="tarea-check" checked>
+      </td>
+      <td>
+        <strong>${t.titulo}</strong><br>
+        <small class="text-muted">${t.codigo_tarea}</small>
+      </td>
+      <td>${t.codigo_proyecto}</td>
+      <td>${t.empresa}</td>
+      <td class="text-center" data-horas="${t.horas_dedicadas}">${t.horas_dedicadas}h</td>
+      <td>
+        <input type="number" name="precio_hora_${t.id}"
+               class="form-control form-control-sm precio-input"
+               data-id="${t.id}" data-horas="${t.horas_dedicadas}"
+               value="${precioDefault}" min="1" max="10000000" step="500"
+               style="width:140px">
+      </td>
+      <td class="text-end subtotal-cell" data-id="${t.id}">${formatCOP(sub)}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  tbody.querySelectorAll('.precio-input').forEach(inp => {
+    inp.addEventListener('input', () => {
+      actualizarSubtotal(inp.dataset.id, parseFloat(inp.value) || 0, parseFloat(inp.dataset.horas) || 0);
+      actualizarTotales();
+      actualizarPreview();
+    });
+  });
+  tbody.querySelectorAll('.tarea-check').forEach(chk => {
+    chk.addEventListener('change', () => { actualizarTotales(); actualizarPreview(); });
+  });
+  document.getElementById('selectAll').addEventListener('change', e => {
+    tbody.querySelectorAll('.tarea-check').forEach(c => c.checked = e.target.checked);
+    actualizarTotales();
+    actualizarPreview();
+  });
+}
+
+function actualizarSubtotal(id, precio, horas) {
+  const cell = document.querySelector(`.subtotal-cell[data-id="${id}"]`);
+  if (cell) cell.textContent = formatCOP(horas * precio);
+}
+
+function actualizarTotales() {
+  let totalH = 0, totalCOP = 0, haySeleccionadas = false;
+  document.querySelectorAll('.tarea-check:checked').forEach(chk => {
+    haySeleccionadas = true;
+    const id = chk.value;
+    const inp = document.querySelector(`input[name="precio_hora_${id}"]`);
+    const horas = parseFloat(chk.closest('tr').querySelector('[data-horas]').dataset.horas) || 0;
+    const precio = parseFloat(inp ? inp.value : 0) || 0;
+    totalH += horas;
+    totalCOP += horas * precio;
+  });
+  document.getElementById('totalHoras').textContent = totalH.toFixed(1) + 'h';
+  document.getElementById('totalCOP').textContent = formatCOP(totalCOP);
+  document.getElementById('btnEnviar').disabled = !haySeleccionadas;
+}
+
+function actualizarPreview() {
+  const empresa = document.getElementById('empresa_pagadora').value || '[EMPRESA]';
+  const nit = document.getElementById('nit_pagadora').value || '[NIT]';
+  const mes = document.getElementById('select_mes').value || '[MES]';
+  const anio = document.getElementById('select_anio').value || '[AÑO]';
+  let items = '';
+  let totalH = 0, totalCOP = 0;
+  document.querySelectorAll('.tarea-check:checked').forEach(chk => {
+    const id = chk.value;
+    const fila = chk.closest('tr');
+    const titulo = fila.querySelector('strong').textContent;
+    const codigo = fila.querySelector('small').textContent;
+    const horas = parseFloat(fila.querySelector('[data-horas]').dataset.horas) || 0;
+    const inp = document.querySelector(`input[name="precio_hora_${id}"]`);
+    const precio = parseFloat(inp ? inp.value : 0) || 0;
+    const sub = horas * precio;
+    totalH += horas;
+    totalCOP += sub;
+    items += `<li>${titulo} (${codigo}) — ${horas}h × ${formatCOP(precio)} = ${formatCOP(sub)}</li>`;
+  });
+  const firmaHtml = PERFIL_FIRMA_IMG
+    ? `<img src="${PERFIL_FIRMA_IMG}" style="height:60px;display:block;margin:0 auto">`
+    : '<div class="firma-line"></div>';
+
+  document.getElementById('previsualizacion').innerHTML = `
+    <h2>CUENTA DE COBRO</h2>
+    <p class="doc-num">N° CC-${anio}-XXXX <small style="color:#888;font-size:.8em">(se asigna al guardar)</small></p>
+    <hr>
+    <p><strong>SEÑORES:</strong><br>
+    <strong>${empresa}</strong><br>NIT: ${nit}</p>
+    <p><strong>DEBE A:</strong><br>
+    ${PERFIL_NOMBRES || '[Nombre completo]'}<br>
+    CC/NIT: ${PERFIL_DOCUMENTO || '[Documento]'}</p>
+    <hr>
+    <p><strong>Por concepto de:</strong></p>
+    <ul>${items || '<li>— (Selecciona tareas arriba) —</li>'}</ul>
+    <hr>
+    <p><strong>Total horas trabajadas:</strong> ${totalH.toFixed(1)}h</p>
+    <p style="font-size:1.1rem"><strong>La suma de ${formatCOP(totalCOP)} COP</strong></p>
+    <p>Favor consignar en cuenta de <strong>${PERFIL_TIPO_CUENTA || '[TIPO_CUENTA]'} — ${PERFIL_BANCO || '[BANCO]'}</strong><br>
+    N° ${PERFIL_NUMERO_CUENTA || '[NUMERO_CUENTA]'}<br>a nombre de: ${PERFIL_NOMBRES || '[NOMBRES_COMPLETOS]'}</p>
+    <p style="font-size:.85rem;font-style:italic">
+    Favor no practicar retención en la fuente, soy persona natural con
+    contrato o pago anual inferior a 3.300 UVT</p>
+    ${firmaHtml}
+    <div class="firma-center">
+      ${PERFIL_NOMBRES || '[Nombre completo]'}<br>CC: ${PERFIL_DOCUMENTO || '[Documento]'}
+    </div>
+    <p class="mt-3"><strong>Período:</strong> ${mes} ${anio}</p>
+  `;
+}
+
+document.getElementById('formCuenta').addEventListener('submit', function(e) {
+  const seleccionadas = document.querySelectorAll('.tarea-check:checked').length;
+  if (!seleccionadas) {
+    e.preventDefault();
+    Swal.fire('Atención', 'Debes seleccionar al menos una tarea.', 'warning');
+  }
+});
+</script>
+{% endblock %}

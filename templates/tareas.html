@@ -389,6 +389,11 @@
                 {% else %}
                   <span class="badge rounded-pill bg-secondary badge-status">{{ tarea.estado }}</span>
                 {% endif %}
+                {% if tarea.facturada %}
+                  <span class="badge rounded-pill {{ 'bg-danger' if tarea.id in tareas_pagadas_ids else 'bg-secondary' }} badge-status ms-1">
+                    <i class="fas fa-lock"></i> {{ 'Pagada' if tarea.id in tareas_pagadas_ids else 'Facturada' }}
+                  </span>
+                {% endif %}
               </td>
 
               <!-- Responsable (desktop) -->
@@ -399,12 +404,14 @@
 
               <!-- Acciones (desktop) -->
               <td class="d-none d-sm-table-cell text-center text-nowrap">
+                {% if not tarea.facturada %}
                 <button class="btn btn-primary btn-sm me-1"
                         data-bs-toggle="modal" data-bs-target="#tareasform"
                         onclick="editarTarea({{ tarea.id }})" title="Editar">
                   <i class="fas fa-edit"></i>
                 </button>
-                {% if session['username'] == "admin" %}
+                {% endif %}
+                {% if session['username'] == "admin" and not tarea.facturada %}
                 <button class="btn btn-danger btn-sm"
                         onclick="eliminarTarea({{ tarea.id }})" title="Eliminar">
                   <i class="fas fa-trash"></i>
@@ -446,6 +453,11 @@
                       {% elif tarea.estado == 'COMPLETADOS' %}
                         <span class="badge rounded-pill badge-status ms-2"
                               style="background-color: var(--color-success)">COMPLETADOS</span>
+                      {% endif %}
+                      {% if tarea.facturada %}
+                        <span class="badge rounded-pill {{ 'bg-danger' if tarea.id in tareas_pagadas_ids else 'bg-secondary' }} badge-status ms-1">
+                          <i class="fas fa-lock"></i>
+                        </span>
                       {% endif %}
                     </div>
                     <div class="text-muted small">

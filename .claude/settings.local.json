@@ -6,7 +6,8 @@
       "Bash(python -m py_compile app.py)",
       "Bash(python -m py_compile models/models.py)",
       "Bash(.venv/Scripts/python.exe -m py_compile app.py)",
-      "Bash(.venv/Scripts/python.exe -m py_compile models/models.py)"
+      "Bash(.venv/Scripts/python.exe -m py_compile models/models.py)",
+      "Bash(python -c ' *)"
     ]
   }
 }
