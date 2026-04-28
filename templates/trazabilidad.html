@@ -1,0 +1,286 @@
+{% extends "Base.html" %}
+
+{% block title %}Trazabilidad de Tareas{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+
+  <!-- Encabezado -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">
+      <i class="fas fa-history text-primary me-2"></i> Trazabilidad de Tareas
+    </h1>
+  </div>
+
+  <!-- Aviso de solo lectura -->
+  <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="fas fa-lock me-1"></i>
+    Los registros de trazabilidad son de solo lectura y no pueden modificarse ni eliminarse.
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 fw-bold text-primary"><i class="fas fa-filter me-1"></i> Filtros</h6>
+    </div>
+    <div class="card-body">
+      <form method="GET" action="/trazabilidad" id="formFiltros">
+        <div class="row g-3">
+          <div class="col-md-2">
+            <label class="form-label fw-semibold small">Código Tarea</label>
+            <input type="text" class="form-control form-control-sm"
+                   name="codigo_tarea" value="{{ filtros.codigo_tarea }}"
+                   placeholder="Ej. PRY-abc123">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-semibold small">Acción</label>
+            <select class="form-select form-select-sm" name="accion">
+              <option value="">-- Todas --</option>
+              {% for a in ['CREACIÓN','MODIFICACIÓN','CAMBIO_ESTADO','ELIMINACIÓN'] %}
+              <option value="{{ a }}" {% if filtros.accion == a %}selected{% endif %}>{{ a }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label fw-semibold small">Usuario (correo)</label>
+            <input type="text" class="form-control form-control-sm"
+                   name="usuario" value="{{ filtros.usuario }}"
+                   placeholder="usuario@ejemplo.com">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-semibold small">Desde</label>
+            <input type="date" class="form-control form-control-sm"
+                   name="desde" value="{{ filtros.desde }}">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label fw-semibold small">Hasta</label>
+            <input type="date" class="form-control form-control-sm"
+                   name="hasta" value="{{ filtros.hasta }}">
+          </div>
+          <div class="col-md-1 d-flex align-items-end gap-1">
+            <button type="submit" class="btn btn-primary btn-sm w-100">
+              <i class="fas fa-search"></i> Filtrar
+            </button>
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-12 text-end">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnLimpiar">
+              <i class="fas fa-times me-1"></i> Limpiar filtros
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Tabla de resultados -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-table me-1"></i> Registros
+        <span class="badge bg-secondary ms-1">{{ registros|length }}</span>
+      </h6>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover mb-0" id="tablaTrazabilidad">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center" style="width:50px">#</th>
+              <th>Código Tarea</th>
+              <th class="text-center">Acción</th>
+              <th>Campo</th>
+              <th>Valor Anterior</th>
+              <th>Valor Nuevo</th>
+              <th>Usuario</th>
+              <th class="text-center">Rol</th>
+              <th>Empresa</th>
+              <th>IP</th>
+              <th>Fecha y Hora</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if registros %}
+              {% for r in registros %}
+              <tr>
+                <td class="text-center text-muted small">{{ loop.index }}</td>
+                <td>
+                  <a href="#" class="text-primary fw-semibold ver-timeline"
+                     data-codigo="{{ r.codigo_tarea }}"
+                     title="Ver línea de tiempo">
+                    {{ r.codigo_tarea }}
+                  </a>
+                </td>
+                <td class="text-center">
+                  {% if r.accion == 'CREACIÓN' %}
+                    <span class="badge bg-success">{{ r.accion }}</span>
+                  {% elif r.accion == 'MODIFICACIÓN' %}
+                    <span class="badge bg-primary">{{ r.accion }}</span>
+                  {% elif r.accion == 'CAMBIO_ESTADO' %}
+                    <span class="badge bg-warning text-dark">{{ r.accion }}</span>
+                  {% elif r.accion == 'ELIMINACIÓN' %}
+                    <span class="badge bg-danger">{{ r.accion }}</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ r.accion }}</span>
+                  {% endif %}
+                </td>
+                <td class="small">{{ r.campo or '—' }}</td>
+                <td class="small text-muted" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+                    title="{{ r.valor_anterior or '' }}">
+                  {{ r.valor_anterior or '—' }}
+                </td>
+                <td class="small" style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+                    title="{{ r.valor_nuevo or '' }}">
+                  {{ r.valor_nuevo or '—' }}
+                </td>
+                <td class="small">{{ r.usuario_correo }}</td>
+                <td class="text-center">
+                  <span class="badge bg-light text-dark border">{{ r.usuario_rol }}</span>
+                </td>
+                <td class="small">{{ r.empresa_usuario or '—' }}</td>
+                <td class="small text-muted">{{ r.ip_address or '—' }}</td>
+                <td class="small text-nowrap">{{ r.fecha_hora.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="11" class="text-center text-muted py-4">
+                  <i class="fas fa-inbox fa-2x mb-2 d-block"></i>
+                  No se encontraron registros con los filtros aplicados.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal: Línea de Tiempo -->
+<div class="modal fade" id="modalTimeline" tabindex="-1" aria-labelledby="modalTimelineLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTimelineLabel">
+          <i class="fas fa-history me-2 text-primary"></i>
+          Línea de tiempo — <span id="timelineCodigo"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body" id="timelineBody">
+        <div class="text-center py-4 text-muted">
+          <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+          Cargando registros…
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+  'use strict';
+
+  // ── Limpiar filtros ──
+  document.getElementById('btnLimpiar').addEventListener('click', function () {
+    const form = document.getElementById('formFiltros');
+    form.querySelectorAll('input, select').forEach(el => { el.value = ''; });
+    form.submit();
+  });
+
+  // ── Modal de línea de tiempo ──
+  const modalEl  = document.getElementById('modalTimeline');
+  const modal    = new bootstrap.Modal(modalEl);
+  const bodyEl   = document.getElementById('timelineBody');
+  const codigoEl = document.getElementById('timelineCodigo');
+
+  function iconoAccion(accion) {
+    const mapa = {
+      'CREACIÓN':     { icon: 'fa-plus-circle',  color: 'text-success' },
+      'MODIFICACIÓN': { icon: 'fa-edit',          color: 'text-primary' },
+      'CAMBIO_ESTADO':{ icon: 'fa-exchange-alt',  color: 'text-warning' },
+      'ELIMINACIÓN':  { icon: 'fa-trash-alt',     color: 'text-danger'  },
+    };
+    return mapa[accion] || { icon: 'fa-circle', color: 'text-secondary' };
+  }
+
+  function badgeAccion(accion) {
+    const clases = {
+      'CREACIÓN':     'bg-success',
+      'MODIFICACIÓN': 'bg-primary',
+      'CAMBIO_ESTADO':'bg-warning text-dark',
+      'ELIMINACIÓN':  'bg-danger',
+    };
+    return `<span class="badge ${clases[accion] || 'bg-secondary'}">${accion}</span>`;
+  }
+
+  function renderTimeline(registros) {
+    if (!registros.length) {
+      return '<p class="text-center text-muted py-3">Sin registros de trazabilidad para esta tarea.</p>';
+    }
+
+    let html = '<ul class="list-unstyled timeline-list">';
+    registros.forEach(function (r) {
+      const { icon, color } = iconoAccion(r.accion);
+      html += `
+        <li class="d-flex mb-3">
+          <div class="me-3 pt-1">
+            <i class="fas ${icon} fa-lg ${color}"></i>
+          </div>
+          <div class="flex-grow-1 border rounded p-2 bg-light">
+            <div class="d-flex justify-content-between align-items-start">
+              <div>
+                ${badgeAccion(r.accion)}
+                ${r.campo ? `<span class="ms-1 text-muted small">campo: <strong>${r.campo}</strong></span>` : ''}
+              </div>
+              <small class="text-muted text-nowrap ms-2">${r.fecha_hora}</small>
+            </div>
+            ${r.valor_anterior !== null || r.valor_nuevo !== null ? `
+            <div class="mt-1 small">
+              ${r.valor_anterior !== null ? `<div><span class="text-muted">Anterior:</span> <span class="text-danger">${escHtml(r.valor_anterior)}</span></div>` : ''}
+              ${r.valor_nuevo    !== null ? `<div><span class="text-muted">Nuevo:</span> <span class="text-success">${escHtml(r.valor_nuevo)}</span></div>` : ''}
+            </div>` : ''}
+            <div class="mt-1 small text-muted">
+              <i class="fas fa-user me-1"></i>${r.usuario_correo}
+              <span class="badge bg-light text-dark border ms-1">${r.usuario_rol}</span>
+              ${r.empresa_usuario ? `<span class="ms-2"><i class="fas fa-building me-1"></i>${escHtml(r.empresa_usuario)}</span>` : ''}
+            </div>
+          </div>
+        </li>`;
+    });
+    html += '</ul>';
+    return html;
+  }
+
+  function escHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.ver-timeline');
+    if (!btn) return;
+    e.preventDefault();
+    const codigo = btn.dataset.codigo;
+    codigoEl.textContent = codigo;
+    bodyEl.innerHTML = '<div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm me-2" role="status"></div> Cargando registros…</div>';
+    modal.show();
+
+    fetch(`/trazabilidad/${encodeURIComponent(codigo)}/json`)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(data => { bodyEl.innerHTML = renderTimeline(data); })
+      .catch(() => { bodyEl.innerHTML = '<div class="alert alert-danger">Error al cargar los registros.</div>'; });
+  });
+
+})();
+</script>
+{% endblock %}

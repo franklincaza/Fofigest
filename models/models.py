@@ -281,3 +281,36 @@ class ConfirmacionPago(db.Model):
             'inconveniente': self.inconveniente,
             'fecha_inconveniente': self.fecha_inconveniente.strftime('%Y-%m-%d %H:%M:%S') if self.fecha_inconveniente else None
         }
+
+
+class TrazabilidadTarea(db.Model):
+    __tablename__ = 'trazabilidad_tarea'
+
+    id              = db.Column(db.Integer, primary_key=True)
+    codigo_tarea    = db.Column(db.String(50), nullable=False, index=True)
+    accion          = db.Column(db.Enum(
+                          'CREACIÓN', 'MODIFICACIÓN', 'CAMBIO_ESTADO', 'ELIMINACIÓN',
+                          name='accion_trazabilidad'), nullable=False)
+    campo           = db.Column(db.String(100), nullable=True)
+    valor_anterior  = db.Column(db.Text, nullable=True)
+    valor_nuevo     = db.Column(db.Text, nullable=True)
+    usuario_correo  = db.Column(db.String(100), nullable=False)
+    usuario_rol     = db.Column(db.String(20), nullable=False)
+    empresa_usuario = db.Column(db.String(100), nullable=True)
+    ip_address      = db.Column(db.String(45), nullable=True)
+    fecha_hora      = db.Column(db.DateTime, nullable=False, default=datetime.now, index=True)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'codigo_tarea': self.codigo_tarea,
+            'accion': self.accion,
+            'campo': self.campo,
+            'valor_anterior': self.valor_anterior,
+            'valor_nuevo': self.valor_nuevo,
+            'usuario_correo': self.usuario_correo,
+            'usuario_rol': self.usuario_rol,
+            'empresa_usuario': self.empresa_usuario,
+            'ip_address': self.ip_address,
+            'fecha_hora': self.fecha_hora.strftime('%Y-%m-%d %H:%M:%S')
+        }
