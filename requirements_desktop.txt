@@ -1,0 +1,101 @@
+# requirements_desktop.txt
+# Dependencias para el build de escritorio (PyInstaller + PyWebView).
+# Genera el .exe con:  pyinstaller build.spec --noconfirm
+#
+# Pines ajustados para Python 3.13+. Los paquetes con soporte de compilacion
+# sensible a la version de Python usan >= en lugar de == exacto.
+#
+# Diferencias respecto a requirements.txt:
+#   + pywebview       -> ventana nativa Windows (usa WebView2/EdgeChromium)
+#   + pythonnet       -> puente Python/.NET que necesita pywebview en Windows
+#   - psycopg2-binary -> NO necesario en modo desktop (SQLite embebida)
+
+# ── Core Flask (versiones estables, sin cambios de API en 3.13) ───
+Flask==3.0.3
+Flask-Caching==2.3.0
+Flask-CKEditor==1.0.0
+Flask-Login==0.6.3
+Flask-Mail==0.10.0
+Flask-MonitoringDashboard==3.3.2
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+Werkzeug==3.0.4
+Jinja2==3.1.4
+MarkupSafe==2.1.5
+WTForms==3.1.2
+itsdangerous==2.2.0
+blinker==1.8.2
+click==8.1.7
+
+# ── Base de datos ─────────────────────────────────────────────────
+# SQLAlchemy 2.0.36+ tiene wheels precompilados para Python 3.13
+SQLAlchemy>=2.0.36
+# greenlet 3.1.0+ tiene wheels para Python 3.13 (3.0.x falla al compilar)
+greenlet>=3.1.1
+# psycopg2-binary: requerido para conectar a Supabase PostgreSQL en modo online
+psycopg2-binary>=2.9.9
+
+# ── Servidor WSGI embebido ────────────────────────────────────────
+waitress==3.0.0
+
+# ── Ventana de escritorio ─────────────────────────────────────────
+# pywebview 4.4+ soporta Python 3.13 con backend EdgeChromium (WebView2)
+pywebview>=4.4.1
+# pythonnet 3.0.5+ soporta Python 3.13 (3.0.3 no existe, 3.0.4 tampoco)
+pythonnet>=3.0.5
+
+# ── Empaquetador ──────────────────────────────────────────────────
+# PyInstaller 6.11+ tiene soporte mejorado para Python 3.13
+pyinstaller>=6.11.0
+pyinstaller-hooks-contrib>=2024.10
+
+# ── Datos y visualizacion ─────────────────────────────────────────
+# pandas 2.2.3+ y numpy 2.1.1+ tienen wheels para Python 3.13
+pandas>=2.2.3
+numpy>=2.1.1
+plotly>=5.24.1
+openpyxl>=3.1.5
+XlsxWriter>=3.2.0
+# Pillow 11.0.0+ tiene wheels para Python 3.13 (10.x puede fallar)
+pillow>=11.0.0
+
+# ── Utilidades web y texto ────────────────────────────────────────
+requests>=2.32.0
+certifi>=2024.8.30
+charset-normalizer>=3.3.2
+urllib3>=2.2.3
+idna>=3.10
+beautifulsoup4>=4.12.3
+soupsieve>=2.6
+bleach>=6.1.0
+webencodings==0.5.1
+Markdown>=3.7
+
+# ── Seguridad y tokens ────────────────────────────────────────────
+# cryptography 43+ tiene wheels para Python 3.13
+cryptography>=43.0.1
+cffi>=1.17.1
+pycparser==2.22
+pyOpenSSL>=24.2.1
+
+# ── Fechas y zonas horarias ───────────────────────────────────────
+python-dateutil>=2.9.0
+pytz>=2024.1
+tzdata>=2024.1
+tzlocal>=2.0.0
+six==1.16.0
+
+# ── Planificador de tareas ────────────────────────────────────────
+APScheduler==3.10.4
+tenacity>=9.0.0
+
+# ── Miscelaneos ───────────────────────────────────────────────────
+colorama>=0.4.6
+colorhash>=2.0.0
+cachelib>=0.9.0
+configparser>=7.2.0
+packaging>=24.1
+setuptools>=78.1.0
+typing_extensions>=4.12.2
+psutil>=6.1.0
+et-xmlfile>=1.1.0
