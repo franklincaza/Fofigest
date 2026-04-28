@@ -31,5 +31,6 @@
         ".vscode{,/**}"
     ],
     "appService.defaultWebAppToDeploy": "/subscriptions/4c521a00-5b38-4669-bc7d-7a24c5015f70/resourceGroups/Fofimatic/providers/Microsoft.Web/sites/Fofigest",
-    "appService.deploySubpath": ".venv"
+    "appService.deploySubpath": ".venv",
+    "cSpell.language": "en,es"
 }

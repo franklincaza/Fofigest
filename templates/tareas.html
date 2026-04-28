@@ -113,7 +113,28 @@
   .modo-oscuro .col-filter-input       { background: #252535; color: #c3c3cd; border-color: #3c3c50; }
   .modo-oscuro .col-filter-input:focus { border-color: #4e73df; }
 
-  @media (max-width: 576px) { .btn { font-size: .8rem; } }
+  /* ── Responsive: ajuste progresivo de tabla ── */
+  @media (max-width: 1399.98px) {
+    #dataTable td, #dataTable thead th { font-size: .8rem; padding: .4rem .5rem; }
+  }
+  @media (max-width: 1199.98px) {
+    #dataTable td, #dataTable thead th { font-size: .73rem; padding: .3rem .4rem; }
+    .tbl-timer-wrap { gap: .2rem; }
+    .tbl-timer-display { min-width: 50px; }
+  }
+  @media (max-width: 991.98px) {
+    #dataTable td, #dataTable thead th { font-size: .7rem; padding: .28rem .32rem; }
+    .tbl-timer-display { min-width: 46px; }
+    .badge-status { font-size: .62rem; padding: .25em .5em; }
+  }
+  @media (max-width: 767.98px) {
+    .btn { font-size: .8rem; }
+    .tareas-toolbar { gap: .25rem; }
+  }
+  /* Buscador flexible */
+  @media (max-width: 1199.98px) {
+    .tareas-buscador { max-width: 140px !important; }
+  }
 
   /* ── Timer en tabla ── */
   .tbl-timer-wrap {
@@ -203,7 +224,7 @@
       <div class="d-flex flex-wrap tareas-toolbar align-items-center">
 
         <!-- Buscador -->
-        <div class="input-group input-group-sm" style="width: 175px">
+        <div class="input-group input-group-sm tareas-buscador" style="width: 175px">
           <input type="text" id="buscador" class="form-control"
                  placeholder="Buscar..." onkeyup="filtrarTabla()">
           <span class="input-group-text"><i class="fas fa-search"></i></span>
@@ -251,84 +272,84 @@
         <table class="table table-bordered table-hover mb-0" id="dataTable" cellspacing="0">
           <thead>
             <tr>
-              <th class="d-none d-sm-table-cell text-center" style="width: 44px">#</th>
-              <th class="d-none d-sm-table-cell">Tipo <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell">Empresa <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell">Proyecto <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell">Título <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell">Inicio <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell">Fin <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell text-center">H. Ded. <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell text-center">H. Est. <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell text-center">Estado <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell">Responsable <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell">Mes <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
-              <th class="d-none d-sm-table-cell text-center">Acciones</th>
+              <th class="d-none d-md-table-cell text-center" style="width: 38px">#</th>
+              <th class="d-none d-xl-table-cell">Tipo <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-md-table-cell">Empresa <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-md-table-cell">Proyecto <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-md-table-cell">Título <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-lg-table-cell">Inicio <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-lg-table-cell">Fin <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-lg-table-cell text-center">H. Ded. <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-xl-table-cell text-center">H. Est. <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-md-table-cell text-center">Estado <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-xl-table-cell">Responsable <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-xl-table-cell">Mes <i class="fas fa-filter fa-xs text-secondary ms-1"></i></th>
+              <th class="d-none d-md-table-cell text-center">Acciones</th>
             </tr>
 
             <!-- ── Fila de filtros por columna (Excel-style) ── -->
             <tr id="filter-row">
               <!-- # — sin filtro -->
-              <th class="d-none d-sm-table-cell"></th>
+              <th class="d-none d-md-table-cell"></th>
               <!-- Tipo -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-xl-table-cell">
                 <input type="text" class="col-filter-input" data-col="1"
                        placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Empresa -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-md-table-cell">
                 <input type="text" class="col-filter-input" data-col="2"
                        placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Proyecto -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-md-table-cell">
                 <input type="text" class="col-filter-input" data-col="3"
                        placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Título -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-md-table-cell">
                 <input type="text" class="col-filter-input" data-col="4"
                        placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Inicio -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-lg-table-cell">
                 <input type="text" class="col-filter-input" data-col="5"
                        placeholder="aaaa-mm-dd" oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Fin -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-lg-table-cell">
                 <input type="text" class="col-filter-input" data-col="6"
                        placeholder="aaaa-mm-dd" oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- H. Ded. -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-lg-table-cell">
                 <input type="text" class="col-filter-input" data-col="7"
                        placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- H. Est. -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-xl-table-cell">
                 <input type="text" class="col-filter-input" data-col="8"
                        placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Estado -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-md-table-cell">
                 <input type="text" class="col-filter-input" data-col="9"
                        placeholder="pend / prog..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Responsable -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-xl-table-cell">
                 <input type="text" class="col-filter-input" data-col="10"
                        placeholder="Filtrar..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Mes -->
-              <th class="d-none d-sm-table-cell">
+              <th class="d-none d-xl-table-cell">
                 <input type="text" class="col-filter-input" data-col="11"
                        placeholder="Enero..." oninput="actualizarVisibilidad()" autocomplete="off">
               </th>
               <!-- Acciones — sin filtro -->
-              <th class="d-none d-sm-table-cell"></th>
+              <th class="d-none d-md-table-cell"></th>
               <!-- Móvil — sin filtro -->
-              <th class="d-table-cell d-sm-none"></th>
+              <th class="d-table-cell d-md-none"></th>
             </tr>
           </thead>
           <tbody>
@@ -336,21 +357,21 @@
             <tr>
 
               <!-- # (desktop) -->
-              <td class="d-none d-sm-table-cell text-center fw-bold text-muted">
+              <td class="d-none d-md-table-cell text-center fw-bold text-muted">
                 {{ loop.index }}
               </td>
 
               <!-- Tipo (desktop) -->
-              <td class="d-none d-sm-table-cell">{{ tarea.tipo_consumo }}</td>
+              <td class="d-none d-xl-table-cell">{{ tarea.tipo_consumo }}</td>
 
               <!-- Empresa (desktop) -->
-              <td class="d-none d-sm-table-cell">{{ tarea.empresa }}</td>
+              <td class="d-none d-md-table-cell">{{ tarea.empresa }}</td>
 
               <!-- Proyecto (desktop) -->
-              <td class="d-none d-sm-table-cell">{{ tarea.codigo_proyecto }}</td>
+              <td class="d-none d-md-table-cell">{{ tarea.codigo_proyecto }}</td>
 
               <!-- Título (desktop) — enlace principal estilo ClickUp -->
-              <td class="d-none d-sm-table-cell" style="max-width: 230px">
+              <td class="d-none d-md-table-cell" style="max-width: 220px">
                 <a href="#" class="text-dark fw-bold text-decoration-none"
                    data-bs-toggle="modal" data-bs-target="#tareasform"
                    onclick="editarTarea({{ tarea.id }})">
@@ -359,21 +380,21 @@
               </td>
 
               <!-- Fecha Inicio (desktop) -->
-              <td class="d-none d-sm-table-cell fecha-cell"
+              <td class="d-none d-lg-table-cell fecha-cell"
                   data-fecha="{{ tarea.fecha_inicio }}">{{ tarea.fecha_inicio }}</td>
 
               <!-- Fecha Fin (desktop) -->
-              <td class="d-none d-sm-table-cell fecha-cell"
+              <td class="d-none d-lg-table-cell fecha-cell"
                   data-fecha="{{ tarea.fecha_fin }}">{{ tarea.fecha_fin }}</td>
 
               <!-- Horas Dedicadas (desktop) -->
-              <td class="d-none d-sm-table-cell text-center">{{ tarea.horas_dedicadas }}</td>
+              <td class="d-none d-lg-table-cell text-center">{{ tarea.horas_dedicadas }}</td>
 
               <!-- Horas Estimadas (desktop) -->
-              <td class="d-none d-sm-table-cell text-center">{{ tarea.horas_estimadas }}</td>
+              <td class="d-none d-xl-table-cell text-center">{{ tarea.horas_estimadas }}</td>
 
               <!-- Estado — badge rounded-pill (desktop) -->
-              <td class="d-none d-sm-table-cell text-center">
+              <td class="d-none d-md-table-cell text-center">
                 {% if tarea.estado == 'PENDIENTE' %}
                   <span class="badge rounded-pill bg-secondary badge-status">PENDIENTE</span>
                 {% elif tarea.estado == 'PROGRESO' %}
