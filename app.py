@@ -455,7 +455,8 @@ def gannt():
             "responsable": tarea.responsable or "",
             "horas_dedicadas": tarea.horas_dedicadas or 0,
             "horas_estimadas": tarea.horas_estimadas or 0,
-            "codigo_proyecto": tarea.codigo_proyecto or ""
+            "codigo_proyecto": tarea.codigo_proyecto or "",
+            "empresa": tarea.empresa or ""
         } for tarea in tareas]
 
         return render_template('gantt.html', tareas_jsons=tareas_data, proyectos_=proyectos_)
@@ -504,10 +505,9 @@ def gannt_project(project):
             "responsable": tarea.responsable or "",
             "horas_dedicadas": tarea.horas_dedicadas or 0,
             "horas_estimadas": tarea.horas_estimadas or 0,
-            "codigo_proyecto": tarea.codigo_proyecto or ""
+            "codigo_proyecto": tarea.codigo_proyecto or "",
+            "empresa": tarea.empresa or ""
         } for tarea in tareas]
-
-        return render_template('gantt.html', tareas_jsons=tareas_data, proyectos_=proyectos_)
 
     except Exception as e:
         logging.error(f"Error en /gannt/<project>: {str(e)}")
