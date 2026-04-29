@@ -15,6 +15,7 @@ datas = [
     ('static',         'static'),
     ('models',         'models'),
     ('feature',        'feature'),
+    ('services',       'services'),
     ('forms.py',       '.'),
     ('config.py',      '.'),
     ('masivos.py',     '.'),
@@ -151,6 +152,12 @@ hiddenimports = [
     'psycopg2.extensions',
     'psycopg2.extras',
     'psycopg2._psycopg',
+    # pywebpush: push notifications del navegador
+    'pywebpush',
+    'py_vapid',
+    'http_ece',
+    'cryptography.hazmat.primitives.asymmetric.ec',
+    'cryptography.hazmat.primitives.serialization',
 ]
 
 # Incluir todos los sub-módulos de algunos paquetes complejos

@@ -314,3 +314,59 @@ class TrazabilidadTarea(db.Model):
             'ip_address': self.ip_address,
             'fecha_hora': self.fecha_hora.strftime('%Y-%m-%d %H:%M:%S')
         }
+
+
+# ── Módulo Notificaciones ────────────────────────────────────────────────────
+
+class Notification(db.Model):
+    __tablename__ = 'notifications'
+
+    id        = db.Column(db.Integer, primary_key=True)
+    user_id   = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=True)
+    title     = db.Column(db.String(100), nullable=False)
+    message   = db.Column(db.String(500), nullable=False)
+    url       = db.Column(db.String(500), nullable=True)
+    url_label = db.Column(db.String(100), nullable=True)
+    is_read   = db.Column(db.Boolean, default=False, nullable=False)
+    type      = db.Column(db.String(50), default='admin_broadcast', nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+
+    user   = db.relationship('Usuarios', foreign_keys=[user_id],
+                             backref=db.backref('notifications_received', lazy='dynamic'))
+    sender = db.relationship('Usuarios', foreign_keys=[sender_id])
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'sender_id': self.sender_id,
+            'title': self.title,
+            'message': self.message,
+            'url': self.url,
+            'url_label': self.url_label,
+            'is_read': self.is_read,
+            'type': self.type,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
+        }
+
+
+class PushSubscription(db.Model):
+    __tablename__ = 'push_subscriptions'
+
+    id         = db.Column(db.Integer, primary_key=True)
+    user_id    = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    endpoint   = db.Column(db.Text, nullable=False)
+    p256dh     = db.Column(db.Text, nullable=False)
+    auth       = db.Column(db.Text, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    is_active  = db.Column(db.Boolean, default=True, nullable=False)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'endpoint': self.endpoint,
+            'is_active': self.is_active,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
+        }

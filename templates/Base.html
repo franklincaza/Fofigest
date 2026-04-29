@@ -14,6 +14,8 @@
   <meta name="theme-color" content="#4e73df">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <!-- VAPID public key para push notifications -->
+  <meta name="vapid-public-key" content="{{ vapid_public_key | default('') }}">
 
   <!-- Google Fonts: Nunito -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">
@@ -478,6 +480,165 @@
     .modo-oscuro select,
     .modo-oscuro textarea,
     .modo-oscuro input          { background-color: #2e2e2e !important; color: #fff !important; }
+
+    /* ══════════════════════════════════════
+       CAMPANA DE NOTIFICACIONES
+    ══════════════════════════════════════ */
+    .notif-btn {
+      position: relative;
+      background: none;
+      border: none;
+      padding: .375rem .5rem;
+      cursor: pointer;
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      transition: background var(--transition);
+      font-size: .95rem;
+      line-height: 1;
+    }
+    .notif-btn:hover { background: var(--bg-page); color: var(--color-primary); }
+
+    #notif-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: var(--color-danger);
+      color: #fff;
+      border-radius: 50px;
+      font-size: .6rem;
+      font-weight: 800;
+      min-width: 16px;
+      height: 16px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0 3px;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════
+       CONTROLES DE ZOOM
+    ══════════════════════════════════════ */
+    .zoom-ctrl {
+      display: flex;
+      align-items: center;
+      background: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .zoom-btn {
+      background: none;
+      border: none;
+      padding: .3rem .42rem;
+      cursor: pointer;
+      color: var(--text-dark);
+      font-size: .8rem;
+      line-height: 1;
+      transition: background var(--transition), color var(--transition);
+      display: flex;
+      align-items: center;
+    }
+    .zoom-btn:hover { background: var(--color-primary); color: #fff; }
+    .zoom-level {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      padding: 0 .4rem;
+      min-width: 2.6rem;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+      border-left: 1px solid var(--border-color);
+      border-right: 1px solid var(--border-color);
+      line-height: 1;
+    }
+    .zoom-level:hover { color: var(--color-primary); }
+
+    /* Dark mode — zoom */
+    .modo-oscuro .zoom-ctrl  { background: #2a2a2a; border-color: #444; }
+    .modo-oscuro .zoom-level { color: #aaa; border-color: #444; }
+    .modo-oscuro .zoom-btn   { color: #ccc; }
+    .modo-oscuro .zoom-btn:hover { background: var(--color-primary); color: #fff; }
+
+    /* ── Offcanvas notificaciones ── */
+    #notifOffcanvas {
+      width: 360px !important;
+    }
+
+    .notif-offcanvas-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.25rem .75rem;
+      border-bottom: 1px solid var(--border-color);
+      gap: .5rem;
+    }
+
+    .notif-offcanvas-title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-heading);
+      margin: 0;
+    }
+
+    #notif-list {
+      list-style: none;
+      margin: 0;
+      padding: .5rem 0;
+      overflow-y: auto;
+      max-height: calc(100vh - 110px);
+    }
+
+    .notif-item {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      padding: .75rem 1.25rem;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border-color);
+      transition: background var(--transition);
+    }
+    .notif-item:hover     { background: var(--bg-page); }
+    .notif-item.unread    { background: #eef2ff; }
+
+    .notif-icon-wrap {
+      width: 32px;
+      min-width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      flex-shrink: 0;
+    }
+
+    .notif-body    { flex: 1; min-width: 0; }
+    .notif-title   { font-weight: 700; font-size: .82rem; color: var(--text-heading); margin-bottom: .15rem; }
+    .notif-msg     { font-size: .78rem; color: var(--text-muted); line-height: 1.3; margin-bottom: .2rem; }
+    .notif-time    { font-size: .72rem; color: #aaa; }
+
+    .notif-empty {
+      padding: 2rem 1.25rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: .85rem;
+    }
+
+    /* Dark mode — offcanvas */
+    .modo-oscuro #notifOffcanvas,
+    .modo-oscuro .notif-offcanvas-header { background: #1e1e1e !important; border-color: #333 !important; }
+    .modo-oscuro .notif-offcanvas-title  { color: #e0e0e0 !important; }
+    .modo-oscuro .notif-item             { border-color: #333; }
+    .modo-oscuro .notif-item.unread      { background: #1a2340 !important; }
+    .modo-oscuro .notif-item:hover       { background: #2a2a2a !important; }
+    .modo-oscuro .notif-title            { color: #e0e0e0; }
+    .modo-oscuro .notif-msg              { color: #aaa; }
+    .modo-oscuro #notif-list             { background: #1e1e1e; }
   </style>
 </head>
 <body>
@@ -530,10 +691,34 @@
           <i class="fas fa-moon"></i>
         </button>
 
+        <!-- Zoom controls -->
+        <div class="zoom-ctrl" title="Ajustar zoom · doble clic en % para restablecer">
+          <button class="zoom-btn" id="zoom-out" aria-label="Reducir zoom">
+            <i class="fas fa-search-minus"></i>
+          </button>
+          <span class="zoom-level" id="zoom-level" title="Doble clic para restablecer al 100%">100%</span>
+          <button class="zoom-btn" id="zoom-in" aria-label="Aumentar zoom">
+            <i class="fas fa-search-plus"></i>
+          </button>
+        </div>
+
+        <!-- Campana de notificaciones -->
+        {% if session.get('username') %}
+        <button class="notif-btn"
+                type="button"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#notifOffcanvas"
+                aria-label="Notificaciones"
+                title="Notificaciones">
+          <i class="fas fa-bell"></i>
+          <span id="notif-badge"></span>
+        </button>
+        {% endif %}
+
         <div class="topbar-divider"></div>
 
         <!-- User pill → logout -->
-        <a href="logout" class="topbar-user" title="Cerrar sesión">
+        <a href="/logout" class="topbar-user" title="Cerrar sesión">
           <div class="topbar-avatar">
             {{ session.get('username', '?')[0] | upper }}
           </div>
@@ -568,28 +753,28 @@
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="tablero" data-tooltip="Tablero">
+              <a class="sidebar-link" href="/tablero" data-tooltip="Tablero">
                 <i class="fas fa-columns sidebar-icon"></i>
                 <span class="sidebar-label">Tablero</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="tareas" data-tooltip="Tareas">
+              <a class="sidebar-link" href="/tareas" data-tooltip="Tareas">
                 <i class="fas fa-tasks sidebar-icon"></i>
                 <span class="sidebar-label">Tareas</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="proyectos" data-tooltip="Proyectos">
+              <a class="sidebar-link" href="/proyectos" data-tooltip="Proyectos">
                 <i class="fas fa-project-diagram sidebar-icon"></i>
                 <span class="sidebar-label">Proyectos</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="gannt" data-tooltip="Gantt">
+              <a class="sidebar-link" href="/gannt" data-tooltip="Gantt">
                 <i class="fas fa-chart-bar sidebar-icon"></i>
                 <span class="sidebar-label">Gantt</span>
               </a>
@@ -632,35 +817,35 @@
             <li class="sidebar-heading">Administración</li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="empresa" data-tooltip="Empresas">
+              <a class="sidebar-link" href="/empresa" data-tooltip="Empresas">
                 <i class="fas fa-building sidebar-icon"></i>
                 <span class="sidebar-label">Empresas</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="usuarios_admin" data-tooltip="Usuarios">
+              <a class="sidebar-link" href="/usuarios_admin" data-tooltip="Usuarios">
                 <i class="fas fa-users-cog sidebar-icon"></i>
                 <span class="sidebar-label">Usuarios</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="upload" data-tooltip="Tareas Masivas">
+              <a class="sidebar-link" href="/upload" data-tooltip="Tareas Masivas">
                 <i class="fas fa-database sidebar-icon"></i>
                 <span class="sidebar-label">Tareas Masivas</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="download-backup" data-tooltip="Descarga DB">
+              <a class="sidebar-link" href="/download-backup" data-tooltip="Descarga DB">
                 <i class="fas fa-download sidebar-icon"></i>
                 <span class="sidebar-label">Descarga DB</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="log" data-tooltip="Log del sistema">
+              <a class="sidebar-link" href="/log" data-tooltip="Log del sistema">
                 <i class="fas fa-file-alt sidebar-icon"></i>
                 <span class="sidebar-label">Log del sistema</span>
               </a>
@@ -680,12 +865,19 @@
               </a>
             </li>
 
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="/admin/notificaciones" data-tooltip="Notificaciones">
+                <i class="fas fa-bell sidebar-icon"></i>
+                <span class="sidebar-label">Notificaciones</span>
+              </a>
+            </li>
+
           </ul><!-- /.sidebar-body -->
 
           <div class="sidebar-footer">
             <ul class="sidebar-menu">
               <li class="sidebar-item">
-                <a class="sidebar-link" href="logout" data-tooltip="Cerrar sesión">
+                <a class="sidebar-link" href="/logout" data-tooltip="Cerrar sesión">
                   <i class="fas fa-sign-out-alt sidebar-icon"></i>
                   <span class="sidebar-label">Cerrar sesión</span>
                 </a>
@@ -706,28 +898,28 @@
             <li class="sidebar-heading">Principal</li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="tablero" data-tooltip="Tablero">
+              <a class="sidebar-link" href="/tablero" data-tooltip="Tablero">
                 <i class="fas fa-tachometer-alt sidebar-icon"></i>
                 <span class="sidebar-label">Tablero</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="tareas" data-tooltip="Tareas">
+              <a class="sidebar-link" href="/tareas" data-tooltip="Tareas">
                 <i class="fas fa-tasks sidebar-icon"></i>
                 <span class="sidebar-label">Tareas</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="gannt" data-tooltip="Gantt">
+              <a class="sidebar-link" href="/gannt" data-tooltip="Gantt">
                 <i class="fas fa-chart-bar sidebar-icon"></i>
                 <span class="sidebar-label">Gantt</span>
               </a>
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="proyectos" data-tooltip="Proyectos">
+              <a class="sidebar-link" href="/proyectos" data-tooltip="Proyectos">
                 <i class="fas fa-project-diagram sidebar-icon"></i>
                 <span class="sidebar-label">Proyectos</span>
               </a>
@@ -779,7 +971,7 @@
           <div class="sidebar-footer">
             <ul class="sidebar-menu">
               <li class="sidebar-item">
-                <a class="sidebar-link" href="logout" data-tooltip="Cerrar sesión">
+                <a class="sidebar-link" href="/logout" data-tooltip="Cerrar sesión">
                   <i class="fas fa-sign-out-alt sidebar-icon"></i>
                   <span class="sidebar-label">Cerrar sesión</span>
                 </a>
@@ -800,7 +992,7 @@
             <li class="sidebar-heading">Principal</li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="gannt" data-tooltip="Gantt">
+              <a class="sidebar-link" href="/gannt" data-tooltip="Gantt">
                 <i class="fas fa-chart-bar sidebar-icon"></i>
                 <span class="sidebar-label">Gantt</span>
               </a>
@@ -824,7 +1016,7 @@
           <div class="sidebar-footer">
             <ul class="sidebar-menu">
               <li class="sidebar-item">
-                <a class="sidebar-link" href="logout" data-tooltip="Cerrar sesión">
+                <a class="sidebar-link" href="/logout" data-tooltip="Cerrar sesión">
                   <i class="fas fa-sign-out-alt sidebar-icon"></i>
                   <span class="sidebar-label">Cerrar sesión</span>
                 </a>
@@ -886,6 +1078,32 @@
   <!-- ══════════════════════════════════════
        SCRIPTS
   ══════════════════════════════════════ -->
+  <!-- ── OFFCANVAS NOTIFICACIONES ───────────────────────────────────────────── -->
+  {% if session.get('username') %}
+  <div class="offcanvas offcanvas-end" tabindex="-1" id="notifOffcanvas"
+       aria-labelledby="notifOffcanvasLabel">
+    <div class="notif-offcanvas-header">
+      <h5 class="notif-offcanvas-title" id="notifOffcanvasLabel">
+        <i class="fas fa-bell me-2 text-primary"></i>Notificaciones
+      </h5>
+      <div class="d-flex gap-2 align-items-center">
+        <button type="button" class="btn btn-sm btn-outline-secondary"
+                onclick="fofiNotif.markAllRead()" title="Marcar todas como leídas"
+                style="font-size:.75rem;padding:.2rem .55rem;">
+          <i class="fas fa-check-double me-1"></i>Leer todas
+        </button>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                aria-label="Cerrar"></button>
+      </div>
+    </div>
+    <ul id="notif-list">
+      <li class="notif-empty">
+        <i class="fas fa-spinner fa-spin me-2 opacity-50"></i>Cargando…
+      </li>
+    </ul>
+  </div>
+  {% endif %}
+
   <!-- Bootstrap 5.3.3 bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <!-- jQuery 3.6 -->
@@ -996,6 +1214,39 @@
         if (btn) btn.innerHTML = '<i class="fas fa-sun"></i>';
       });
     }
+
+    /* ─────────────────────────────────────────
+       ZOOM DE PANTALLA
+    ───────────────────────────────────────── */
+    (function () {
+      var ZOOM_KEY = 'fofigest-zoom';
+      var STEP = 5, MIN = 70, MAX = 150;
+      var current = parseInt(localStorage.getItem(ZOOM_KEY) || '100', 10);
+
+      function applyZoom(level) {
+        current = Math.min(MAX, Math.max(MIN, level));
+        document.documentElement.style.zoom = current + '%';
+        var lbl = document.getElementById('zoom-level');
+        if (lbl) lbl.textContent = current + '%';
+        localStorage.setItem(ZOOM_KEY, current);
+      }
+
+      // Aplicar zoom guardado antes de que la página sea visible
+      if (current !== 100) {
+        document.documentElement.style.zoom = current + '%';
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var lbl    = document.getElementById('zoom-level');
+        var btnIn  = document.getElementById('zoom-in');
+        var btnOut = document.getElementById('zoom-out');
+
+        if (lbl) lbl.textContent = current + '%';
+        if (btnIn)  btnIn.addEventListener('click',  function () { applyZoom(current + STEP); });
+        if (btnOut) btnOut.addEventListener('click', function () { applyZoom(current - STEP); });
+        if (lbl)    lbl.addEventListener('dblclick', function () { applyZoom(100); });
+      });
+    }());
 
     /* ─────────────────────────────────────────
        FLASH MESSAGES (SweetAlert2)
@@ -1148,7 +1399,7 @@
 
       // Interceptar todos los enlaces de logout
       document.addEventListener('DOMContentLoaded', function() {
-        const logoutLinks = document.querySelectorAll('a[href="logout"], a[href="/logout"]');
+        const logoutLinks = document.querySelectorAll('a[href="/logout"]');
         
         logoutLinks.forEach(function(link) {
           link.addEventListener('click', function(e) {
@@ -1170,6 +1421,12 @@
   </script>
 
   {% block scripts %}{% endblock %}
+
+  <!-- ── NOTIFICACIONES ─────────────────────────────────────────────────────── -->
+  {% if session.get('username') %}
+  <script src="{{ url_for('static', filename='js/notifications_ui.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/push_notifications.js') }}"></script>
+  {% endif %}
 
 </body>
 </html>
