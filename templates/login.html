@@ -156,6 +156,65 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Script de persistencia de sesión -->
+    <script>
+        // Verificar sesión guardada al cargar la página de login
+        (function verificarSesionGuardada() {
+            const sessionToken = localStorage.getItem('fofigest_session_token');
+            const sessionCorreo = localStorage.getItem('fofigest_session_correo');
+            
+            if (sessionToken && sessionCorreo) {
+                console.log('Sesión guardada encontrada, verificando validez...');
+                
+                // Verificar si la sesión sigue siendo válida en el servidor
+                fetch('/api/verificar-sesion', {
+                    method: 'GET',
+                    credentials: 'include', // Importante para enviar cookies de sesión
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok && data.authenticated && data.session_token === sessionToken) {
+                        console.log('Sesión válida, redirigiendo...');
+                        // Sesión válida, redirigir al tablero o página correspondiente
+                        window.location.href = data.redirect_url;
+                    } else {
+                        console.log('Sesión inválida o expirada, limpiando localStorage');
+                        // Sesión inválida o expirada, limpiar localStorage
+                        localStorage.removeItem('fofigest_session_token');
+                        localStorage.removeItem('fofigest_session_correo');
+                        localStorage.removeItem('fofigest_session_empresa');
+                        localStorage.removeItem('fofigest_session_permisos');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar sesión:', error);
+                    // En caso de error, limpiar localStorage por seguridad
+                    localStorage.removeItem('fofigest_session_token');
+                    localStorage.removeItem('fofigest_session_correo');
+                    localStorage.removeItem('fofigest_session_empresa');
+                    localStorage.removeItem('fofigest_session_permisos');
+                });
+            }
+        })();
+        
+        // Interceptar el submit del formulario de login para guardar en localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.querySelector('form');
+            
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    // Guardar el correo temporalmente para usarlo después del login
+                    const email = document.getElementById('exampleInputEmail').value;
+                    sessionStorage.setItem('fofigest_temp_email', email);
+                });
+            }
+        });
+    </script>
+    
     <script>
         // Toggle mostrar/ocultar contraseña
         document.getElementById('togglePassword').addEventListener('click', function () {
