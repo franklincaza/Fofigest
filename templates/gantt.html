@@ -5,7 +5,7 @@
 /* === GANTT LAYOUT === */
 #gantt-wrap {
   display: flex;
-  height: calc(100vh - 290px);
+  height: calc(100vh - 310px);
   min-height: 480px;
   overflow: hidden;
   border: 1px solid #e3e6f0;
@@ -13,11 +13,10 @@
   background: #fff;
 }
 #gantt-left {
-  width: 490px;
-  min-width: 490px;
+  width: 500px;
+  min-width: 500px;
   overflow-y: auto;
   overflow-x: auto;
-  border-right: 2px solid #e3e6f0;
   flex-shrink: 0;
 }
 #gantt-right {
@@ -32,7 +31,9 @@
 /* Left table */
 #task-table {
   border-collapse: collapse;
-  width: 100%;
+  table-layout: fixed;
+  min-width: 100%;
+  width: auto;
   font-size: 0.78rem;
   font-family: 'Nunito', sans-serif;
 }
@@ -42,13 +43,14 @@
   background: #f8f9fc;
   border-bottom: 2px solid #e3e6f0;
   border-right: 1px solid #e3e6f0;
-  padding: 0 8px;
+  padding: 0;
   height: 44px;
   font-weight: 800;
   color: #5a5c69;
   white-space: nowrap;
   z-index: 5;
   text-align: left;
+  overflow: visible;
 }
 #task-table td {
   padding: 0 8px;
@@ -58,12 +60,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-#task-table tbody tr {
+#task-table tbody tr.task-row {
   height: 38px;
   cursor: pointer;
   transition: background 0.1s;
 }
-#task-table tbody tr:hover { background: #f0f4ff; }
+#task-table tbody tr.task-row:hover { background: #f0f4ff; }
 
 /* Status badge */
 .sbadge {
@@ -155,29 +157,29 @@
 .rhandle.lh { left: 0; }
 .rhandle.rh { right: 0; }
 
-/* Today line */
+/* Today line — 3px, opaco */
 #today-line {
   position: absolute;
   top: 0; bottom: 0;
-  width: 2px;
-  background: #e74a3b;
-  z-index: 1;
-  opacity: 0.75;
+  width: 3px;
+  background: #e74c3c;
+  z-index: 6;
   pointer-events: none;
 }
 #today-label {
   position: absolute;
   top: 2px;
-  font-size: 0.6rem;
-  background: #e74a3b;
+  font-size: 0.65rem;
+  background: #e74c3c;
   color: #fff;
-  padding: 1px 4px;
-  border-radius: 2px;
+  padding: 2px 6px;
+  border-radius: 3px;
   transform: translateX(-50%);
   white-space: nowrap;
   pointer-events: none;
-  z-index: 2;
-  font-weight: 700;
+  z-index: 7;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(231,76,60,0.4);
 }
 
 /* Tooltip */
@@ -185,15 +187,15 @@
   position: fixed;
   background: #3a3b45;
   color: #fff;
-  padding: 8px 12px;
-  border-radius: 6px;
+  padding: 10px 14px;
+  border-radius: 8px;
   font-size: 0.74rem;
   z-index: 9999;
   pointer-events: none;
   display: none;
-  line-height: 1.7;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  max-width: 240px;
+  line-height: 1.8;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  max-width: 260px;
   font-family: 'Nunito', sans-serif;
 }
 
@@ -211,17 +213,70 @@
   color: #858796;
 }
 
-/* Scrollbars */
-#gantt-right::-webkit-scrollbar,
-#gantt-left::-webkit-scrollbar  { width: 7px; height: 7px; }
-#gantt-right::-webkit-scrollbar-track,
-#gantt-left::-webkit-scrollbar-track  { background: #f8f9fc; }
-#gantt-right::-webkit-scrollbar-thumb,
-#gantt-left::-webkit-scrollbar-thumb  { background: #d1d3e2; border-radius: 4px; }
+/* Scrollbars — siempre visibles y bien marcadas */
+#gantt-right { overflow-x: scroll; overflow-y: auto; }
+#gantt-left  { overflow-x: scroll; overflow-y: auto; }
+#gantt-right::-webkit-scrollbar { width: 8px;  height: 12px; }
+#gantt-left::-webkit-scrollbar  { width: 7px;  height: 8px;  }
+#gantt-right::-webkit-scrollbar-track { background: #eef0f8; border-radius: 6px; }
+#gantt-left::-webkit-scrollbar-track  { background: #f8f9fc; border-radius: 4px; }
+#gantt-right::-webkit-scrollbar-thumb {
+  background: #4e73df;
+  border-radius: 6px;
+  border: 2px solid #eef0f8;
+}
+#gantt-right::-webkit-scrollbar-thumb:hover { background: #2e59d9; }
+#gantt-left::-webkit-scrollbar-thumb  { background: #b0b3c7; border-radius: 4px; }
+#gantt-right::-webkit-scrollbar-corner,
+#gantt-left::-webkit-scrollbar-corner  { background: #f8f9fc; }
+/* Firefox */
+#gantt-right { scrollbar-width: auto; scrollbar-color: #4e73df #eef0f8; }
+#gantt-left  { scrollbar-width: thin; scrollbar-color: #b0b3c7 #f8f9fc; }
+
+/* Cursor pan mejorado */
+#gantt-right { cursor: grab; }
+#gantt-right.grabbing { cursor: grabbing !important; }
+#gantt-right.ctrl-pan { cursor: all-scroll; }
+.gbar { cursor: pointer; }
+
+/* Barra de navegación inferior */
+#gantt-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  background: #f8f9fc;
+  border-top: 2px solid #e3e6f0;
+  font-size: 0.72rem;
+  flex-shrink: 0;
+}
+#gantt-nav .nav-sep {
+  width: 1px; height: 18px;
+  background: #d1d3e2; margin: 0 4px;
+}
+#gantt-nav .nav-hint {
+  font-size: 0.65rem; color: #b0b3c7;
+  margin-left: auto; white-space: nowrap;
+}
+.nav-btn {
+  background: #fff;
+  border: 1px solid #d1d3e2;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  color: #5a5c69;
+  font-weight: 600;
+  transition: background .12s, border-color .12s;
+  white-space: nowrap;
+}
+.nav-btn:hover { background: #eef1fb; border-color: #4e73df; color: #4e73df; }
+.nav-btn.nav-today { background: #4e73df; color: #fff; border-color: #4e73df; }
+.nav-btn.nav-today:hover { background: #2e59d9; }
 
 /* Responsive */
 @media (max-width: 991px) {
-  #gantt-left { width: 320px; min-width: 220px; }
+  #gantt-left { width: 300px; min-width: 220px; }
   #task-table th:nth-child(n+4),
   #task-table td:nth-child(n+4) { display: none; }
 }
@@ -229,11 +284,11 @@
   #gantt-left { width: 180px; min-width: 180px; }
   #task-table th:nth-child(n+3),
   #task-table td:nth-child(n+3) { display: none; }
-  #gantt-wrap { height: calc(100vh - 340px); min-height: 360px; }
+  #gantt-wrap { height: calc(100vh - 360px); min-height: 360px; }
 }
 
-/* === PANEL DIVIDER === */
-#gantt-left  { border-right: none; }          /* el divisor toma el rol del borde */
+/* Panel divider */
+#gantt-left  { border-right: none; }
 #gantt-divider {
   width: 6px;
   min-width: 6px;
@@ -250,20 +305,17 @@
 #gantt-divider::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 2px;
-  height: 28px;
+  width: 2px; height: 28px;
   background: rgba(255,255,255,0.7);
   border-radius: 1px;
 }
 
-/* === COLUMN RESIZE === */
-#task-table { table-layout: fixed; min-width: 100%; width: auto; }
-#task-table thead th { padding: 0; overflow: visible; }   /* padding movido al wrapper */
+/* Column resize */
+#task-table thead th { overflow: visible; }
 .th-wrap {
-  position: relative;            /* contiene el resizer sin depender de sticky */
+  position: relative;
   display: flex;
   align-items: center;
   height: 100%;
@@ -271,9 +323,7 @@
 }
 .col-resizer {
   position: absolute;
-  right: -4px;                   /* centrado sobre el borde derecho de la columna */
-  top: 0;
-  bottom: 0;
+  right: -4px; top: 0; bottom: 0;
   width: 8px;
   cursor: col-resize;
   z-index: 10;
@@ -283,10 +333,8 @@
 .col-resizer::after {
   content: '';
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: 15%;
-  bottom: 15%;
+  left: 50%; transform: translateX(-50%);
+  top: 15%; bottom: 15%;
   width: 2px;
   background: #d1d3e2;
   border-radius: 1px;
@@ -294,6 +342,118 @@
 }
 .col-resizer:hover::after,
 .col-resizer.resizing::after { background: #4e73df; }
+
+/* ===== TAREAS VENCIDAS ===== */
+.tarea-vencida > td { background: #fff5f5 !important; }
+.tarea-vencida > td:first-child { border-left: 3px solid #e74a3b; }
+.tarea-vencida .sbadge { background: #e74a3b !important; }
+.tarea-vencida .td-fin { color: #e74a3b !important; font-weight: 700; }
+
+/* ===== PROJECT GROUP HEADER ===== */
+.project-hdr {
+  height: 38px;
+  cursor: pointer;
+  user-select: none;
+}
+.project-hdr td {
+  background: #eef1fb !important;
+  font-weight: 800;
+  color: #3a3b45;
+  border-bottom: 1px solid #c5cbe8;
+  border-left: 3px solid #4e73df;
+  padding: 0 10px;
+  height: 38px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.project-hdr:hover td { background: #e4e9f8 !important; }
+.proj-arrow { font-style: normal; margin-right: 6px; font-size: 0.7rem; color: #4e73df; }
+.proj-pct { font-size: 0.7rem; color: #4e73df; font-weight: 800; margin-left: 8px; }
+.proj-pbar-wrap {
+  display: inline-block;
+  width: 56px; height: 6px;
+  background: #d1d3e2;
+  border-radius: 3px;
+  vertical-align: middle;
+  overflow: hidden;
+  margin-left: 6px;
+}
+.proj-pbar { height: 100%; border-radius: 3px; }
+.proj-task-count { font-size: 0.67rem; color: #858796; margin-left: 8px; font-weight: 600; }
+
+/* Bars: project header row */
+.grow-proj {
+  position: relative;
+  height: 38px;
+  border-bottom: 1px solid #c5cbe8;
+  background: #eef1fb;
+  border-left: 3px solid #4e73df;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+.grow-proj:hover { background: #e4e9f8; }
+.proj-span-bar {
+  position: absolute;
+  height: 6px;
+  top: 16px;
+  border-radius: 3px;
+  background: rgba(78,115,223,0.25);
+  pointer-events: none;
+  border: 1px solid rgba(78,115,223,0.4);
+}
+
+/* ===== GANTT LEGEND ===== */
+#gantt-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 8px 14px;
+  background: #f8f9fc;
+  border: 1px solid #e3e6f0;
+  border-bottom: 2px solid #e3e6f0;
+  font-size: 0.72rem;
+  font-family: 'Nunito', sans-serif;
+  align-items: center;
+}
+.legend-dot {
+  width: 11px; height: 11px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 5px;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+.legend-item { display: flex; align-items: center; color: #5a5c69; font-weight: 600; }
+.legend-title { font-weight: 800; color: #5a5c69; font-size: 0.7rem; margin-right: 4px; }
+
+/* ===== MODO CLIENTE ===== */
+body.modo-cliente .sidebar,
+body.modo-cliente .topbar { display: none !important; }
+body.modo-cliente #main-content {
+  margin-left: 0 !important;
+  padding-top: 0.75rem !important;
+}
+body.modo-cliente .col-resp { display: none !important; }
+body.modo-cliente #btn-nueva-tarea { display: none !important; }
+body.modo-cliente #gantt-wrap { height: calc(100vh - 200px); }
+#btn-cliente-toggle .txt-off { display: none; }
+body.modo-cliente #btn-cliente-toggle .txt-on  { display: none; }
+body.modo-cliente #btn-cliente-toggle .txt-off { display: inline; }
+
+/* ===== PRINT / EXPORT ===== */
+@media print {
+  .sidebar, .topbar, #gantt-toolbar-card, .modal, .no-print { display: none !important; }
+  #main-content { margin-left: 0 !important; padding-top: 0 !important; }
+  #gantt-wrap { height: auto !important; overflow: visible !important; }
+  #gantt-right, #gantt-left { overflow: visible !important; height: auto !important; }
+  #gantt-bars { overflow: visible !important; }
+  .card { box-shadow: none !important; border: 1px solid #e3e6f0 !important; }
+  body { background: #fff !important; }
+  @page { size: A3 landscape; margin: 8mm; }
+}
 </style>
 
 <!-- === PAGE HEADER === -->
@@ -301,23 +461,40 @@
   <h1 class="h3 mb-0" style="color:#5a5c69;font-weight:800">
     <i class="fas fa-chart-bar text-primary me-2"></i>Gantt — Proyectos
   </h1>
-  <button class="btn btn-primary btn-sm shadow-sm" id="btn-nueva-tarea">
-    <i class="fas fa-plus fa-sm me-1"></i>Nueva Tarea
-  </button>
+  <div class="d-flex gap-2 align-items-center">
+    <button class="btn btn-outline-info btn-sm shadow-sm no-print" id="btn-cliente-toggle" title="Activar/desactivar Vista Cliente">
+      <span class="txt-on"><i class="fas fa-eye me-1"></i>Vista Cliente</span>
+      <span class="txt-off"><i class="fas fa-eye-slash me-1"></i>Salir de Vista Cliente</span>
+    </button>
+    <button class="btn btn-outline-secondary btn-sm shadow-sm no-print" id="btn-export" title="Exportar Gantt como PDF/Imagen">
+      <i class="fas fa-file-export me-1"></i>Exportar
+    </button>
+    <button class="btn btn-primary btn-sm shadow-sm no-print" id="btn-nueva-tarea">
+      <i class="fas fa-plus fa-sm me-1"></i>Nueva Tarea
+    </button>
+  </div>
 </div>
 
 <!-- === TOOLBAR === -->
-<div class="card shadow mb-2">
+<div class="card shadow mb-2 no-print" id="gantt-toolbar-card">
   <div class="card-body py-2 px-3">
-    <form method="POST" action="/gannt" id="form-proyecto">
+    <form id="form-proyecto">
+      <!-- Fila 1: filtros principales + vistas -->
       <div class="row g-2 align-items-end flex-wrap">
 
         <div class="col-auto">
+          <label class="form-label mb-1 small fw-bold">Empresa</label>
+          <select class="form-select form-select-sm" id="sel-empresa" style="min-width:160px">
+            <option value="">Todas las empresas</option>
+          </select>
+        </div>
+
+        <div class="col-auto">
           <label class="form-label mb-1 small fw-bold">Proyecto</label>
-          <select class="form-select form-select-sm" name="proyecto_i" id="sel-proyecto" style="min-width:160px">
+          <select class="form-select form-select-sm" name="proyecto_i" id="sel-proyecto" style="min-width:170px">
             <option value="">Todos los proyectos</option>
             {% for p in proyectos_ %}
-            <option value="{{ p.codigo_proyecto }}">{{ p.nombre_proyecto }}</option>
+            <option value="{{  p.nombre_proyecto }}">{{ p.nombre_proyecto }}</option>
             {% endfor %}
           </select>
         </div>
@@ -342,10 +519,10 @@
         </div>
 
         <div class="col-auto">
-          <button type="submit" class="btn btn-primary btn-sm">
+          <button type="button" class="btn btn-primary btn-sm" id="btn-filtrar">
             <i class="fas fa-search me-1"></i>Filtrar
           </button>
-          <a href="/gannt" class="btn btn-outline-secondary btn-sm ms-1">Ver todo</a>
+          <button type="button" class="btn btn-outline-secondary btn-sm ms-1" id="btn-ver-todo">Ver todo</button>
         </div>
 
         <div class="col-auto ms-auto">
@@ -365,7 +542,31 @@
             <i class="fas fa-chevron-right"></i>
           </button>
         </div>
+      </div>
 
+      <!-- Fila 2: filtros extra -->
+      <div class="row g-2 align-items-end flex-wrap mt-1 pt-1" style="border-top:1px dashed #e3e6f0">
+        <div class="col-auto">
+          <label class="form-label mb-1 small fw-bold">Desde</label>
+          <input type="date" class="form-control form-control-sm" id="filter-desde" style="min-width:130px">
+        </div>
+        <div class="col-auto">
+          <label class="form-label mb-1 small fw-bold">Hasta</label>
+          <input type="date" class="form-control form-control-sm" id="filter-hasta" style="min-width:130px">
+        </div>
+        <div class="col-auto d-flex align-items-end gap-3 pb-1">
+          <div class="form-check mb-0">
+            <input class="form-check-input" type="checkbox" id="chk-nocomp">
+            <label class="form-check-label small fw-semibold" for="chk-nocomp">Ocultar completados</label>
+          </div>
+          <div class="form-check mb-0">
+            <input class="form-check-input" type="checkbox" id="chk-late" style="accent-color:#e74a3b">
+            <label class="form-check-label small fw-semibold text-danger" for="chk-late">
+              Solo atrasadas
+              <span class="badge ms-1" style="background:#e74a3b;font-size:0.58rem;padding:2px 5px">!</span>
+            </label>
+          </div>
+        </div>
       </div>
     </form>
   </div>
@@ -381,18 +582,27 @@
   </div>
   <div class="card-body p-0">
 
+    <!-- Leyenda de colores -->
+    <div id="gantt-legend">
+      <span class="legend-title">Leyenda:</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#1cc88a"></span>Completados</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#4e73df"></span>En Progreso</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#f6c23e"></span>Revisión</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#858796"></span>Pendiente</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#e74a3b"></span>Impedimento / Atrasado</span>
+    </div>
+
     <div id="gantt-wrap">
       <!-- LEFT: task table -->
       <div id="gantt-left">
         <table id="task-table">
           <thead>
             <tr>
-              <th style="width:82px"><div class="th-wrap">Código<div class="col-resizer"></div></div></th>
-              <th style="width:130px"><div class="th-wrap">Título<div class="col-resizer"></div></div></th>
-              <th style="width:90px"><div class="th-wrap">Responsable<div class="col-resizer"></div></div></th>
-              <th style="width:78px"><div class="th-wrap">Inicio<div class="col-resizer"></div></div></th>
-              <th style="width:78px"><div class="th-wrap">Fin<div class="col-resizer"></div></div></th>
-              <th style="width:40px"><div class="th-wrap" style="justify-content:center">%<div class="col-resizer"></div></div></th>
+              <th style="width:170px"><div class="th-wrap">Título<div class="col-resizer"></div></div></th>
+              <th style="width:100px" class="col-resp"><div class="th-wrap">Responsable<div class="col-resizer"></div></div></th>
+              <th style="width:80px"><div class="th-wrap">Inicio<div class="col-resizer"></div></div></th>
+              <th style="width:80px"><div class="th-wrap">Fin<div class="col-resizer"></div></div></th>
+              <th style="width:42px"><div class="th-wrap" style="justify-content:center">%<div class="col-resizer"></div></div></th>
               <th style="width:96px"><div class="th-wrap">Estado<div class="col-resizer"></div></div></th>
             </tr>
           </thead>
@@ -413,10 +623,32 @@
           <div id="gantt-header"></div>
           <div id="gantt-bars">
             <div id="today-line"></div>
-            <div id="today-label">Hoy</div>
+            <div id="today-label">HOY</div>
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- Barra de navegación temporal -->
+    <div id="gantt-nav" class="no-print">
+      <button class="nav-btn" id="nav-yl" title="Retroceder 1 año">&#171;</button>
+      <button class="nav-btn" id="nav-ml" title="Retroceder 1 mes">&#8249; Mes</button>
+      <button class="nav-btn" id="nav-wl" title="Retroceder 1 semana">&#8249; Sem</button>
+      <span class="nav-sep"></span>
+      <button class="nav-btn nav-today" id="nav-hoy" title="Ir a hoy">&#128197; Hoy</button>
+      <span class="nav-sep"></span>
+      <button class="nav-btn" id="nav-wr" title="Avanzar 1 semana">Sem &#8250;</button>
+      <button class="nav-btn" id="nav-mr" title="Avanzar 1 mes">Mes &#8250;</button>
+      <button class="nav-btn" id="nav-yr" title="Avanzar 1 año">&#187;</button>
+      <span class="nav-sep"></span>
+      <button class="nav-btn" id="nav-inicio" title="Ir al inicio del proyecto">&#9198; Inicio</button>
+      <button class="nav-btn" id="nav-fin" title="Ir al final del proyecto">Fin &#9197;</button>
+      <span class="nav-hint">
+        Arrastra para desplazar &nbsp;|&nbsp;
+        <kbd style="font-size:0.62rem;background:#e3e6f0;border-radius:3px;padding:1px 4px">Ctrl</kbd>+arrastrar sobre barras &nbsp;|&nbsp;
+        <kbd style="font-size:0.62rem;background:#e3e6f0;border-radius:3px;padding:1px 4px">Shift</kbd>+rueda &nbsp;|&nbsp;
+        Botón central del ratón
+      </span>
     </div>
 
   </div>
@@ -578,6 +810,11 @@
 <script>
 // === DATA FROM SERVER ===
 const ALL_TASKS = {{ tareas_jsons | tojson | safe }};
+const PROYECTOS_MAP = {
+  {% for p in proyectos_ %}
+  {{ p.codigo_proyecto | tojson }}: {{ p.nombre_proyecto | tojson }},
+  {% endfor %}
+};
 
 // === CONFIG ===
 const SC = {
@@ -591,58 +828,199 @@ const PX = { Day: 40, Week: 20, Month: 6, Quarter: 3 };
 const ROW_H = 38;
 
 // === STATE ===
-let tasks      = ALL_TASKS.map(t => ({ ...t }));
-let filtered   = [];
-let viewMode   = 'Week';
-let vStart     = null;
-let vEnd       = null;
-let selTask    = null;
-let vScroll    = false;
+let tasks    = ALL_TASKS.map(t => ({ ...t }));
+let filtered = [];
+let groups   = [];
+let collapsedProjects = new Set();
+let viewMode = 'Week';
+let vStart   = null;
+let vEnd     = null;
+let selTask  = null;
+let vScroll  = false;
 let detModal, newModal;
 
 // === UTILS ===
-const el    = id => document.getElementById(id);
-const pd    = s  => { const [y,m,d] = s.split('-'); return new Date(+y, m-1, +d); };
-const fd    = d  => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-const addD  = (d,n) => { const r = new Date(d); r.setDate(r.getDate()+n); return r; };
-const diff  = (a,b) => Math.round((b-a)/86400000);
-const pct   = t  => t.horas_estimadas ? Math.min(100, Math.round((t.horas_dedicadas/t.horas_estimadas)*100)) : 0;
-const x2d   = x  => addD(vStart, Math.round(x / PX[viewMode]));
-const d2x   = d  => diff(vStart, d) * PX[viewMode];
+const el   = id => document.getElementById(id);
+const pd   = s  => { const [y,m,d] = s.split('-'); return new Date(+y, m-1, +d); };
+const fd   = d  => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const addD = (d,n) => { const r = new Date(d); r.setDate(r.getDate()+n); return r; };
+const diff = (a,b) => Math.round((b-a)/86400000);
+const pct  = t  => t.horas_estimadas ? Math.min(100, Math.round((t.horas_dedicadas/t.horas_estimadas)*100)) : 0;
+const x2d  = x  => addD(vStart, Math.round(x / PX[viewMode]));
+const d2x  = d  => diff(vStart, d) * PX[viewMode];
+const todayStr = () => fd(new Date());
+const isVencida = t => t.end < todayStr() && t.estado !== 'COMPLETADOS';
 
 // === INIT ===
 document.addEventListener('DOMContentLoaded', () => {
   detModal = new bootstrap.Modal(el('modal-det'));
   newModal = new bootstrap.Modal(el('modal-new'));
 
+  // Pre-seleccionar el proyecto activo desde el path /gannt/<project>
+  const pathMatch = window.location.pathname.match(/\/gannt\/(.+)/);
+  if (pathMatch) {
+    const projFromPath = decodeURIComponent(pathMatch[1]);
+    el('sel-proyecto').value = projFromPath;
+  }
+
+  // Activar modo cliente si está en la URL (?modo=cliente)
+  if (new URLSearchParams(window.location.search).get('modo') === 'cliente') {
+    document.body.classList.add('modo-cliente');
+  }
+
   fillRespSelect();
   applyFilters();
   wireEvents();
+  initClientMode();
+  initExport();
 
-  const today = fd(new Date());
+  const today = todayStr();
   el('n-ini').value = today;
   el('n-fin').value = fd(addD(new Date(), 7));
+  fillEmpresaSelect(tasks);
+  fillRespSelect(tasks);
 });
 
-function fillRespSelect() {
-  const sel = el('sel-resp');
-  const uniq = [...new Set(tasks.map(t => t.responsable).filter(Boolean))].sort();
+function fillEmpresaSelect(srcTasks) {
+  const uniq = [...new Set(srcTasks.map(t => (t.empresa || '').trim()).filter(e => e))];
+  uniq.sort();
+  const sel = el('sel-empresa');
+  const curr = sel.value;
+  sel.innerHTML = '<option value="">Todas las empresas</option>';
+  uniq.forEach(e => {
+    const opt = document.createElement('option');
+    opt.value = e;
+    opt.textContent = e;
+    sel.appendChild(opt);
+  });
+  if (uniq.includes(curr)) sel.value = curr;
+}
+
+function fillRespSelect(srcTasks) {
+  const sel  = el('sel-resp');
+  const pool = srcTasks || tasks;
+  const uniq = [...new Set(pool.map(t => (t.responsable || '').trim()).filter(Boolean))].sort();
+  const cur  = sel.value;
+  sel.innerHTML = '<option value="">Todos</option>';
   uniq.forEach(r => {
     const o = document.createElement('option');
-    o.value = r; o.textContent = r; sel.appendChild(o);
+    o.value = r; o.textContent = r;
+    if (r === cur) o.selected = true;
+    sel.appendChild(o);
   });
+}
+
+// === GROUPS ===
+function buildGroups() {
+  const map   = new Map();
+  const order = [];
+  filtered.forEach(t => {
+    const code = t.codigo_proyecto || '__none__';
+    if (!map.has(code)) {
+      map.set(code, {
+        code,
+        name: PROYECTOS_MAP[code] || code,
+        tasks: []
+      });
+      order.push(code);
+    }
+    map.get(code).tasks.push(t);
+  });
+  return order.map(c => map.get(c));
+}
+
+function projectProgress(gtasks) {
+  const est = gtasks.reduce((s,t) => s + (t.horas_estimadas||0), 0);
+  const ded = gtasks.reduce((s,t) => s + (t.horas_dedicadas||0), 0);
+  return est > 0 ? Math.min(100, Math.round(ded/est*100)) : 0;
+}
+
+function toggleProject(code) {
+  if (collapsedProjects.has(code)) {
+    collapsedProjects.delete(code);
+  } else {
+    collapsedProjects.add(code);
+  }
+  const collapsed = collapsedProjects.has(code);
+
+  document.querySelectorAll(`#task-tbody tr.task-row[data-proj="${CSS.escape(code)}"]`)
+    .forEach(tr => { tr.style.display = collapsed ? 'none' : ''; });
+  document.querySelectorAll(`#gantt-bars .grow.task-row[data-proj="${CSS.escape(code)}"]`)
+    .forEach(d  => { d.style.display  = collapsed ? 'none' : ''; });
+
+  const arrow = document.querySelector(`#task-tbody .project-hdr[data-proj="${CSS.escape(code)}"] .proj-arrow`);
+  if (arrow) arrow.textContent = collapsed ? '▶' : '▼';
 }
 
 // === FILTERS ===
 function applyFilters() {
-  const r = el('sel-resp').value;
-  const s = el('sel-estado').value;
-  filtered = tasks.filter(t =>
-    (!r || t.responsable === r) &&
-    (!s || t.estado === s)
-  );
+  const emp      = (el('sel-empresa').value   || '').trim();
+  const proj     = (el('sel-proyecto').value  || '').trim();
+  const r        = (el('sel-resp').value      || '').trim();
+  const s        = (el('sel-estado').value    || '').trim();
+  const desde    =  el('filter-desde').value;
+  const hasta    =  el('filter-hasta').value;
+  const noComp   =  el('chk-nocomp').checked;
+  const onlyLate =  el('chk-late').checked;
+  const today    =  todayStr();
+
+  // 1. Filtrar por empresa client-side
+  let filteredTasks = emp
+    ? tasks.filter(t => (t.empresa || '').trim() === emp)
+    : tasks;
+
+  // 2. Actualizar dropdown de proyectos según la empresa seleccionada
+  if (emp) {
+    const proyectosEmpresa = [...new Set(filteredTasks.map(t => t.codigo_proyecto).filter(p => p))];
+    const selProj = el('sel-proyecto');
+    Array.from(selProj.options).forEach(opt => {
+      if (opt.value === '') return; // Mantener opción "Todos"
+      opt.style.display = proyectosEmpresa.includes(opt.value) ? '' : 'none';
+    });
+    // Si el proyecto actual no está en la empresa, resetear
+    if (proj && !proyectosEmpresa.includes(proj)) {
+      selProj.value = '';
+    }
+  } else {
+    // Mostrar todos los proyectos si no hay filtro de empresa
+    const selProj = el('sel-proyecto');
+    Array.from(selProj.options).forEach(opt => {
+      opt.style.display = '';
+    });
+  }
+
+  // 3. Filtrar por proyecto
+  const byProj = proj
+    ? filteredTasks.filter(t => (t.codigo_proyecto || '').trim() === proj)
+    : filteredTasks;
+
+  // 4. Actualizar dropdown de responsables según los filtros anteriores
+  fillRespSelect(byProj);
+
+  // 5. Aplicar el resto de filtros
+  filtered = byProj.filter(t => {
+    const tResp = (t.responsable || '').trim();
+    const tEst  = (t.estado      || '').trim();
+    if (r        && tResp !== r)    return false;
+    if (s        && tEst  !== s)    return false;
+    if (desde    && t.end   < desde)        return false;
+    if (hasta    && t.start > hasta)        return false;
+    if (noComp   && tEst === 'COMPLETADOS') return false;
+    if (onlyLate && !(t.end < today && tEst !== 'COMPLETADOS')) return false;
+    return true;
+  });
+
   calcRange();
   render();
+  updateURL();
+}
+
+function updateURL() {
+  // Solo gestiona ?modo=cliente; el proyecto ya está en el path de la URL.
+  const url = new URL(window.location.href);
+  if (document.body.classList.contains('modo-cliente')) url.searchParams.set('modo', 'cliente');
+  else url.searchParams.delete('modo');
+  window.history.replaceState({}, '', url.toString());
 }
 
 function calcRange() {
@@ -660,40 +1038,73 @@ function calcRange() {
 
 // === RENDER ===
 function render() {
-  renderTable();
-  renderTimeline();
-  el('task-count').textContent = `${filtered.length} tarea${filtered.length!==1?'s':''}`;
-  el('gantt-empty').style.display = filtered.length ? 'none' : 'flex';
+  groups = buildGroups();
+  renderTable(groups);
+  renderTimeline(groups);
+
+  const n = filtered.length;
+  el('task-count').textContent = groups.length
+    ? `${groups.length} proyecto${groups.length !== 1 ? 's' : ''} · ${n} tarea${n !== 1 ? 's' : ''}`
+    : '';
+  el('gantt-empty').style.display = n ? 'none' : 'flex';
 }
 
-function renderTable() {
+function renderTable(grps) {
   const tbody = el('task-tbody');
   tbody.innerHTML = '';
-  filtered.forEach(task => {
-    const p   = pct(task);
-    const col = SC[task.estado] || '#858796';
-    const tr  = document.createElement('tr');
-    tr.innerHTML = `
-      <td title="${task.id}" style="font-size:0.69rem;color:#858796;max-width:82px">${task.id}</td>
-      <td title="${task.name}" style="max-width:130px;font-weight:600;color:#3a3b45">${task.name}</td>
-      <td title="${task.responsable}" style="max-width:90px;font-size:0.75rem">${task.responsable||'—'}</td>
-      <td style="font-size:0.71rem;color:#858796">${task.start}</td>
-      <td style="font-size:0.71rem;color:#858796">${task.end}</td>
-      <td style="text-align:center;font-weight:800;font-size:0.72rem;color:${col}">${p}%</td>
-      <td><span class="sbadge" style="background:${col}">${task.estado}</span></td>
-    `;
-    tr.addEventListener('click', () => openDet(task));
-    tbody.appendChild(tr);
+
+  grps.forEach(g => {
+    const pp         = projectProgress(g.tasks);
+    const isCollapsed = collapsedProjects.has(g.code);
+    const barColor   = pp >= 75 ? '#1cc88a' : pp >= 40 ? '#4e73df' : '#f6c23e';
+
+    // Project header row
+    const hdrTr = document.createElement('tr');
+    hdrTr.className  = 'project-hdr';
+    hdrTr.dataset.proj = g.code;
+    hdrTr.innerHTML  = `
+      <td colspan="6">
+        <span class="proj-arrow">${isCollapsed ? '▶' : '▼'}</span>
+        <strong>${g.name}</strong>
+        <span class="proj-pct">${pp}%</span>
+        <span class="proj-pbar-wrap"><span class="proj-pbar" style="width:${pp}%;background:${barColor}"></span></span>
+        <span class="proj-task-count">(${g.tasks.length} tarea${g.tasks.length !== 1 ? 's' : ''})</span>
+      </td>`;
+    hdrTr.addEventListener('click', () => toggleProject(g.code));
+    tbody.appendChild(hdrTr);
+
+    // Task rows
+    g.tasks.forEach(task => {
+      const p       = pct(task);
+      const vencida = isVencida(task);
+      const col     = vencida ? '#e74a3b' : (SC[task.estado] || '#858796');
+
+      const tr = document.createElement('tr');
+      tr.className   = 'task-row';
+      tr.dataset.proj = g.code;
+      if (vencida)    tr.classList.add('tarea-vencida');
+      if (isCollapsed) tr.style.display = 'none';
+
+      tr.innerHTML = `
+        <td title="Código: ${task.id}&#10;${task.name}" style="max-width:170px;font-weight:600;color:#3a3b45">${task.name}</td>
+        <td class="col-resp" title="${task.responsable||''}" style="max-width:100px;font-size:0.75rem">${task.responsable||'—'}</td>
+        <td style="font-size:0.71rem;color:#858796">${task.start}</td>
+        <td class="td-fin" style="font-size:0.71rem${vencida ? ';color:#e74a3b;font-weight:700' : ';color:#858796'}">${task.end}</td>
+        <td style="text-align:center;font-weight:800;font-size:0.72rem;color:${col}">${p}%</td>
+        <td><span class="sbadge" style="background:${col}">${task.estado}</span></td>`;
+      tr.addEventListener('click', () => openDet(task));
+      tbody.appendChild(tr);
+    });
   });
 }
 
 // === TIMELINE ===
-function renderTimeline() {
+function renderTimeline(grps) {
   const totalD = diff(vStart, vEnd);
   const totalW = totalD * PX[viewMode];
   el('gantt-inner').style.minWidth = totalW + 'px';
   renderHdr(totalD, totalW);
-  renderBars(totalW);
+  renderBars(grps, totalW);
   renderToday();
 }
 
@@ -706,95 +1117,81 @@ function mkCell(text, w, extra) {
 }
 
 function renderHdr(totalD, totalW) {
-  const hdr = el('gantt-header');
+  const hdr   = el('gantt-header');
   hdr.innerHTML = '';
-  const r1 = document.createElement('div'); r1.className = 'hdr-row';
-  const r2 = document.createElement('div'); r2.className = 'hdr-row';
+  const r1    = document.createElement('div'); r1.className = 'hdr-row';
+  const r2    = document.createElement('div'); r2.className = 'hdr-row';
   const today = new Date(); today.setHours(0,0,0,0);
 
   if (viewMode === 'Day') {
-    // Row1: months
     let c = new Date(vStart.getFullYear(), vStart.getMonth(), 1);
     while (c < vEnd) {
       const me = new Date(c.getFullYear(), c.getMonth()+1, 0);
       const from = c < vStart ? vStart : c;
       const to   = me > vEnd ? vEnd : me;
-      const days = diff(from, to) + 1;
-      const lbl = c.toLocaleDateString('es',{month:'long',year:'numeric'});
-      const cell = mkCell(lbl, days * PX[viewMode]);
+      const cell = mkCell(c.toLocaleDateString('es',{month:'long',year:'numeric'}), (diff(from,to)+1)*PX[viewMode]);
       cell.style.textTransform = 'capitalize';
       r1.appendChild(cell);
       c = new Date(c.getFullYear(), c.getMonth()+1, 1);
     }
-    // Row2: days
     for (let i = 0; i < totalD; i++) {
-      const d = addD(vStart, i);
-      const isT = d.getTime() === today.getTime();
-      const isW = d.getDay()===0 || d.getDay()===6;
-      r2.appendChild(mkCell(String(d.getDate()), PX[viewMode], isT?'today-hdr':(isW?'weekend':'')));
+      const d  = addD(vStart, i);
+      const iT = d.getTime() === today.getTime();
+      const iW = d.getDay()===0 || d.getDay()===6;
+      r2.appendChild(mkCell(String(d.getDate()), PX[viewMode], iT?'today-hdr':(iW?'weekend':'')));
     }
 
   } else if (viewMode === 'Week') {
-    // Row1: months
     let c = new Date(vStart.getFullYear(), vStart.getMonth(), 1);
     while (c < vEnd) {
       const me = new Date(c.getFullYear(), c.getMonth()+1, 0);
       const from = c < vStart ? vStart : c;
       const to   = me > vEnd ? vEnd : me;
-      const days = diff(from, to) + 1;
-      const lbl = c.toLocaleDateString('es',{month:'short',year:'numeric'});
-      const cell = mkCell(lbl, days * PX[viewMode]);
+      const cell = mkCell(c.toLocaleDateString('es',{month:'short',year:'numeric'}), (diff(from,to)+1)*PX[viewMode]);
       cell.style.textTransform = 'capitalize';
       r1.appendChild(cell);
       c = new Date(c.getFullYear(), c.getMonth()+1, 1);
     }
-    // Row2: weeks
     for (let i = 0; i < totalD; i += 7) {
-      const d = addD(vStart, i);
-      const w = Math.min(7, totalD - i);
-      const isThisW = today >= d && today < addD(d, 7);
-      r2.appendChild(mkCell(`${d.getDate()}/${d.getMonth()+1}`, w*PX[viewMode], isThisW?'today-hdr':''));
+      const d  = addD(vStart, i);
+      const w  = Math.min(7, totalD - i);
+      const iT = today >= d && today < addD(d, 7);
+      r2.appendChild(mkCell(`${d.getDate()}/${d.getMonth()+1}`, w*PX[viewMode], iT?'today-hdr':''));
     }
 
   } else if (viewMode === 'Month') {
-    // Row1: years
     for (let yr = vStart.getFullYear(); yr <= vEnd.getFullYear(); yr++) {
       const ys = new Date(yr,0,1), ye = new Date(yr,11,31);
       const from = ys < vStart ? vStart : ys;
       const to   = ye > vEnd   ? vEnd   : ye;
       r1.appendChild(mkCell(String(yr), (diff(from,to)+1)*PX[viewMode]));
     }
-    // Row2: months
     const mns = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
     let c = new Date(vStart.getFullYear(), vStart.getMonth(), 1);
     while (c <= vEnd) {
-      const me = new Date(c.getFullYear(), c.getMonth()+1, 0);
+      const me   = new Date(c.getFullYear(), c.getMonth()+1, 0);
       const from = c < vStart ? vStart : c;
       const to   = me > vEnd ? vEnd : me;
-      const days = diff(from, to) + 1;
-      const isT = today.getMonth()===c.getMonth() && today.getFullYear()===c.getFullYear();
-      r2.appendChild(mkCell(mns[c.getMonth()], days*PX[viewMode], isT?'today-hdr':''));
+      const iT   = today.getMonth()===c.getMonth() && today.getFullYear()===c.getFullYear();
+      r2.appendChild(mkCell(mns[c.getMonth()], (diff(from,to)+1)*PX[viewMode], iT?'today-hdr':''));
       c = new Date(c.getFullYear(), c.getMonth()+1, 1);
     }
 
-  } else { // Quarter
-    // Row1: years
+  } else {
     for (let yr = vStart.getFullYear(); yr <= vEnd.getFullYear(); yr++) {
       const ys = new Date(yr,0,1), ye = new Date(yr,11,31);
       const from = ys < vStart ? vStart : ys;
       const to   = ye > vEnd   ? vEnd   : ye;
       r1.appendChild(mkCell(String(yr), (diff(from,to)+1)*PX[viewMode]));
     }
-    // Row2: quarters
     let c = new Date(vStart.getFullYear(), Math.floor(vStart.getMonth()/3)*3, 1);
     while (c <= vEnd) {
       const q   = Math.floor(c.getMonth()/3)+1;
       const qe  = new Date(c.getFullYear(), c.getMonth()+3, 0);
       const from = c < vStart ? vStart : c;
       const to   = qe > vEnd ? vEnd : qe;
-      const days = diff(from, to) + 1;
-      const isT  = today >= c && today <= qe;
-      r2.appendChild(mkCell(`Q${q}`, days*PX[viewMode], isT?'today-hdr':''));
+      const iT   = today >= c && today <= qe;
+      r2.appendChild(mkCell(`Q${q}`, (diff(from,to)+1)*PX[viewMode], iT?'today-hdr':''));
       c = new Date(c.getFullYear(), c.getMonth()+3, 1);
     }
   }
@@ -803,69 +1200,100 @@ function renderHdr(totalD, totalW) {
   hdr.appendChild(r2);
 }
 
-function renderBars(totalW) {
+function renderBars(grps, totalW) {
   const cont   = el('gantt-bars');
   const tline  = el('today-line');
   const tlabel = el('today-label');
   cont.innerHTML = '';
   cont.appendChild(tline);
   cont.appendChild(tlabel);
-  cont.style.minHeight = Math.max(filtered.length * ROW_H, 80) + 'px';
 
-  filtered.forEach((task) => {
-    const row = document.createElement('div');
-    row.className = 'grow';
-    row.style.width = totalW + 'px';
+  let totalRows = 0;
+  grps.forEach(g => { totalRows += 1 + g.tasks.length; });
+  cont.style.minHeight = Math.max(totalRows * ROW_H, 80) + 'px';
 
-    const s = pd(task.start), e = pd(task.end);
-    const bx = d2x(s);
-    const bw = Math.max(4, (diff(s, e)+1) * PX[viewMode]);
-    const p  = pct(task);
-    const col = SC[task.estado] || '#858796';
+  grps.forEach(g => {
+    const isCollapsed = collapsedProjects.has(g.code);
 
-    const bar = document.createElement('div');
-    bar.className = 'gbar';
-    bar.style.cssText = `left:${bx}px;width:${bw}px;background:${col};`;
-    bar.dataset.id = task.id;
+    // Project span bar bounds
+    let projMin = null, projMax = null;
+    g.tasks.forEach(t => {
+      const s = pd(t.start), e = pd(t.end);
+      if (!projMin || s < projMin) projMin = s;
+      if (!projMax || e > projMax) projMax = e;
+    });
 
-    const prog = document.createElement('div');
-    prog.className = 'gbar-prog';
-    prog.style.width = p + '%';
+    // Project header row in bars panel
+    const projRow = document.createElement('div');
+    projRow.className    = 'grow grow-proj';
+    projRow.style.width  = totalW + 'px';
+    projRow.dataset.proj = g.code;
+    if (projMin && projMax) {
+      const bx  = d2x(projMin);
+      const bw  = Math.max(8, (diff(projMin, projMax)+1) * PX[viewMode]);
+      const bg  = document.createElement('div');
+      bg.className    = 'proj-span-bar';
+      bg.style.cssText = `left:${bx}px;width:${bw}px;`;
+      projRow.appendChild(bg);
+    }
+    projRow.addEventListener('click', () => toggleProject(g.code));
+    cont.appendChild(projRow);
 
-    const lbl = document.createElement('div');
-    lbl.className = 'gbar-lbl';
-    lbl.textContent = task.name;
+    // Task bar rows
+    g.tasks.forEach(task => {
+      const row = document.createElement('div');
+      row.className    = 'grow task-row';
+      row.style.width  = totalW + 'px';
+      row.dataset.proj = g.code;
+      if (isCollapsed) row.style.display = 'none';
 
-    const lh = document.createElement('div');
-    lh.className = 'rhandle lh';
-    const rh = document.createElement('div');
-    rh.className = 'rhandle rh';
+      const s       = pd(task.start), e = pd(task.end);
+      const bx      = d2x(s);
+      const bw      = Math.max(4, (diff(s, e)+1) * PX[viewMode]);
+      const p       = pct(task);
+      const vencida = isVencida(task);
+      const col     = vencida ? '#e74a3b' : (SC[task.estado] || '#858796');
 
-    bar.append(prog, lbl, lh, rh);
-    row.appendChild(bar);
-    cont.appendChild(row);
+      const bar  = document.createElement('div');
+      bar.className     = 'gbar';
+      bar.style.cssText = `left:${bx}px;width:${bw}px;background:${col};`;
+      bar.dataset.id    = task.id;
 
-    wireBar(bar, lh, rh, task);
+      const prog = document.createElement('div');
+      prog.className  = 'gbar-prog';
+      prog.style.width = p + '%';
+
+      const lbl = document.createElement('div');
+      lbl.className  = 'gbar-lbl';
+      lbl.textContent = task.name;
+
+      const lh = document.createElement('div'); lh.className = 'rhandle lh';
+      const rh = document.createElement('div'); rh.className = 'rhandle rh';
+
+      bar.append(prog, lbl, lh, rh);
+      row.appendChild(bar);
+      cont.appendChild(row);
+
+      wireBar(bar, lh, rh, task);
+    });
   });
 }
 
 function renderToday() {
   const today = new Date(); today.setHours(0,0,0,0);
-  const x = d2x(today);
-  const tl = el('today-line'), lb = el('today-label');
+  const x   = d2x(today);
+  const tl  = el('today-line'), lb = el('today-label');
   const vis = today >= vStart && today <= vEnd;
   tl.style.display = lb.style.display = vis ? 'block' : 'none';
-  if (vis) { tl.style.left = x+'px'; lb.style.left = x+'px'; }
+  if (vis) { tl.style.left = x + 'px'; lb.style.left = x + 'px'; }
 }
 
 // === BAR INTERACTIONS ===
 function wireBar(bar, lh, rh, task) {
-  // Tooltip
   bar.addEventListener('mouseenter', e => showTip(e, task));
   bar.addEventListener('mousemove',  e => moveTip(e));
   bar.addEventListener('mouseleave', hideTip);
 
-  // Move (drag body)
   let didDrag = false;
   bar.addEventListener('mousedown', e => {
     if (e.target === lh || e.target === rh) return;
@@ -873,11 +1301,9 @@ function wireBar(bar, lh, rh, task) {
     didDrag = false;
     const sx = e.clientX;
     const os = pd(task.start), oe = pd(task.end);
-
     const mv = ev => {
       didDrag = true;
-      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
-      bar.style.left = d2x(addD(os, dd)) + 'px';
+      bar.style.left = d2x(addD(os, Math.round((ev.clientX - sx) / PX[viewMode]))) + 'px';
     };
     const up = ev => {
       document.removeEventListener('mousemove', mv);
@@ -887,23 +1313,22 @@ function wireBar(bar, lh, rh, task) {
       const ns = fd(addD(os, dd)), ne = fd(addD(oe, dd));
       apiPatch(task.id, { fecha_inicio: ns, fecha_fin: ne }).then(ok => {
         if (ok) { task.start = ns; task.end = ne; render(); }
-        else    { bar.style.left = d2x(os)+'px'; }
+        else    { bar.style.left = d2x(os) + 'px'; }
       });
     };
     document.addEventListener('mousemove', mv);
     document.addEventListener('mouseup', up);
   });
 
-  // Click
-  bar.addEventListener('click', () => { if (!didDrag) openDet(task); });
+  bar.addEventListener('click', () => {
+    if (!didDrag && !document.body.classList.contains('modo-cliente')) openDet(task);
+  });
 
-  // Resize left
   lh.addEventListener('mousedown', e => {
     e.preventDefault(); e.stopPropagation();
     const sx = e.clientX, os = pd(task.start), oe = pd(task.end);
     const mv = ev => {
-      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
-      const ns = addD(os, dd);
+      const ns = addD(os, Math.round((ev.clientX - sx) / PX[viewMode]));
       if (ns >= oe) return;
       bar.style.left  = d2x(ns) + 'px';
       bar.style.width = Math.max(4, (diff(ns,oe)+1)*PX[viewMode]) + 'px';
@@ -911,8 +1336,7 @@ function wireBar(bar, lh, rh, task) {
     const up = ev => {
       document.removeEventListener('mousemove', mv);
       document.removeEventListener('mouseup', up);
-      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
-      const ns = addD(os, dd);
+      const ns = addD(os, Math.round((ev.clientX - sx) / PX[viewMode]));
       if (ns >= oe) return;
       apiPatch(task.id, { fecha_inicio: fd(ns) }).then(ok => {
         if (ok) { task.start = fd(ns); render(); }
@@ -922,21 +1346,18 @@ function wireBar(bar, lh, rh, task) {
     document.addEventListener('mouseup', up);
   });
 
-  // Resize right
   rh.addEventListener('mousedown', e => {
     e.preventDefault(); e.stopPropagation();
     const sx = e.clientX, os = pd(task.start), oe = pd(task.end);
     const mv = ev => {
-      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
-      const ne = addD(oe, dd);
+      const ne = addD(oe, Math.round((ev.clientX - sx) / PX[viewMode]));
       if (ne <= os) return;
       bar.style.width = Math.max(4, (diff(os,ne)+1)*PX[viewMode]) + 'px';
     };
     const up = ev => {
       document.removeEventListener('mousemove', mv);
       document.removeEventListener('mouseup', up);
-      const dd = Math.round((ev.clientX - sx) / PX[viewMode]);
-      const ne = addD(oe, dd);
+      const ne = addD(oe, Math.round((ev.clientX - sx) / PX[viewMode]));
       if (ne <= os) return;
       apiPatch(task.id, { fecha_fin: fd(ne) }).then(ok => {
         if (ok) { task.end = fd(ne); render(); }
@@ -950,29 +1371,38 @@ function wireBar(bar, lh, rh, task) {
 // === TOOLTIP ===
 const tip = el('gtip');
 function showTip(e, t) {
-  const p = pct(t);
-  tip.innerHTML = `<strong>${t.id}</strong><br>${t.name}<br>
-    <span style="opacity:.8">Responsable: ${t.responsable||'—'}</span><br>
-    <span style="opacity:.8">${t.start} → ${t.end}</span><br>
-    <span style="opacity:.8">${t.horas_dedicadas}h / ${t.horas_estimadas}h (${p}%)</span>`;
+  const p        = pct(t);
+  const projName = PROYECTOS_MAP[t.codigo_proyecto] || t.codigo_proyecto || '—';
+  const vencida  = isVencida(t);
+  const col      = vencida ? '#e74a3b' : (SC[t.estado] || '#858796');
+  tip.innerHTML  = `
+    <strong style="font-size:0.82rem;display:block;margin-bottom:2px">${t.name}</strong>
+    <span style="opacity:.65;font-size:0.67rem">ID: ${t.id}</span><br>
+    <span style="opacity:.85">&#128193; ${projName}</span><br>
+    <span style="opacity:.85">&#128100; ${t.responsable||'—'}</span><br>
+    <span style="opacity:.85">&#128197; ${t.start} &rarr; ${t.end}</span><br>
+    <span style="opacity:.85">&#9203; ${t.horas_dedicadas||0}h / ${t.horas_estimadas||0}h &nbsp;<strong>${p}%</strong></span><br>
+    <span class="sbadge mt-1" style="background:${col}">${t.estado}${vencida?' ⚠ ATRASADA':''}</span>`;
   tip.style.display = 'block';
   moveTip(e);
 }
 function moveTip(e) {
-  tip.style.left = (e.clientX + 14) + 'px';
-  tip.style.top  = (e.clientY - 10) + 'px';
+  const tw = tip.offsetWidth  || 200;
+  const th = tip.offsetHeight || 120;
+  let lx   = e.clientX + 16;
+  let ly   = e.clientY - 10;
+  if (lx + tw > window.innerWidth  - 10) lx = e.clientX - tw - 10;
+  if (ly + th > window.innerHeight - 10) ly = window.innerHeight - th - 10;
+  tip.style.left = lx + 'px';
+  tip.style.top  = ly + 'px';
 }
 function hideTip() { tip.style.display = 'none'; }
 
 // === SCROLL SYNC ===
 function syncScroll() {
   const L = el('gantt-left'), R = el('gantt-right');
-  L.addEventListener('scroll', () => {
-    if (vScroll) return; vScroll = true; R.scrollTop = L.scrollTop; vScroll = false;
-  });
-  R.addEventListener('scroll', () => {
-    if (vScroll) return; vScroll = true; L.scrollTop = R.scrollTop; vScroll = false;
-  });
+  L.addEventListener('scroll', () => { if (vScroll) return; vScroll = true; R.scrollTop = L.scrollTop; vScroll = false; });
+  R.addEventListener('scroll', () => { if (vScroll) return; vScroll = true; L.scrollTop = R.scrollTop; vScroll = false; });
 }
 
 function scrollToToday() {
@@ -980,6 +1410,31 @@ function scrollToToday() {
   const x = d2x(today);
   const R = el('gantt-right');
   R.scrollLeft = Math.max(0, x - R.clientWidth / 2);
+}
+
+// === VISTA CLIENTE ===
+function initClientMode() {
+  el('btn-cliente-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('modo-cliente');
+    updateURL();
+  });
+}
+
+// === EXPORTAR ===
+function initExport() {
+  el('btn-export').addEventListener('click', () => {
+    // Temporarily expand all collapsed projects for print
+    const wasHidden = [];
+    document.querySelectorAll('#task-tbody tr.task-row[style*="display: none"], #gantt-bars .grow.task-row[style*="display: none"]')
+      .forEach(node => { wasHidden.push(node); node.style.display = ''; });
+
+    window.print();
+
+    // Restore after print dialog
+    setTimeout(() => {
+      wasHidden.forEach(node => { node.style.display = 'none'; });
+    }, 500);
+  });
 }
 
 // === API ===
@@ -1031,7 +1486,7 @@ async function apiCreate(data) {
 function openDet(task) {
   selTask = task;
   el('d-cod').value    = task.id;
-  el('d-proy').value   = task.codigo_proyecto;
+  el('d-proy').value   = PROYECTOS_MAP[task.codigo_proyecto] || task.codigo_proyecto || '—';
   el('d-titulo').value = task.name;
   el('d-resp').value   = task.responsable || '';
   el('d-estado').value = task.estado;
@@ -1047,12 +1502,36 @@ function refreshDetPct() {
   const est = parseFloat(el('d-hest').value) || 0;
   const ded = parseFloat(el('d-hded').value) || 0;
   const p   = est > 0 ? Math.min(100, Math.round((ded/est)*100)) : 0;
-  el('d-pbar').style.width  = p + '%';
-  el('d-ppct').textContent  = p + '%';
+  el('d-pbar').style.width = p + '%';
+  el('d-ppct').textContent = p + '%';
 }
 
 // === WIRE EVENTS ===
 function wireEvents() {
+  // Form "Filtrar": siempre prevenir el submit y hacer filtrado client-side
+  el('form-proyecto').addEventListener('submit', e => {
+    e.preventDefault();
+    applyFilters();
+  });
+
+  // Botón Filtrar: aplicar filtros
+  el('btn-filtrar').addEventListener('click', () => {
+    applyFilters();
+  });
+
+  // Botón Ver todo: limpiar todos los filtros y mostrar todas las tareas
+  el('btn-ver-todo').addEventListener('click', () => {
+    el('sel-empresa').value = '';
+    el('sel-proyecto').value = '';
+    el('sel-resp').value = '';
+    el('sel-estado').value = '';
+    el('filter-desde').value = '';
+    el('filter-hasta').value = '';
+    el('chk-nocomp').checked = false;
+    el('chk-late').checked = false;
+    applyFilters();
+  });
+
   // View buttons
   document.querySelectorAll('.vbtn').forEach(b => {
     b.addEventListener('click', () => {
@@ -1060,13 +1539,19 @@ function wireEvents() {
       b.classList.add('active');
       viewMode = b.dataset.view;
       calcRange();
-      renderTimeline();
+      renderTimeline(groups);
     });
   });
 
-  // Filters
+  // Filter controls — todos client-side, se aplican automáticamente al cambiar
+  el('sel-empresa').addEventListener('change', applyFilters);
+  el('sel-proyecto').addEventListener('change', applyFilters);
   el('sel-resp').addEventListener('change', applyFilters);
   el('sel-estado').addEventListener('change', applyFilters);
+  el('filter-desde').addEventListener('change', applyFilters);
+  el('filter-hasta').addEventListener('change', applyFilters);
+  el('chk-nocomp').addEventListener('change', applyFilters);
+  el('chk-late').addEventListener('change', applyFilters);
 
   // Scroll buttons
   el('btn-sl').addEventListener('click', () => el('gantt-right').scrollLeft -= 200);
@@ -1080,7 +1565,7 @@ function wireEvents() {
     if (e.key==='ArrowLeft')  el('gantt-right').scrollLeft -= 120;
   });
 
-  // Detail modal inputs
+  // Detail modal progress
   el('d-hest').addEventListener('input', refreshDetPct);
   el('d-hded').addEventListener('input', refreshDetPct);
 
@@ -1116,7 +1601,7 @@ function wireEvents() {
         progress:        prog
       });
       detModal.hide();
-      Swal.fire({ icon:'success', title:'Guardado', text:'Tarea actualizada correctamente.', timer:1500, showConfirmButton:false });
+      Swal.fire({ icon:'success', title:'Guardado', text:'Tarea actualizada.', timer:1500, showConfirmButton:false });
       render();
     }
   });
@@ -1137,7 +1622,7 @@ function wireEvents() {
     if (!res.isConfirmed) return;
     const ok = await apiDelete(selTask.id);
     if (ok) {
-      tasks    = tasks.filter(t => t.id !== selTask.id);
+      tasks = tasks.filter(t => t.id !== selTask.id);
       detModal.hide();
       Swal.fire({ icon:'success', title:'Tarea eliminada', timer:1200, showConfirmButton:false });
       applyFilters();
@@ -1182,7 +1667,6 @@ function wireEvents() {
       el('n-titulo').value = el('n-resp').value = el('n-desc').value = '';
       el('n-estado').value = 'PENDIENTE';
       el('n-horas').value  = '8';
-      fillRespSelect();
       Swal.fire({ icon:'success', title:'Tarea creada', timer:1500, showConfirmButton:false });
       applyFilters();
     }
@@ -1190,18 +1674,77 @@ function wireEvents() {
 
   // Drag-to-pan on right panel
   const R = el('gantt-right');
-  let panning = false, panX = 0, panSL = 0;
-  R.addEventListener('mousedown', e => {
-    if (e.target.classList.contains('gbar') || e.target.classList.contains('rhandle') ||
-        e.target.classList.contains('gbar-lbl') || e.target.classList.contains('gbar-prog')) return;
-    panning = true; panX = e.clientX; panSL = R.scrollLeft;
+  // === DRAG-TO-PAN mejorado ===
+  let panning = false, panX = 0, panY = 0, panSL = 0, panST = 0;
+
+  function startPan(cx, cy) {
+    panning = true;
+    panX = cx; panY = cy;
+    panSL = R.scrollLeft; panST = R.scrollTop;
     R.classList.add('grabbing');
+  }
+
+  R.addEventListener('mousedown', e => {
+    // Botón central del ratón: siempre pan
+    if (e.button === 1) { e.preventDefault(); startPan(e.clientX, e.clientY); return; }
+    // Clic izquierdo con Ctrl: pan aunque estés sobre una barra
+    if (e.button === 0 && e.ctrlKey) { e.preventDefault(); startPan(e.clientX, e.clientY); return; }
+    // Clic izquierdo en espacio vacío: pan normal
+    if (e.button === 0) {
+      const onBar = e.target.closest('.gbar, .rhandle');
+      if (!onBar) startPan(e.clientX, e.clientY);
+    }
   });
-  document.addEventListener('mouseup',   () => { panning = false; R.classList.remove('grabbing'); });
+
+  // Ctrl sobre el panel: indicador visual
+  R.addEventListener('keydown', e => { if (e.ctrlKey) R.classList.add('ctrl-pan'); });
+  R.addEventListener('keyup',   e => { if (!e.ctrlKey) R.classList.remove('ctrl-pan'); });
+  document.addEventListener('keydown', e => { if (e.ctrlKey && document.activeElement !== R) R.classList.add('ctrl-pan'); });
+  document.addEventListener('keyup',   e => { if (!e.ctrlKey) R.classList.remove('ctrl-pan'); });
+
+  document.addEventListener('mouseup', () => {
+    panning = false;
+    R.classList.remove('grabbing');
+  });
   document.addEventListener('mousemove', e => {
     if (!panning) return;
     R.scrollLeft = panSL - (e.clientX - panX);
+    R.scrollTop  = panST - (e.clientY - panY);
   });
+
+  // Shift + rueda vertical = scroll horizontal
+  R.addEventListener('wheel', e => {
+    if (e.shiftKey) {
+      e.preventDefault();
+      R.scrollLeft += e.deltaY * 2;
+    }
+  }, { passive: false });
+
+  // Touch: deslizar para desplazar
+  let tX = 0, tSL = 0, tST = 0;
+  R.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      tX  = e.touches[0].clientX;
+      tSL = R.scrollLeft; tST = R.scrollTop;
+    }
+  }, { passive: true });
+  R.addEventListener('touchmove', e => {
+    if (e.touches.length === 1) {
+      R.scrollLeft = tSL - (e.touches[0].clientX - tX);
+    }
+  }, { passive: true });
+
+  // === BARRA DE NAVEGACIÓN ===
+  const moPx = () => 30 * PX[viewMode];   // píxeles por mes según vista
+  el('nav-yl').addEventListener('click',    () => { R.scrollLeft -= moPx() * 12; });
+  el('nav-ml').addEventListener('click',    () => { R.scrollLeft -= moPx(); });
+  el('nav-wl').addEventListener('click',    () => { R.scrollLeft -= 7 * PX[viewMode]; });
+  el('nav-hoy').addEventListener('click',   scrollToToday);
+  el('nav-wr').addEventListener('click',    () => { R.scrollLeft += 7 * PX[viewMode]; });
+  el('nav-mr').addEventListener('click',    () => { R.scrollLeft += moPx(); });
+  el('nav-yr').addEventListener('click',    () => { R.scrollLeft += moPx() * 12; });
+  el('nav-inicio').addEventListener('click', () => { R.scrollLeft = 0; });
+  el('nav-fin').addEventListener('click',    () => { R.scrollLeft = R.scrollWidth; });
 
   syncScroll();
   setTimeout(scrollToToday, 150);
@@ -1212,7 +1755,7 @@ function wireEvents() {
 // === COLUMN RESIZE ===
 function initColResize() {
   const table = el('task-table');
-  const MIN_W = [30, 80, 30, 30, 30, 30, 30];
+  const MIN_W = [80, 60, 50, 50, 30, 60];
 
   table.querySelectorAll('thead th').forEach((th, idx) => {
     const handle = th.querySelector('.col-resizer');
@@ -1220,24 +1763,16 @@ function initColResize() {
     const minW = MIN_W[idx] ?? 30;
 
     handle.addEventListener('mousedown', e => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault(); e.stopPropagation();
       handle.classList.add('resizing');
-
       const startX = e.clientX;
       const startW = th.getBoundingClientRect().width;
-
-      const onMove = ev => {
-        const w = Math.max(minW, startW + (ev.clientX - startX));
-        th.style.width = w + 'px';
-      };
-
-      const onUp = () => {
+      const onMove = ev => { th.style.width = Math.max(minW, startW + (ev.clientX - startX)) + 'px'; };
+      const onUp   = () => {
         handle.classList.remove('resizing');
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup',   onUp);
       };
-
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup',   onUp);
     });
@@ -1253,22 +1788,17 @@ function initDividerResize() {
   divider.addEventListener('mousedown', e => {
     e.preventDefault();
     divider.classList.add('dragging');
-
     const startX = e.clientX;
     const startW = left.getBoundingClientRect().width;
-
     const onMove = ev => {
       const newW = Math.max(180, Math.min(700, startW + (ev.clientX - startX)));
-      left.style.width    = newW + 'px';
-      left.style.minWidth = newW + 'px';
+      left.style.width = left.style.minWidth = newW + 'px';
     };
-
     const onUp = () => {
       divider.classList.remove('dragging');
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup',   onUp);
     };
-
     document.addEventListener('mousemove', onMove);
     document.addEventListener('mouseup',   onUp);
   });
