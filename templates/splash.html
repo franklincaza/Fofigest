@@ -172,6 +172,41 @@
     })();
   </script>
 
+  <!-- Script de persistencia de sesión en localStorage -->
+  <script>
+    (function guardarSesionEnLocalStorage() {
+      // Obtener el email que se guardó temporalmente en sessionStorage durante el login
+      const tempEmail = sessionStorage.getItem('fofigest_temp_email');
+      
+      // Llamar a la API para obtener los datos de la sesión actual
+      fetch('/api/verificar-sesion', {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.ok && data.authenticated) {
+          // Guardar los datos de sesión en localStorage
+          localStorage.setItem('fofigest_session_token', data.session_token);
+          localStorage.setItem('fofigest_session_correo', data.correo);
+          localStorage.setItem('fofigest_session_empresa', data.empresa);
+          localStorage.setItem('fofigest_session_permisos', data.permisos);
+          
+          console.log('Sesión guardada en localStorage');
+          
+          // Limpiar el email temporal de sessionStorage
+          sessionStorage.removeItem('fofigest_temp_email');
+        }
+      })
+      .catch(error => {
+        console.error('Error al guardar sesión en localStorage:', error);
+      });
+    })();
+  </script>
+
   <!-- Service Worker -->
   <script>
     if ('serviceWorker' in navigator) {

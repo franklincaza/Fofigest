@@ -1078,6 +1078,95 @@
           .catch(function (e) { console.warn('SW error:', e); });
       });
     }
+
+    /* ─────────────────────────────────────────
+       SINCRONIZACIÓN DE SESIÓN CON LOCALSTORAGE
+    ───────────────────────────────────────── */
+    (function sincronizarSesion() {
+      // Solo ejecutar si no estamos en la página de login
+      if (window.location.pathname === '/' || 
+          window.location.pathname === '/login-otp' || 
+          window.location.pathname === '/verify-otp' ||
+          window.location.pathname === '/olvidaste' ||
+          window.location.pathname.startsWith('/reset/')) {
+        return; // No verificar en páginas públicas
+      }
+
+      // Obtener sesión guardada
+      const sessionToken = localStorage.getItem('fofigest_session_token');
+      const sessionCorreo = localStorage.getItem('fofigest_session_correo');
+
+      if (sessionToken && sessionCorreo) {
+        // Verificar que la sesión del servidor coincide con localStorage
+        fetch('/api/verificar-sesion', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.ok && data.authenticated) {
+            // Sincronizar localStorage con los datos del servidor
+            if (data.session_token !== sessionToken) {
+              // La sesión cambió, actualizar localStorage
+              localStorage.setItem('fofigest_session_token', data.session_token);
+              localStorage.setItem('fofigest_session_correo', data.correo);
+              localStorage.setItem('fofigest_session_empresa', data.empresa);
+              localStorage.setItem('fofigest_session_permisos', data.permisos);
+              console.log('Sesión sincronizada con el servidor');
+            }
+          } else {
+            // La sesión expiró o no es válida
+            console.log('Sesión expirada, limpiando localStorage');
+            localStorage.removeItem('fofigest_session_token');
+            localStorage.removeItem('fofigest_session_correo');
+            localStorage.removeItem('fofigest_session_empresa');
+            localStorage.removeItem('fofigest_session_permisos');
+            // No redirigir aquí, Flask ya maneja la redirección con @login_required
+          }
+        })
+        .catch(error => {
+          console.error('Error al sincronizar sesión:', error);
+        });
+      }
+    })();
+
+    /* ─────────────────────────────────────────
+       LIMPIAR LOCALSTORAGE AL CERRAR SESIÓN
+    ───────────────────────────────────────── */
+    (function configurarLogout() {
+      // Función para limpiar localStorage
+      function limpiarSesionLocalStorage() {
+        localStorage.removeItem('fofigest_session_token');
+        localStorage.removeItem('fofigest_session_correo');
+        localStorage.removeItem('fofigest_session_empresa');
+        localStorage.removeItem('fofigest_session_permisos');
+        console.log('Sesión eliminada de localStorage');
+      }
+
+      // Interceptar todos los enlaces de logout
+      document.addEventListener('DOMContentLoaded', function() {
+        const logoutLinks = document.querySelectorAll('a[href="logout"], a[href="/logout"]');
+        
+        logoutLinks.forEach(function(link) {
+          link.addEventListener('click', function(e) {
+            // Limpiar localStorage antes de navegar
+            limpiarSesionLocalStorage();
+            // Dejar que el enlace continúe normalmente
+          });
+        });
+      });
+
+      // También limpiar si se cierra sesión mediante navegación directa
+      window.addEventListener('beforeunload', function() {
+        // Solo limpiar si estamos navegando a la página de logout
+        if (window.location.pathname.includes('logout')) {
+          limpiarSesionLocalStorage();
+        }
+      });
+    })();
   </script>
 
   {% block scripts %}{% endblock %}

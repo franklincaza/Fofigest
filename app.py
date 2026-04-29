@@ -122,6 +122,13 @@ bearer_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 app = Flask(__name__)
 dashboard.bind(app)
 app.secret_key = 'GDSGODSGFY56D4F8asc8assS6854DCSX85Z13ZXC8478SD94C6XZ1asSDA6F48V4D615SVGZDS4ZV1_65CXZ<3F4'
+
+# Configuración de sesiones permanentes
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)  # Sesión válida por 30 días
+app.config['SESSION_COOKIE_SECURE'] = False  # Cambiar a True en producción con HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Protección XSS
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Protección CSRF
+
 # Generador de tokens seguros
 serializer = URLSafeTimedSerializer(app.secret_key)
 
@@ -703,11 +710,14 @@ def loginInp():
             password_ok = (stored == password)
 
         if password_ok:
-            login_user(usuario)
+            login_user(usuario, remember=True)  # remember=True para sesiones permanentes
+            session.permanent = True  # Marcar la sesión como permanente
             logging.info(f"Inicio de sesión exitoso: {email}")
             session['username'] = usuario.permisos
             session['empresa'] = usuario.empresa
             session['correo'] = usuario.correo
+            # Generar token único de sesión para localStorage
+            session['session_token'] = str(uuid.uuid4())
             if usuario.permisos == 'usuario':
                 redirect_url = f'/Reporte-Horas{usuario.empresa}'
             else:
@@ -717,6 +727,48 @@ def loginInp():
     flash("Email o contraseña incorrectos", "danger")
     logging.warning(f"Intento de login fallido para: {email}")
     return render_template("login.html")
+
+# API para verificar estado de sesión
+@app.route('/api/verificar-sesion', methods=['GET'])
+def verificar_sesion():
+    """
+    Endpoint para verificar si la sesión del usuario sigue activa.
+    Retorna información de la sesión si está activa, o error si no lo está.
+    """
+    try:
+        if current_user.is_authenticated:
+            session_token = session.get('session_token')
+            permisos = session.get('username')
+            empresa = session.get('empresa')
+            correo = session.get('correo')
+            
+            if permisos == 'usuario':
+                redirect_url = f'/Reporte-Horas{empresa}'
+            else:
+                redirect_url = '/tablero'
+                
+            return jsonify({
+                'ok': True,
+                'authenticated': True,
+                'session_token': session_token,
+                'permisos': permisos,
+                'empresa': empresa,
+                'correo': correo,
+                'redirect_url': redirect_url
+            }), 200
+        else:
+            return jsonify({
+                'ok': False,
+                'authenticated': False,
+                'message': 'Sesión no activa'
+            }), 401
+    except Exception as e:
+        logging.error(f"Error al verificar sesión: {str(e)}")
+        return jsonify({
+            'ok': False,
+            'authenticated': False,
+            'error': str(e)
+        }), 500
 
 # Ruta del tablero
 @app.route('/tablero', methods=['GET', 'POST'])
@@ -1214,6 +1266,8 @@ def logout():
     session.pop('username', None)
     session.pop('empresa', None)
     session.pop('correo', None)
+    session.pop('session_token', None)
+    logging.info(f"Sesión cerrada para: {session.get('correo', 'unknown')}")
     return redirect(url_for('login'))
 
 
