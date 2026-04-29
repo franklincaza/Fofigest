@@ -43,6 +43,7 @@ from sqlalchemy import text
 
 from feature.Reporte_sulfoquimica import ReporteSulfoquimica  # Importar la clase
 import json
+from services import push_service
 
 
 # ──────────────────────────────────────────────────────────
@@ -248,11 +249,87 @@ with app.app_context():
     # Crear directorio de colillas si no existe
     os.makedirs(os.path.join(app.root_path, 'static', 'colillas'), exist_ok=True)
 
+    # Migración: tablas de notificaciones push
+    try:
+        models.db.create_all()  # crea notifications y push_subscriptions si no existen
+    except Exception as e:
+        app.logger.warning(f'Notifications migration skipped: {e}')
+
 # Cargar usuario
 @login_manager.user_loader
 def load_user(user_id):
     return models.db.session.get(models.Usuarios, int(user_id))
-    
+
+
+# ── Context processor: inyecta vapid_public_key en todos los templates ────────
+@app.context_processor
+def inject_vapid_key():
+    return {'vapid_public_key': config.config.get('VAPID_PUBLIC_KEY', '')}
+
+
+# ── Service Worker desde raíz del dominio (necesario para scope completo) ────
+@app.route('/sw.js')
+def service_worker():
+    response = app.send_static_file('js/sw.js')
+    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+    response.headers['Service-Worker-Allowed'] = '/'
+    return response
+
+
+# ── Helpers de notificaciones ─────────────────────────────────────────────────
+
+def _find_user_by_responsable(responsable_str):
+    """Busca un usuario por correo o nombre completo a partir del string de responsable."""
+    if not responsable_str:
+        return None
+    user = models.Usuarios.query.filter_by(correo=responsable_str).first()
+    if user:
+        return user
+    for u in models.Usuarios.query.all():
+        full_name = f"{u.nombres or ''} {u.apellidos or ''}".strip()
+        if full_name == responsable_str or u.nombres == responsable_str:
+            return u
+    return None
+
+
+def _notificar_asignacion(tarea, tipo='task_assigned'):
+    """
+    Crea una notificación interna y dispara push cuando se asigna o reasigna una tarea.
+    Silencia excepciones para no interrumpir el flujo principal.
+    """
+    try:
+        usuario_dest = _find_user_by_responsable(tarea.responsable)
+        if not usuario_dest:
+            return
+
+        sender_id = current_user.id if current_user.is_authenticated else None
+        sender_name = (
+            f"{current_user.nombres or ''} {current_user.apellidos or ''}".strip()
+            if current_user.is_authenticated else 'Sistema'
+        )
+
+        if tipo == 'task_assigned':
+            title = f"Nueva tarea: {tarea.titulo[:55]}"
+            message = f"{sender_name} te asignó la tarea '{tarea.titulo}'"
+        else:
+            title = f"Tarea actualizada: {tarea.titulo[:50]}"
+            message = f"{sender_name} actualizó la tarea '{tarea.titulo}'"
+
+        notif = models.Notification(
+            user_id=usuario_dest.id,
+            sender_id=sender_id,
+            title=title[:100],
+            message=message[:500],
+            url='/tareas',
+            type=tipo,
+        )
+        models.db.session.add(notif)
+        models.db.session.commit()
+
+        push_service.send_to_user(usuario_dest.id, title, message, '/tareas')
+    except Exception as e:
+        logging.error(f'[_notificar_asignacion] {e}')
+
 
 # Ruta para subir archivos y procesar datos
 @app.route('/upload', methods=['GET', 'POST'])
@@ -578,6 +655,8 @@ def gantt_update_tarea(codigo_tarea):
         if _gcambios:
             _gaccion = 'CAMBIO_ESTADO' if len(_gcambios) == 1 and _gcambios[0]['campo'] == 'estado' else 'MODIFICACIÓN'
             registrar_trazabilidad(codigo_tarea, _gaccion, _gcambios)
+            if any(c['campo'] == 'responsable' for c in _gcambios):
+                _notificar_asignacion(tarea, 'task_assigned')
         return jsonify({"ok": True})
 
     except (ValueError, KeyError) as e:
@@ -634,6 +713,7 @@ def gantt_create_tarea():
         models.db.session.add(nueva)
         models.db.session.commit()
         registrar_trazabilidad(codigo_tarea, 'CREACIÓN')
+        _notificar_asignacion(nueva, 'task_assigned')
 
         return jsonify({
             "ok": True,
@@ -1638,6 +1718,7 @@ def crear_tarea():
     models.db.session.add(nueva_tarea)
     models.db.session.commit()
     registrar_trazabilidad(nueva_tarea.codigo_tarea, 'CREACIÓN')
+    _notificar_asignacion(nueva_tarea, 'task_assigned')
     return jsonify(nueva_tarea.serialize()), 201
 
 @app.route('/tareas/<int:id>', methods=['PUT'])
@@ -1694,6 +1775,8 @@ def actualizar_tarea(id):
     if _campos_mod:
         _solo_estado = (len(_campos_mod) == 1 and _campos_mod[0]['campo'] == 'estado')
         registrar_trazabilidad(tarea.codigo_tarea, 'CAMBIO_ESTADO' if _solo_estado else 'MODIFICACIÓN', _campos_mod)
+        if any(c['campo'] == 'responsable' for c in _campos_mod):
+            _notificar_asignacion(tarea, 'task_assigned')
     return jsonify(tarea.serialize()), 200
 
 @app.route('/tareas/<int:id>', methods=['DELETE'])
@@ -2838,6 +2921,175 @@ def trazabilidad_tarea_json(codigo_tarea):
                  .order_by(models.TrazabilidadTarea.fecha_hora.asc())
                  .all())
     return jsonify([r.serialize() for r in registros]), 200
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SISTEMA DE NOTIFICACIONES
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── API interna: conteo de no leídas ─────────────────────────────────────────
+@app.route('/api/notifications/unread-count', methods=['GET'])
+@login_required
+def api_notif_unread_count():
+    count = models.Notification.query.filter_by(
+        user_id=current_user.id, is_read=False
+    ).count()
+    return jsonify({'count': count}), 200
+
+
+# ── API interna: lista de notificaciones ─────────────────────────────────────
+@app.route('/api/notifications/list', methods=['GET'])
+@login_required
+def api_notif_list():
+    notifs = (
+        models.Notification.query
+        .filter_by(user_id=current_user.id)
+        .order_by(models.Notification.created_at.desc())
+        .limit(20)
+        .all()
+    )
+    return jsonify([n.serialize() for n in notifs]), 200
+
+
+# ── API interna: marcar una como leída ───────────────────────────────────────
+@app.route('/api/notifications/<int:notif_id>/read', methods=['POST'])
+@login_required
+def api_notif_mark_read(notif_id):
+    notif = models.Notification.query.filter_by(
+        id=notif_id, user_id=current_user.id
+    ).first_or_404()
+    notif.is_read = True
+    models.db.session.commit()
+    return jsonify({'ok': True}), 200
+
+
+# ── API interna: marcar todas como leídas ────────────────────────────────────
+@app.route('/api/notifications/mark-all-read', methods=['PUT'])
+@login_required
+def api_notif_mark_all_read():
+    models.Notification.query.filter_by(
+        user_id=current_user.id, is_read=False
+    ).update({'is_read': True}, synchronize_session=False)
+    models.db.session.commit()
+    return jsonify({'ok': True}), 200
+
+
+# ── API push: guardar suscripción ─────────────────────────────────────────────
+@app.route('/api/push/subscribe', methods=['POST'])
+@login_required
+def api_push_subscribe():
+    data = request.get_json(silent=True) or {}
+    endpoint = data.get('endpoint', '').strip()
+    p256dh   = data.get('p256dh', '').strip()
+    auth     = data.get('auth', '').strip()
+
+    if not (endpoint and p256dh and auth):
+        return jsonify({'ok': False, 'error': 'Datos incompletos'}), 400
+
+    # Upsert: actualizar si el endpoint ya existe para este usuario
+    existing = models.PushSubscription.query.filter_by(
+        user_id=current_user.id, endpoint=endpoint
+    ).first()
+    if existing:
+        existing.p256dh    = p256dh
+        existing.auth      = auth
+        existing.is_active = True
+    else:
+        sub = models.PushSubscription(
+            user_id=current_user.id,
+            endpoint=endpoint,
+            p256dh=p256dh,
+            auth=auth,
+        )
+        models.db.session.add(sub)
+    models.db.session.commit()
+    return jsonify({'ok': True}), 200
+
+
+# ── API push: eliminar suscripción ────────────────────────────────────────────
+@app.route('/api/push/unsubscribe', methods=['POST'])
+@login_required
+def api_push_unsubscribe():
+    data = request.get_json(silent=True) or {}
+    endpoint = data.get('endpoint', '').strip()
+    if endpoint:
+        models.PushSubscription.query.filter_by(
+            user_id=current_user.id, endpoint=endpoint
+        ).update({'is_active': False}, synchronize_session=False)
+        models.db.session.commit()
+    return jsonify({'ok': True}), 200
+
+
+# ── Panel admin: envío de notificaciones broadcast ───────────────────────────
+@app.route('/admin/notificaciones', methods=['GET', 'POST'])
+@login_required
+def admin_notificaciones():
+    permisos = session.get('username', '')
+    if permisos not in ('admin', 'dev', 'superadmin'):
+        abort(403)
+
+    usuarios = models.Usuarios.query.order_by(models.Usuarios.nombres).all()
+
+    if request.method == 'POST':
+        destinatario = request.form.get('destinatario', 'todos')
+        usuario_id   = request.form.get('usuario_id', '').strip()
+        titulo       = request.form.get('titulo', '').strip()[:100]
+        mensaje      = request.form.get('mensaje', '').strip()[:500]
+        url_adjunto  = request.form.get('url_adjunto', '').strip()[:500]
+        url_label    = request.form.get('url_label', '').strip()[:100]
+
+        if not titulo or not mensaje:
+            flash('El título y el mensaje son obligatorios.', 'danger')
+            return render_template('admin/notificaciones.html',
+                                   usuarios=usuarios,
+                                   historial=_get_historial_notificaciones())
+
+        sender_id = current_user.id
+
+        if destinatario == 'todos':
+            destinatarios = models.Usuarios.query.all()
+        else:
+            dest_user = models.Usuarios.query.get(int(usuario_id)) if usuario_id else None
+            destinatarios = [dest_user] if dest_user else []
+
+        count = 0
+        for u in destinatarios:
+            notif = models.Notification(
+                user_id=u.id,
+                sender_id=sender_id,
+                title=titulo,
+                message=mensaje,
+                url=url_adjunto or None,
+                url_label=url_label or None,
+                type='admin_broadcast',
+            )
+            models.db.session.add(notif)
+            count += 1
+        models.db.session.commit()
+
+        # Enviar push
+        if destinatario == 'todos':
+            push_service.send_to_all(titulo, mensaje, url_adjunto or '/')
+        elif destinatarios:
+            push_service.send_to_user(destinatarios[0].id, titulo, mensaje, url_adjunto or '/')
+
+        flash(f'Notificación enviada a {count} usuario(s).', 'success')
+        return redirect(url_for('admin_notificaciones'))
+
+    return render_template('admin/notificaciones.html',
+                           usuarios=usuarios,
+                           historial=_get_historial_notificaciones())
+
+
+def _get_historial_notificaciones():
+    """Últimas 50 notificaciones broadcast enviadas por admins."""
+    return (
+        models.Notification.query
+        .filter_by(type='admin_broadcast')
+        .order_by(models.Notification.created_at.desc())
+        .limit(50)
+        .all()
+    )
 
 
 if __name__ == '__main__':

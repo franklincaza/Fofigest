@@ -1,0 +1,202 @@
+{% extends "Base.html" %}
+{% block content %}
+
+<div class="d-flex align-items-center gap-2 mb-4">
+  <i class="fas fa-bell fa-lg text-primary"></i>
+  <h4 class="mb-0 fw-bold" style="color:var(--text-heading)">Envío de Notificaciones</h4>
+</div>
+
+<div class="row g-4">
+
+  <!-- ── Formulario de envío ─────────────────────────────────────────────── -->
+  <div class="col-lg-5">
+    <div class="card shadow-sm h-100" style="border-radius:.5rem;border:1px solid var(--border-color)">
+      <div class="card-header py-3" style="background:var(--color-primary);border-radius:.5rem .5rem 0 0">
+        <h6 class="mb-0 text-white fw-bold">
+          <i class="fas fa-paper-plane me-2"></i>Nueva notificación
+        </h6>
+      </div>
+      <div class="card-body">
+        <form method="POST" action="/admin/notificaciones" id="formNotif">
+
+          <!-- Destinatarios -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold small">Destinatarios</label>
+            <div class="d-flex gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="destinatario"
+                       id="destTodos" value="todos" checked
+                       onchange="toggleUsuarioSelect(this)">
+                <label class="form-check-label small" for="destTodos">Todos los usuarios</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="destinatario"
+                       id="destUno" value="especifico"
+                       onchange="toggleUsuarioSelect(this)">
+                <label class="form-check-label small" for="destUno">Usuario específico</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Selector de usuario (oculto por defecto) -->
+          <div class="mb-3" id="usuarioSelectWrap" style="display:none">
+            <label for="usuario_id" class="form-label fw-semibold small">Seleccionar usuario</label>
+            <select class="form-select form-select-sm" name="usuario_id" id="usuario_id">
+              <option value="">-- Selecciona un usuario --</option>
+              {% for u in usuarios %}
+              <option value="{{ u.id }}">
+                {{ u.nombres }} {{ u.apellidos }} — {{ u.correo }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <!-- Título -->
+          <div class="mb-3">
+            <label for="titulo" class="form-label fw-semibold small">
+              Título <span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control form-control-sm" name="titulo"
+                   id="titulo" maxlength="100" required
+                   placeholder="Ej: Actualización del sistema">
+            <div class="form-text text-end" id="tituloCount">0 / 100</div>
+          </div>
+
+          <!-- Mensaje -->
+          <div class="mb-3">
+            <label for="mensaje" class="form-label fw-semibold small">
+              Mensaje <span class="text-danger">*</span>
+            </label>
+            <textarea class="form-control form-control-sm" name="mensaje" id="mensaje"
+                      rows="3" maxlength="500" required
+                      placeholder="Escribe el contenido del mensaje…"></textarea>
+            <div class="form-text text-end" id="mensajeCount">0 / 500</div>
+          </div>
+
+          <!-- URL adjunto (opcional) -->
+          <div class="mb-3">
+            <label for="url_adjunto" class="form-label fw-semibold small">
+              URL / Link adjunto <span class="text-muted">(opcional)</span>
+            </label>
+            <input type="text" class="form-control form-control-sm" name="url_adjunto"
+                   id="url_adjunto" maxlength="500"
+                   placeholder="Ej: /mis-cuentas-cobro  o  https://…">
+          </div>
+
+          <!-- Texto del botón -->
+          <div class="mb-4">
+            <label for="url_label" class="form-label fw-semibold small">
+              Texto del botón del link <span class="text-muted">(opcional)</span>
+            </label>
+            <input type="text" class="form-control form-control-sm" name="url_label"
+                   id="url_label" maxlength="100"
+                   placeholder="Ej: Ver reporte, Descargar archivo…">
+          </div>
+
+          <button type="submit" class="btn btn-primary w-100 fw-bold">
+            <i class="fas fa-paper-plane me-2"></i>Enviar Notificación
+          </button>
+        </form>
+      </div>
+    </div>
+  </div><!-- /col formulario -->
+
+  <!-- ── Historial ──────────────────────────────────────────────────────── -->
+  <div class="col-lg-7">
+    <div class="card shadow-sm" style="border-radius:.5rem;border:1px solid var(--border-color)">
+      <div class="card-header py-3" style="background:var(--bg-page);border-bottom:1px solid var(--border-color)">
+        <h6 class="mb-0 fw-bold" style="color:var(--text-heading)">
+          <i class="fas fa-history me-2 text-secondary"></i>Historial reciente (broadcast)
+        </h6>
+      </div>
+      <div class="card-body p-0">
+        {% if historial %}
+        <div style="max-height:520px;overflow-y:auto">
+          <table class="table table-hover table-sm mb-0" style="font-size:.82rem">
+            <thead class="table-light sticky-top">
+              <tr>
+                <th>Fecha</th>
+                <th>Título</th>
+                <th>Mensaje</th>
+                <th>Link</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for n in historial %}
+              <tr>
+                <td class="text-nowrap text-muted" style="font-size:.75rem">
+                  {{ n.created_at.strftime('%d/%m %H:%M') if n.created_at else '—' }}
+                </td>
+                <td class="fw-semibold">{{ n.title }}</td>
+                <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"
+                    title="{{ n.message }}">{{ n.message }}</td>
+                <td>
+                  {% if n.url %}
+                  <a href="{{ n.url }}" class="badge bg-primary text-decoration-none" target="_blank">
+                    {{ n.url_label or 'Ver' }}
+                  </a>
+                  {% else %}
+                  <span class="text-muted">—</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5 text-muted">
+          <i class="fas fa-bell-slash fa-2x mb-2 opacity-50"></i>
+          <p class="mb-0 small">No hay notificaciones enviadas aún.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div><!-- /col historial -->
+
+</div><!-- /row -->
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function toggleUsuarioSelect(radio) {
+    var wrap = document.getElementById('usuarioSelectWrap');
+    wrap.style.display = radio.value === 'especifico' ? 'block' : 'none';
+    document.getElementById('usuario_id').required = (radio.value === 'especifico');
+  }
+
+  // Contadores de caracteres
+  function counter(inputId, countId, max) {
+    var el = document.getElementById(inputId);
+    var ct = document.getElementById(countId);
+    if (!el || !ct) return;
+    el.addEventListener('input', function () {
+      ct.textContent = el.value.length + ' / ' + max;
+    });
+  }
+  counter('titulo', 'tituloCount', 100);
+  counter('mensaje', 'mensajeCount', 500);
+
+  // Confirmación antes de enviar a todos
+  document.getElementById('formNotif').addEventListener('submit', function (e) {
+    var destTodos = document.getElementById('destTodos').checked;
+    if (destTodos && window.Swal) {
+      e.preventDefault();
+      Swal.fire({
+        title: '¿Enviar a todos los usuarios?',
+        text: 'Esta acción enviará la notificación a todos los usuarios registrados.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, enviar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#4e73df',
+      }).then(function (result) {
+        if (result.isConfirmed) {
+          document.getElementById('formNotif').submit();
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}
