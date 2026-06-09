@@ -1,0 +1,66 @@
+# ── Credenciales y configuración sensible ────────────────────────────────────
+config.py
+.env
+.env.*
+secrets.py
+*.pem
+*.key
+
+# ── Bases de datos locales ────────────────────────────────────────────────────
+instance/
+*.db
+*.sqlite
+*.sqlite3
+flask_monitoringdashboard.db
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+log.log
+dist/log.log
+
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ── Entornos virtuales ────────────────────────────────────────────────────────
+.venv/
+venv/
+venv_desktop/
+env/
+ENV/
+
+# ── Build / distribución ──────────────────────────────────────────────────────
+build/
+dist/
+*.spec
+*.egg-info/
+*.egg
+
+# ── Instaladores y ejecutables ────────────────────────────────────────────────
+Output Setup/*.exe
+*.exe
+*.msi
+AzureCLI.msi
+
+# ── IDE / herramientas ────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Claude Code (configuración local, no compartir) ──────────────────────────
+.claude/settings.local.json
+
+# ── Archivos de trabajo / temporales ─────────────────────────────────────────
+*.xlsx
+*.bak
+*.tmp
+Task_Fofigest.xlsx
+promt.md
+check_prod_db.py
+test.py
+migrate_*.py
