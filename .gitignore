@@ -54,6 +54,7 @@ AzureCLI.msi
 
 # ── Claude Code (configuración local, no compartir) ──────────────────────────
 .claude/settings.local.json
+.claude/
 
 # ── Archivos de trabajo / temporales ─────────────────────────────────────────
 *.xlsx

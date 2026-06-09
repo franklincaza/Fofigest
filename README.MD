@@ -72,13 +72,13 @@
 <div align="center">
 
 ### 🏠 Tablero Kanban
-<img src="docs/screenshots/tablero.png" alt="Tablero Kanban" width="800"/>
+<img src="static\img\Tablero Kanban.png" alt="Tablero Kanban" width="800"/>
 
 ### 📊 Diagrama Gantt
-<img src="docs/screenshots/gantt.png" alt="Gantt Chart" width="800"/>
+<img src="static\img\Diagrama Gantt.png" alt="Gantt Chart" width="800"/>
 
 ### 📈 Reportes de Horas
-<img src="docs/screenshots/reporte.png" alt="Reportes" width="800"/>
+<img src="static\img\Reportes de Horas.png" alt="Reportes" width="800"/>
 
 </div>
 
