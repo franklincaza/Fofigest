@@ -1032,12 +1032,12 @@ body { font-family: 'Nunito', sans-serif; }
                         <div class="col-md-6">
                             <label class="fw-semibold mb-1">Horas Estimadas <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="horas_estimadas" name="horas_estimadas"
-                                   min="0" step="0.5" placeholder="0" required>
+                                   min="0" step="any" placeholder="0" required>
                         </div>
                         <div class="col-md-6">
                             <label class="fw-semibold mb-1">Horas Dedicadas <span class="text-danger">*</span></label>
                             <input type="number" class="form-control" id="horas_dedicadas" name="horas_dedicadas"
-                                   min="0" step="0.5" placeholder="0" required>
+                                   min="0" step="any" placeholder="0" required>
                         </div>
                         <!-- Estado -->
                         <div class="col-md-6">
@@ -1205,32 +1205,72 @@ const TimerManager = {
     }
 };
 
-/* Guardar tiempo del timer como horas dedicadas (abre modal de edición pre-cargado) */
+/* Guardar tiempo del timer directamente en horas_dedicadas via API */
 async function guardarTiempoTimer(id) {
     const elapsed = TimerManager.getElapsed(id);
     if (elapsed === 0) {
         Swal.fire('Sin tiempo', 'El cronómetro no ha registrado tiempo aún.', 'info');
         return;
     }
-    const hours = parseFloat((elapsed / 3600).toFixed(2));
+
+    /* Pausar si está corriendo antes de guardar */
+    if (TimerManager.getState(id).isRunning) {
+        TimerManager.pause(id);
+    }
+
+    const hours = parseFloat((elapsed / 3600).toFixed(4));
     const timeFormatted = TimerManager.formatTime(elapsed);
 
     const result = await Swal.fire({
         title: 'Guardar tiempo registrado',
-        html: `Tiempo acumulado: <strong>${timeFormatted}</strong><br>= <strong>${hours} horas</strong><br><br>
-               ¿Abrir el formulario de edición con este valor?`,
+        html: `Tiempo acumulado: <strong>${timeFormatted}</strong><br>= <strong>${hours} h</strong><br><br>
+               ¿Agregar este tiempo a las horas dedicadas de la tarea?`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#4e73df',
-        confirmButtonText: '<i class="fas fa-edit me-1"></i>Editar y guardar',
+        confirmButtonText: '<i class="fas fa-save me-1"></i>Guardar',
         cancelButtonText: 'Cancelar'
     });
 
     if (!result.isConfirmed) return;
 
-    await editarTarea(id);
-    document.getElementById('horas_dedicadas').value = hours;
-    bootstrap.Modal.getOrCreateInstance(document.getElementById('tareasform')).show();
+    try {
+        /* Obtener datos actuales de la tarea */
+        const getResp = await fetch(`/tareas/${id}`);
+        if (!getResp.ok) throw new Error('No se pudo obtener la tarea');
+        const tarea = await getResp.json();
+
+        /* Sumar horas del cronómetro a las horas dedicadas existentes */
+        const nuevasHoras = parseFloat(((tarea.horas_dedicadas || 0) + hours).toFixed(4));
+
+        /* Guardar solo horas_dedicadas en el backend */
+        const putResp = await fetch(`/tareas/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ horas_dedicadas: nuevasHoras })
+        });
+        if (!putResp.ok) throw new Error('Error al guardar');
+
+        /* Resetear cronómetro en localStorage */
+        localStorage.removeItem(`fofigest_timer_${id}`);
+
+        /* Actualizar display a 00:00:00 */
+        const displayEl = document.querySelector(`.kb-timer-display[data-id="${id}"]`);
+        if (displayEl) displayEl.textContent = '00:00:00';
+        TimerManager._updateUI(id, false);
+
+        Swal.fire({
+            title: '¡Guardado!',
+            html: `Se agregaron <strong>${hours} h</strong> a la tarea.<br>Total horas dedicadas: <strong>${nuevasHoras} h</strong>`,
+            icon: 'success',
+            timer: 3000,
+            showConfirmButton: false
+        }).then(() => location.reload());
+
+    } catch (err) {
+        Swal.fire('Error', 'No se pudo guardar el tiempo. Inténtalo de nuevo.', 'error');
+        console.error(err);
+    }
 }
 
 /* ──────────────────────────────────────────────────────────────
