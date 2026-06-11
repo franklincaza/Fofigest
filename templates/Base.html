@@ -568,6 +568,33 @@
     .modo-oscuro .zoom-btn   { color: #ccc; }
     .modo-oscuro .zoom-btn:hover { background: var(--color-primary); color: #fff; }
 
+    /* ══════════════════════════════════════
+       TABLAS — CABECERAS FIJAS + SCROLL COMPLETO
+    ══════════════════════════════════════ */
+    /* Contenedor: usa todo el espacio vertical disponible */
+    .content-wrapper .table-responsive {
+      max-height: calc(100vh - var(--topbar-height) - 160px) !important;
+      overflow-y: auto !important;
+    }
+
+    /* Cabeceras fijas tipo Excel (sticky dentro del contenedor) */
+    .content-wrapper .table-responsive thead th,
+    .content-wrapper .table-responsive thead td {
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      background: var(--bg-page);
+      /* Línea separadora inferior visible al hacer scroll */
+      box-shadow: 0 2px 0 var(--border-color);
+    }
+
+    /* Dark mode — cabeceras fijas */
+    .modo-oscuro .content-wrapper .table-responsive thead th,
+    .modo-oscuro .content-wrapper .table-responsive thead td {
+      background: #2d2d3a !important;
+      box-shadow: 0 2px 0 #3c3c50;
+    }
+
     /* ── Offcanvas notificaciones ── */
     #notifOffcanvas {
       width: 360px !important;
@@ -1046,7 +1073,7 @@
           {% block content %}{% endblock %}
         </div>
 
-        <!-- Footer -->
+        {# FOOTER OCULTO — Las tablas usan el espacio vertical completo
         <footer>
           <div class="container-fluid px-4 py-3">
             <div class="row align-items-center">
@@ -1075,6 +1102,7 @@
             <small class="text-muted">Desarrollado con ❤️ por el equipo Fofimatic</small>
           </div>
         </footer>
+        #}
 
       </main><!-- /#main-content -->
 

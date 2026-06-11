@@ -87,6 +87,10 @@
     padding: .3rem .4rem;
     background: var(--bg-page);
     border-bottom: 1px solid var(--border-color);
+    /* Segunda fila sticky: se posiciona debajo de la primera cabecera */
+    position: sticky;
+    top: 36px;
+    z-index: 2;
   }
   .col-filter-input {
     font-family: 'Nunito', sans-serif;
@@ -109,7 +113,7 @@
   #dataTable thead tr:first-child th .fa-filter { opacity: .45; transition: opacity var(--transition); }
   #dataTable thead tr:first-child th:hover .fa-filter { opacity: 1; }
   /* Dark mode filtros */
-  .modo-oscuro #filter-row th          { background: #2d2d3a; border-color: #3c3c50; }
+  .modo-oscuro #filter-row th          { background: #2d2d3a !important; border-color: #3c3c50; }
   .modo-oscuro .col-filter-input       { background: #252535; color: #c3c3cd; border-color: #3c3c50; }
   .modo-oscuro .col-filter-input:focus { border-color: #4e73df; }
 
