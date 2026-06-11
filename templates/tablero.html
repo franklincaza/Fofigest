@@ -1218,7 +1218,7 @@ async function guardarTiempoTimer(id) {
         TimerManager.pause(id);
     }
 
-    const hours = parseFloat((elapsed / 3600).toFixed(4));
+    const hours = parseFloat((elapsed / 3600).toFixed(2));
     const timeFormatted = TimerManager.formatTime(elapsed);
 
     const result = await Swal.fire({
@@ -1241,7 +1241,7 @@ async function guardarTiempoTimer(id) {
         const tarea = await getResp.json();
 
         /* Sumar horas del cronómetro a las horas dedicadas existentes */
-        const nuevasHoras = parseFloat(((tarea.horas_dedicadas || 0) + hours).toFixed(4));
+        const nuevasHoras = parseFloat(((parseFloat(tarea.horas_dedicadas) || 0) + hours).toFixed(2));
 
         /* Guardar solo horas_dedicadas en el backend */
         const putResp = await fetch(`/tareas/${id}`, {

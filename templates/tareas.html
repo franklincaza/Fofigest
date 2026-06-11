@@ -873,15 +873,20 @@ document.getElementById('formTarea').addEventListener('submit', function (e) {
       titulo:          document.getElementById('titulo').value,
       descripcion:     document.getElementById('descripcion').value,
       fecha_inicio:    document.getElementById('fecha_inicio').value,
-      fecha_fin:       document.getElementById('fecha_fin').value,
-      horas_estimadas: parseFloat(document.getElementById('horas_estimadas').value),
-      horas_dedicadas: parseFloat(document.getElementById('horas_dedicadas').value),
+      horas_estimadas: parseFloat(document.getElementById('horas_estimadas').value) || 0,
+      horas_dedicadas: parseFloat(document.getElementById('horas_dedicadas').value) || 0,
       estado:          document.getElementById('Cestado').value,
       responsable:     document.getElementById('Cresponsable').value,
       tipo_consumo:    document.getElementById('consumo').value,
       mes:             document.getElementById('mes').value,
       detalles_editor: JSON.stringify(editorContent)
     };
+
+    /* Incluir fechas opcionales solo si tienen valor para evitar error strptime en backend */
+    const _fechaFin  = document.getElementById('fecha_fin').value;
+    if (_fechaFin)  payload.fecha_fin = _fechaFin;
+    const _fechaFact = document.getElementById('fecha_facturacion') ? document.getElementById('fecha_facturacion').value : '';
+    if (_fechaFact) payload.fecha_facturacion = _fechaFact;
 
     fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) })
       .then(res => {
@@ -1186,7 +1191,7 @@ async function guardarTiempoTimerTabla(id) {
     TimerManagerTabla.pause(id);
   }
 
-  const hours         = parseFloat((elapsed / 3600).toFixed(4));
+  const hours         = parseFloat((elapsed / 3600).toFixed(2));
   const timeFormatted = TimerManagerTabla.formatTime(elapsed);
 
   const result = await Swal.fire({
@@ -1209,7 +1214,7 @@ async function guardarTiempoTimerTabla(id) {
     const tarea = await getResp.json();
 
     /* Sumar horas del cronómetro a las horas dedicadas existentes */
-    const nuevasHoras = parseFloat(((tarea.horas_dedicadas || 0) + hours).toFixed(4));
+    const nuevasHoras = parseFloat(((parseFloat(tarea.horas_dedicadas) || 0) + hours).toFixed(2));
 
     /* Guardar solo horas_dedicadas en el backend */
     const putResp = await fetch(`/tareas/${id}`, {
