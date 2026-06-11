@@ -454,6 +454,51 @@ body.modo-cliente #btn-cliente-toggle .txt-off { display: inline; }
   body { background: #fff !important; }
   @page { size: A3 landscape; margin: 8mm; }
 }
+
+/* ══════════════════════════════════════
+   DARK MODE — GANTT
+══════════════════════════════════════ */
+.modo-oscuro #gantt-wrap           { background: #1e1e2d; border-color: #3c3c50; }
+.modo-oscuro #gantt-right          { background: #1e1e2d;
+                                     scrollbar-color: #4e73df #1a1a2e; }
+.modo-oscuro #gantt-right::-webkit-scrollbar-track  { background: #1a1a2e; }
+.modo-oscuro #gantt-right::-webkit-scrollbar-corner { background: #1a1a2e; }
+.modo-oscuro #gantt-left           { background: #1e1e2d;
+                                     scrollbar-color: #3c3c50 #1a1a2e; }
+.modo-oscuro #gantt-left::-webkit-scrollbar-track   { background: #1a1a2e; }
+/* Task table */
+.modo-oscuro #task-table thead th  { background: #2d2d3a !important; color: #c3c3cd; border-color: #3c3c50; }
+.modo-oscuro #task-table td        { background: #1e1e2d !important; color: #c3c3cd; border-color: #3c3c50; }
+.modo-oscuro #task-table tbody tr.task-row:hover { background: #2d2d3a !important; }
+/* Timeline header */
+.modo-oscuro #gantt-header         { background: #2d2d3a; border-color: #3c3c50; }
+.modo-oscuro .hdr-cell             { background: #2d2d3a !important; color: #c3c3cd; border-color: #3c3c50; }
+.modo-oscuro .hdr-cell.today-hdr   { background: #3d3000 !important; color: #f0c040; }
+.modo-oscuro .hdr-cell.weekend     { background: #252535 !important; }
+/* Gantt rows */
+.modo-oscuro .grow                 { border-color: #3c3c50; }
+.modo-oscuro .grow:hover           { background: rgba(78,115,223,.08); }
+/* Legend */
+.modo-oscuro #gantt-legend         { background: #2d2d3a; border-color: #3c3c50; }
+.modo-oscuro .legend-item          { color: #c3c3cd; }
+.modo-oscuro .legend-title         { color: #c3c3cd; }
+/* Divider / nav */
+.modo-oscuro #gantt-divider        { background: #3c3c50; }
+.modo-oscuro #gantt-nav            { background: #2d2d3a; border-color: #3c3c50; }
+.modo-oscuro .nav-btn              { background: #252535; border-color: #3c3c50; color: #c3c3cd; }
+.modo-oscuro .nav-btn:hover        { background: #2d2d3a; border-color: #4e73df; color: #7b96f5; }
+.modo-oscuro .nav-sep              { background: #3c3c50; }
+.modo-oscuro .nav-hint             { color: #6a6d85; }
+/* Project group headers */
+.modo-oscuro .project-hdr td       { background: #252545 !important; color: #c3c3cd; border-color: #3c3c50; }
+.modo-oscuro .project-hdr:hover td { background: #2d2d55 !important; }
+.modo-oscuro .proj-arrow,
+.modo-oscuro .proj-pct             { color: #7b96f5; }
+.modo-oscuro .proj-task-count      { color: #9a9db5; }
+.modo-oscuro .grow-proj            { background: #252545; border-color: #3c3c50; }
+.modo-oscuro .grow-proj:hover      { background: #2d2d55; }
+/* Overdue */
+.modo-oscuro .tarea-vencida > td   { background: #3a1e1e !important; }
 </style>
 
 <!-- === PAGE HEADER === -->

@@ -469,6 +469,9 @@
     .modo-oscuro .topbar-btn    { color: #ccc; }
     .modo-oscuro .topbar-user   { color: #ccc; }
     .modo-oscuro .topbar-username { color: #ccc; }
+    /* Sidebar — dark gradient */
+    .modo-oscuro .sidebar       { background: linear-gradient(180deg, #1a2035 10%, #0f1524 100%) !important; }
+    .modo-oscuro .sidebar-heading { color: rgba(255,255,255,.3); }
     .modo-oscuro .main-content  { background: #121212; }
     .modo-oscuro .card,
     .modo-oscuro .modal-content,
@@ -480,6 +483,9 @@
     .modo-oscuro select,
     .modo-oscuro textarea,
     .modo-oscuro input          { background-color: #2e2e2e !important; color: #fff !important; }
+    /* Bootstrap text-muted no hereda el color del body en dark mode */
+    .modo-oscuro .text-muted    { color: #9a9db5 !important; }
+    .modo-oscuro .card-header   { background: #252535 !important; border-color: #3c3c50 !important; }
 
     /* ══════════════════════════════════════
        CAMPANA DE NOTIFICACIONES
@@ -760,7 +766,7 @@
             </li>
 
             <li class="sidebar-item">
-              <a class="sidebar-link" href="/tareas" data-tooltip="Tareas">
+              <a class="sidebar-link" href="  " data-tooltip="Tareas">
                 <i class="fas fa-tasks sidebar-icon"></i>
                 <span class="sidebar-label">Tareas</span>
               </a>
