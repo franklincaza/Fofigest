@@ -1697,6 +1697,11 @@ def crear_tarea():
     """
     data = request.get_json()
 
+    _tipo_consumo_validos = ('Desarrollo', 'Reuniones', 'Desarrollo por control de cambio', 'Soporte', 'Oportunidad de mejora')
+    _tipo_consumo = data.get('tipo_consumo', 'Desarrollo')
+    if _tipo_consumo not in _tipo_consumo_validos:
+        _tipo_consumo = 'Desarrollo'
+
     nueva_tarea = models.Tareas(
         empresa=data['empresa'],
         codigo_proyecto=data['codigo_proyecto'],
@@ -1704,7 +1709,6 @@ def crear_tarea():
         titulo=data['titulo'],
         descripcion=data['descripcion'],
         detalles_editor=data['detalles_editor'],
-        
         fecha_inicio=datetime.strptime(data['fecha_inicio'], '%Y-%m-%d'),
         responsable=data['responsable'],
         horas_estimadas=data['horas_estimadas'],
@@ -1712,7 +1716,8 @@ def crear_tarea():
         estado=data.get('estado', 'PENDIENTE'),
         fecha_fin=datetime.strptime(data['fecha_fin'], '%Y-%m-%d') if 'fecha_fin' in data else None,
         fecha_facturacion=datetime.strptime(data['fecha_facturacion'], '%Y-%m-%d') if 'fecha_facturacion' in data else None,
-        mes=data['mes']
+        mes=data['mes'],
+        tipo_consumo=_tipo_consumo
     )
 
     models.db.session.add(nueva_tarea)
@@ -1758,6 +1763,7 @@ def actualizar_tarea(id):
     tarea.fecha_facturacion = datetime.strptime(data['fecha_facturacion'], '%Y-%m-%d') if 'fecha_facturacion' in data else tarea.fecha_facturacion
     tarea.estado = data.get('estado', tarea.estado)
     tarea.mes = data.get('mes', tarea.mes)
+    tarea.tipo_consumo = data.get('tipo_consumo', tarea.tipo_consumo)
 
     models.db.session.commit()
     _snap_new = {
