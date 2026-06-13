@@ -299,17 +299,28 @@
   transition: background 0.15s;
   user-select: none;
   -webkit-user-select: none;
+  z-index: 10;
+}
+/* Zona de agarre ampliada — facilita tomar el divisor con el cursor */
+#gantt-divider::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -5px; right: -5px; bottom: 0;
+  cursor: col-resize;
+  z-index: 10;
 }
 #gantt-divider:hover,
 #gantt-divider.dragging { background: #4e73df; }
+/* Grip visual: línea central con puntos superior e inferior */
 #gantt-divider::after {
   content: '';
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 2px; height: 28px;
+  width: 2px; height: 20px;
   background: rgba(255,255,255,0.7);
   border-radius: 1px;
+  box-shadow: 0 -9px 0 rgba(255,255,255,0.7), 0 9px 0 rgba(255,255,255,0.7);
 }
 
 /* Column resize */
@@ -1841,24 +1852,70 @@ function initColResize() {
 function initDividerResize() {
   const divider = el('gantt-divider');
   const left    = el('gantt-left');
-  if (!divider || !left) return;
+  const wrap    = el('gantt-wrap');
+  if (!divider || !left || !wrap) return;
 
+  const MIN_LEFT    = 180;
+  const MIN_RIGHT   = 200;  // mínimo espacio reservado para el panel de timeline
+  const STORAGE_KEY = 'fofigest_gantt_left_w';
+
+  // Restaurar ancho guardado de sesión anterior
+  const saved = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+  if (saved >= MIN_LEFT) left.style.width = left.style.minWidth = saved + 'px';
+
+  // Máximo dinámico: ocupa todo menos el divisor y el mínimo del panel derecho
+  function getMaxW() {
+    const wrapW    = wrap.getBoundingClientRect().width;
+    const dividerW = divider.getBoundingClientRect().width || 6;
+    return Math.max(MIN_LEFT, wrapW - dividerW - MIN_RIGHT);
+  }
+
+  function startResize(startX) {
+    const startW = left.getBoundingClientRect().width;
+    divider.classList.add('dragging');
+    document.body.style.cursor     = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    function applyWidth(x) {
+      const newW = Math.max(MIN_LEFT, Math.min(getMaxW(), startW + (x - startX)));
+      left.style.width = left.style.minWidth = newW + 'px';
+    }
+    function onEnd() {
+      divider.classList.remove('dragging');
+      document.body.style.cursor     = '';
+      document.body.style.userSelect = '';
+      localStorage.setItem(STORAGE_KEY, parseInt(left.style.width, 10));
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup',   onMouseUp);
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend',  onTouchEnd);
+    }
+    const onMouseMove = e => applyWidth(e.clientX);
+    const onMouseUp   = () => onEnd();
+    const onTouchMove = e => { if (e.touches[0]) applyWidth(e.touches[0].clientX); };
+    const onTouchEnd  = () => onEnd();
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup',   onMouseUp);
+    document.addEventListener('touchmove', onTouchMove, { passive: true });
+    document.addEventListener('touchend',  onTouchEnd);
+  }
+
+  // Mouse
   divider.addEventListener('mousedown', e => {
     e.preventDefault();
-    divider.classList.add('dragging');
-    const startX = e.clientX;
-    const startW = left.getBoundingClientRect().width;
-    const onMove = ev => {
-      const newW = Math.max(180, Math.min(700, startW + (ev.clientX - startX)));
-      left.style.width = left.style.minWidth = newW + 'px';
-    };
-    const onUp = () => {
-      divider.classList.remove('dragging');
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseup',   onUp);
-    };
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseup',   onUp);
+    startResize(e.clientX);
+  });
+
+  // Touch (tablets)
+  divider.addEventListener('touchstart', e => {
+    if (e.touches[0]) startResize(e.touches[0].clientX);
+  }, { passive: true });
+
+  // Doble clic: restablecer al ancho por defecto
+  divider.addEventListener('dblclick', () => {
+    left.style.width = left.style.minWidth = '500px';
+    localStorage.removeItem(STORAGE_KEY);
   });
 }
 </script>
