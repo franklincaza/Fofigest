@@ -82,6 +82,7 @@ def _find_free_port(start: int = 5000, end: int = 5100) -> int:
 # ── 6. Bandeja del Sistema (System Tray) ────────────────────────────────────
 _tray_icon   = None   # pystray.Icon  (None si pystray no está disponible)
 _webview_win = None   # webview.Window
+_server_port = None   # Puerto en el que corre Waitress
 
 
 def _tray_icon_image():
@@ -129,10 +130,22 @@ def _on_window_closing():
     """
     Intercepta el botón ✕ de la ventana.
     Oculta la ventana a la bandeja en lugar de cerrar la aplicación.
+    Muestra una notificación informando que la app sigue activa.
     Retornar False cancela el evento de cierre en pywebview.
     """
     if _webview_win:
         _webview_win.hide()
+    # Notificación de escritorio con la URL local
+    if _tray_icon is not None:
+        try:
+            url = f'http://localhost:{_server_port}' if _server_port else 'http://localhost:5000'
+            _tray_icon.notify(
+                'Fofigest sigue activo',
+                f'La aplicación continúa corriendo en {url}\n'
+                'Haz doble clic en el ícono de la bandeja para reabrir.',
+            )
+        except Exception:
+            pass
     return False   # ← impide que pywebview destruya la ventana
 
 
@@ -158,9 +171,10 @@ def _wait_for_server(port: int, timeout: float = 30.0) -> bool:
 
 # ── 8. Main ───────────────────────────────────────────────────────────────────
 def main() -> None:
-    global _webview_win
+    global _webview_win, _server_port
 
     port = _find_free_port()
+    _server_port = port   # exponer a _on_window_closing
     url  = f'http://127.0.0.1:{port}'
 
     server_thread = threading.Thread(

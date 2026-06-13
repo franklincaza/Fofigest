@@ -250,6 +250,8 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    uac_admin=False,              # NO solicitar elevación UAC (asInvoker)
+    uac_uiaccess=False,
     # Ícono: usa el logo de Fofigest si existe
     icon='static/img/logo_F-Photoroom.ico',
 )
