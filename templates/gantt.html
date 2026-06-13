@@ -16,11 +16,12 @@
   width: 500px;
   min-width: 500px;
   overflow-y: auto;
-  overflow-x: auto;
+  overflow-x: hidden; /* Panel fijo: sin scroll horizontal, como MS Project */
   flex-shrink: 0;
 }
 #gantt-right {
   flex: 1;
+  min-width: 0; /* Crítico en flex: evita que el panel derecho empuje al izquierdo */
   overflow: auto;
   position: relative;
   cursor: grab;
@@ -213,11 +214,11 @@
   color: #858796;
 }
 
-/* Scrollbars — siempre visibles y bien marcadas */
-#gantt-right { overflow-x: scroll; overflow-y: auto; }
-#gantt-left  { overflow-x: scroll; overflow-y: auto; }
+/* Scrollbars — panel derecho: siempre visible; panel izquierdo: solo vertical */
+#gantt-right { overflow-x: scroll; overflow-y: auto; min-width: 0; }
+#gantt-left  { overflow-x: hidden; overflow-y: auto; } /* Sin scroll horizontal: permanece fijo */
 #gantt-right::-webkit-scrollbar { width: 8px;  height: 12px; }
-#gantt-left::-webkit-scrollbar  { width: 7px;  height: 8px;  }
+#gantt-left::-webkit-scrollbar  { width: 7px; }
 #gantt-right::-webkit-scrollbar-track { background: #eef0f8; border-radius: 6px; }
 #gantt-left::-webkit-scrollbar-track  { background: #f8f9fc; border-radius: 4px; }
 #gantt-right::-webkit-scrollbar-thumb {
@@ -227,8 +228,7 @@
 }
 #gantt-right::-webkit-scrollbar-thumb:hover { background: #2e59d9; }
 #gantt-left::-webkit-scrollbar-thumb  { background: #b0b3c7; border-radius: 4px; }
-#gantt-right::-webkit-scrollbar-corner,
-#gantt-left::-webkit-scrollbar-corner  { background: #f8f9fc; }
+#gantt-right::-webkit-scrollbar-corner { background: #f8f9fc; }
 /* Firefox */
 #gantt-right { scrollbar-width: auto; scrollbar-color: #4e73df #eef0f8; }
 #gantt-left  { scrollbar-width: thin; scrollbar-color: #b0b3c7 #f8f9fc; }
@@ -1443,11 +1443,24 @@ function moveTip(e) {
 }
 function hideTip() { tip.style.display = 'none'; }
 
-// === SCROLL SYNC ===
+// === SCROLL SYNC (solo vertical; horizontal solo en gantt-right) ===
 function syncScroll() {
   const L = el('gantt-left'), R = el('gantt-right');
-  L.addEventListener('scroll', () => { if (vScroll) return; vScroll = true; R.scrollTop = L.scrollTop; vScroll = false; });
-  R.addEventListener('scroll', () => { if (vScroll) return; vScroll = true; L.scrollTop = R.scrollTop; vScroll = false; });
+  let syncingFromL = false, syncingFromR = false;
+
+  L.addEventListener('scroll', () => {
+    if (syncingFromR) return;
+    syncingFromL = true;
+    R.scrollTop = L.scrollTop;
+    requestAnimationFrame(() => { syncingFromL = false; });
+  });
+
+  R.addEventListener('scroll', () => {
+    if (syncingFromL) return;
+    syncingFromR = true;
+    L.scrollTop = R.scrollTop;
+    requestAnimationFrame(() => { syncingFromR = false; });
+  });
 }
 
 function scrollToToday() {
