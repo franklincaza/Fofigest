@@ -1,6 +1,8 @@
 """
 Fofigest Desktop — Punto de entrada para el ejecutable empaquetado con PyInstaller.
 Inicia Waitress en un hilo daemon y abre la UI en una ventana PyWebView nativa.
+Al cerrar la ventana principal la aplicación se minimiza a la Bandeja del Sistema
+(system tray). Desde allí puede reabrirse o cerrarse completamente.
 """
 import sys
 import os
@@ -77,6 +79,63 @@ def _find_free_port(start: int = 5000, end: int = 5100) -> int:
     raise RuntimeError('No se encontró ningún puerto libre en el rango 5000-5100')
 
 
+# ── 6. Bandeja del Sistema (System Tray) ────────────────────────────────────
+_tray_icon   = None   # pystray.Icon  (None si pystray no está disponible)
+_webview_win = None   # webview.Window
+
+
+def _tray_icon_image():
+    """Carga la imagen del ícono para pystray (ICO del logo de la app)."""
+    from PIL import Image
+    ico = os.path.join(_MEIPASS, 'static', 'img', 'logo_F-Photoroom.ico')
+    if os.path.exists(ico):
+        return Image.open(ico).convert('RGBA')
+    # Fallback: cuadrado con el color primario de la marca (#4e73df)
+    img = Image.new('RGBA', (64, 64), color=(78, 115, 223, 255))
+    return img
+
+
+def _tray_show(icon, item):
+    """Muestra la ventana principal desde el menú de bandeja."""
+    if _webview_win:
+        _webview_win.show()
+
+
+def _tray_quit(icon, item):
+    """Cierra completamente la aplicación desde el menú de bandeja."""
+    icon.stop()
+    if _webview_win:
+        _webview_win.destroy()
+
+
+def _setup_tray():
+    """Crea e inicia el ícono en la bandeja del sistema (hilo separado)."""
+    global _tray_icon
+    try:
+        import pystray
+        menu = pystray.Menu(
+            pystray.MenuItem('Abrir Fofigest', _tray_show, default=True),
+            pystray.Menu.SEPARATOR,
+            pystray.MenuItem('Salir', _tray_quit),
+        )
+        _tray_icon = pystray.Icon('Fofigest', _tray_icon_image(), 'Fofigest', menu)
+        _tray_icon.run_detached()   # Corre en hilo daemon; no bloquea el hilo principal
+    except Exception as exc:
+        import logging
+        logging.warning(f'Bandeja del sistema no disponible: {exc}')
+
+
+def _on_window_closing():
+    """
+    Intercepta el botón ✕ de la ventana.
+    Oculta la ventana a la bandeja en lugar de cerrar la aplicación.
+    Retornar False cancela el evento de cierre en pywebview.
+    """
+    if _webview_win:
+        _webview_win.hide()
+    return False   # ← impide que pywebview destruya la ventana
+
+
 # ── 7. Hilo del servidor Waitress ─────────────────────────────────────────────
 def _run_server(port: int) -> None:
     try:
@@ -99,6 +158,8 @@ def _wait_for_server(port: int, timeout: float = 30.0) -> bool:
 
 # ── 8. Main ───────────────────────────────────────────────────────────────────
 def main() -> None:
+    global _webview_win
+
     port = _find_free_port()
     url  = f'http://127.0.0.1:{port}'
 
@@ -118,7 +179,12 @@ def main() -> None:
     try:
         import webview
         _icon_path = os.path.join(_MEIPASS, 'static', 'img', 'logo_F-Photoroom.ico')
-        webview.create_window(
+
+        # ── Iniciar bandeja del sistema ANTES de abrir la ventana ─────────────
+        _setup_tray()
+
+        # ── Crear ventana principal ───────────────────────────────────────────
+        _webview_win = webview.create_window(
             title='Fofigest',
             url=url,
             width=1366,
@@ -126,10 +192,23 @@ def main() -> None:
             min_size=(800, 600),
             resizable=True,
         )
+
+        # Botón ✕  →  ocultar a bandeja (no cerrar)
+        _webview_win.events.closing += _on_window_closing
+
         webview.start(debug=False, icon=_icon_path)
+
     except Exception as exc:
         _show_error(f'No se pudo abrir la ventana de Fofigest:\n{exc}\n\n'
                     f'Abre manualmente en tu navegador: {url}')
+
+    finally:
+        # Garantizar que el ícono de bandeja se elimina al salir
+        if _tray_icon is not None:
+            try:
+                _tray_icon.stop()
+            except Exception:
+                pass
 
 
 def _show_error(msg: str) -> None:

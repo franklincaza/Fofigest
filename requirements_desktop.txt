@@ -43,6 +43,10 @@ waitress==3.0.0
 pywebview>=4.4.1
 # pythonnet 3.0.5+ soporta Python 3.13 (3.0.3 no existe, 3.0.4 tampoco)
 pythonnet>=3.0.5
+# Bandeja del sistema (System Tray) — minimize-to-tray al cerrar ventana
+pystray>=0.19.5
+# Pillow: requerido por pystray para cargar el ícono ICO
+Pillow>=10.0.0
 
 # ── Empaquetador ──────────────────────────────────────────────────
 # PyInstaller 6.11+ tiene soporte mejorado para Python 3.13

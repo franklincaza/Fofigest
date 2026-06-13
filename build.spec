@@ -41,6 +41,12 @@ try:
 except Exception:
     pass
 
+# pystray: íconos y recursos del system tray
+try:
+    datas += collect_data_files('pystray')
+except Exception:
+    pass
+
 # APScheduler: archivos de zona horaria y configuración
 try:
     datas += collect_data_files('apscheduler')
@@ -137,9 +143,15 @@ hiddenimports = [
     'pkg_resources',
     'pkg_resources.py2_compat',
     'colorama',
-    'pillow',
-    'PIL',
+    'PIL',  # Pillow — el paquete se importa como PIL, no como pillow
     'PIL.Image',
+    'PIL.BmpImagePlugin',
+    'PIL.IcoImagePlugin',
+    'PIL.PngImagePlugin',
+    # System Tray
+    'pystray',
+    'pystray._util',
+    'pystray._win32',
     'tkinter',
     'tkinter.messagebox',
     'email.mime.text',
@@ -165,6 +177,8 @@ hiddenimports += collect_submodules('apscheduler')
 hiddenimports += collect_submodules('waitress')
 hiddenimports += collect_submodules('sqlalchemy.dialects.sqlite')
 hiddenimports += collect_submodules('sqlalchemy.dialects.postgresql')
+hiddenimports += collect_submodules('pystray')   # backends dinámicos (win32, xorg, appindicator…)
+hiddenimports += collect_submodules('PIL')        # plugins de imagen de Pillow
 
 # ── Analysis ──────────────────────────────────────────────────────────────────
 a = Analysis(
