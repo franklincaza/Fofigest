@@ -227,6 +227,7 @@ function setupEventListeners() {
     });
 
     $('form-new-task').addEventListener('submit', handleNewTask);
+    setupEditModal();
 }
 
 // ── Cambio de tab ─────────────────────────────────────────────
@@ -329,6 +330,9 @@ function renderTimerCards(container, tasks) {
                     <button class="btn-timer-save" data-id="${task.id}">
                         <i class="fas fa-save"></i> Guardar
                     </button>` : ''}
+                    <button class="btn-card-edit btn-edit-task" data-id="${task.id}" title="Editar tarea">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </div>
             </div>
         </div>`;
@@ -340,6 +344,9 @@ function renderTimerCards(container, tasks) {
     });
     container.querySelectorAll('.btn-timer-save').forEach(btn => {
         btn.addEventListener('click', () => saveTimer(btn.dataset.id));
+    });
+    container.querySelectorAll('.btn-edit-task').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(btn.dataset.id));
     });
 }
 
@@ -534,6 +541,9 @@ function renderTableroTasks(container, tasks) {
                             title="${running ? 'Cronómetro corriendo' : 'Iniciar cronómetro'}">
                         <i class="fas fa-${running ? 'pause' : 'stopwatch'}"></i>
                     </button>` : ''}
+                    <button class="btn-card-edit btn-edit-task" data-id="${t.id}" title="Editar tarea">
+                        <i class="fas fa-edit"></i>
+                    </button>
                     <select class="select-estado" data-id="${t.id}" title="Cambiar estado">
                         <option value="">Mover a...</option>
                         ${opciones}
@@ -560,6 +570,10 @@ function renderTableroTasks(container, tasks) {
                 showToast('⏱ Cronómetro iniciado', 'info');
             }
         });
+    });
+
+    container.querySelectorAll('.btn-edit-task').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(btn.dataset.id));
     });
 
     container.querySelectorAll('.select-estado').forEach(sel => {
@@ -636,6 +650,9 @@ function renderTaskList(container, tasks) {
                 <a href="${BASE_URL}/tablero" target="_blank" class="btn-action btn-open">
                     <i class="fas fa-external-link-alt"></i> Tablero
                 </a>
+                <button class="btn-action btn-edit btn-edit-task" data-id="${t.id}">
+                    <i class="fas fa-edit"></i> Editar
+                </button>
                 ${t.estado !== 'COMPLETADOS' ? `
                 <button class="btn-action btn-timer-add"
                         data-id="${t.id}"
@@ -650,6 +667,10 @@ function renderTaskList(container, tasks) {
     if (tasks.length > 30) {
         container.innerHTML += `<div class="more-hint">+${tasks.length - 30} más — usa los filtros</div>`;
     }
+
+    container.querySelectorAll('.btn-edit-task').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(btn.dataset.id));
+    });
 
     container.querySelectorAll('.btn-timer-add').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -720,6 +741,104 @@ async function handleNewTask(e) {
     } finally {
         btn.disabled = false;
         btn.innerHTML = '<i class="fas fa-plus"></i> Crear Tarea';
+    }
+}
+
+// ══════════════════════════════════════════════════════════════
+// MODAL: EDITAR TAREA
+// ══════════════════════════════════════════════════════════════
+
+let editTaskId = null;
+
+function setupEditModal() {
+    $('btn-modal-close').addEventListener('click', closeEditModal);
+    $('btn-edit-cancel').addEventListener('click', closeEditModal);
+    $('modal-edit').addEventListener('click', e => {
+        if (e.target === $('modal-edit')) closeEditModal();
+    });
+    $('form-edit-task').addEventListener('submit', handleEditSubmit);
+}
+
+function openEditModal(taskId) {
+    editTaskId = taskId;
+    $('modal-edit').classList.remove('hidden');
+
+    const btn = $('btn-edit-save');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Cargando...';
+
+    apiCall('GET', `/tareas/${taskId}`)
+        .then(res => {
+            if (res.ok && res.data) {
+                populateEditForm(res.data);
+            } else {
+                closeEditModal();
+                showToast('❌ No se pudo cargar la tarea', 'danger');
+                return;
+            }
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
+        })
+        .catch(err => {
+            closeEditModal();
+            showToast(`❌ ${err.message}`, 'danger');
+        });
+}
+
+function populateEditForm(task) {
+    $('edit-titulo').value          = task.titulo || '';
+    $('edit-empresa').value         = task.empresa || '';
+    $('edit-codigo-proyecto').value = task.codigo_proyecto || '';
+    $('edit-responsable').value     = task.responsable || '';
+    $('edit-fecha-inicio').value    = task.fecha_inicio ? String(task.fecha_inicio).split('T')[0] : '';
+    $('edit-fecha-fin').value       = task.fecha_fin   ? String(task.fecha_fin).split('T')[0]   : '';
+    $('edit-horas').value           = task.horas_estimadas != null ? task.horas_estimadas : '';
+    $('edit-estado').value          = task.estado      || 'PENDIENTE';
+    $('edit-tipo').value            = task.tipo_consumo || 'Desarrollo';
+}
+
+function closeEditModal() {
+    $('modal-edit').classList.add('hidden');
+    editTaskId = null;
+}
+
+async function handleEditSubmit(e) {
+    e.preventDefault();
+    if (!editTaskId) return;
+
+    const data = {
+        titulo:          $('edit-titulo').value.trim(),
+        empresa:         $('edit-empresa').value.trim(),
+        codigo_proyecto: $('edit-codigo-proyecto').value.trim(),
+        responsable:     $('edit-responsable').value.trim(),
+        fecha_inicio:    $('edit-fecha-inicio').value,
+        fecha_fin:       $('edit-fecha-fin').value || $('edit-fecha-inicio').value,
+        horas_estimadas: parseFloat($('edit-horas').value) || 0,
+        estado:          $('edit-estado').value,
+        tipo_consumo:    $('edit-tipo').value,
+    };
+
+    const btn = $('btn-edit-save');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+    try {
+        const res = await apiCall('PUT', `/tareas/${editTaskId}`, data);
+        if (res.ok) {
+            showToast('✅ Tarea actualizada', 'success');
+            closeEditModal();
+            if      (state.currentTab === 'tasks')   loadTasksTab();
+            else if (state.currentTab === 'tablero') loadTableroTab();
+            else if (state.currentTab === 'timers')  loadTimersTab();
+        } else {
+            showToast(`❌ ${res.error || 'Error al guardar'}`, 'danger');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
+        }
+    } catch (err) {
+        showToast(`❌ ${err.message}`, 'danger');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
     }
 }
 

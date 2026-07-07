@@ -172,6 +172,86 @@
 
   </div><!-- /state-main -->
 
+  <!-- ── Modal: Editar Tarea ── -->
+  <div id="modal-edit" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title"><i class="fas fa-edit"></i> Editar Tarea</span>
+        <button class="modal-close" id="btn-modal-close" type="button"><i class="fas fa-times"></i></button>
+      </div>
+      <form class="modal-form" id="form-edit-task" autocomplete="off">
+
+        <div class="form-group">
+          <label for="edit-titulo">Título *</label>
+          <input type="text" id="edit-titulo" placeholder="Descripción breve de la tarea" required maxlength="100">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-empresa">Empresa *</label>
+            <input type="text" id="edit-empresa" placeholder="Empresa cliente" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-codigo-proyecto">Código proyecto *</label>
+            <input type="text" id="edit-codigo-proyecto" placeholder="PROJ-001" required maxlength="50">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-responsable">Responsable *</label>
+          <input type="text" id="edit-responsable" placeholder="Nombre del responsable" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-fecha-inicio">Inicio *</label>
+            <input type="date" id="edit-fecha-inicio" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-fecha-fin">Fin</label>
+            <input type="date" id="edit-fecha-fin">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="edit-horas">Horas estimadas</label>
+            <input type="number" id="edit-horas" min="0.5" max="999" step="0.5">
+          </div>
+          <div class="form-group">
+            <label for="edit-estado">Estado</label>
+            <select id="edit-estado">
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="PROGRESO">En Progreso</option>
+              <option value="REVISIÓN">Revisión</option>
+              <option value="IMPEDIMENTOS">Impedimentos</option>
+              <option value="COMPLETADOS">Completados</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="edit-tipo">Tipo de consumo</label>
+          <select id="edit-tipo">
+            <option value="Desarrollo">Desarrollo</option>
+            <option value="Reuniones">Reuniones</option>
+            <option value="Soporte">Soporte</option>
+            <option value="Desarrollo por control de cambio">Control de cambio</option>
+            <option value="Oportunidad de mejora">Oportunidad de mejora</option>
+          </select>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-cancel" id="btn-edit-cancel">Cancelar</button>
+          <button type="submit" class="btn-primary modal-save" id="btn-edit-save">
+            <i class="fas fa-save"></i> Guardar cambios
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
   <script src="popup.js"></script>
 </body>
 </html>

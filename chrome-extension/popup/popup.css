@@ -694,3 +694,124 @@ html.fg-is-sidepanel .new-task-form     { gap: 10px; }
     border-color: var(--primary);
     color: #fff;
 }
+
+/* ── Botón editar (lista Tareas) ── */
+.btn-edit {
+    background: #fff;
+    border-color: var(--border);
+    color: var(--secondary);
+}
+.btn-edit:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Botón editar icono (Tablero / Timers) ── */
+.btn-card-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--secondary);
+    cursor: pointer;
+    font-size: 11px;
+    transition: all .15s;
+    padding: 0;
+    flex-shrink: 0;
+}
+.btn-card-edit:hover { border-color: var(--primary); color: var(--primary); }
+
+/* ── Modal Editar Tarea ── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.modal-box {
+    background: var(--card-bg);
+    border-radius: 0.45rem;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--primary);
+    color: #fff;
+    padding: 11px 14px;
+}
+
+.modal-title {
+    font-size: 13px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.75);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    line-height: 1;
+    transition: color .15s;
+}
+.modal-close:hover { color: #fff; }
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+.modal-form::-webkit-scrollbar { width: 4px; }
+.modal-form::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.modal-footer {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 9px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--text-muted);
+    font-family: 'Nunito', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+}
+.btn-cancel:hover { border-color: var(--danger); color: var(--danger); }
+
+.modal-save {
+    flex: 2;
+    width: auto;
+    margin-top: 0;
+}
+
+html.fg-is-panel .modal-overlay,
+html.fg-is-sidepanel .modal-overlay { position: fixed; }
