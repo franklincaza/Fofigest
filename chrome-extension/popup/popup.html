@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fofigest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+  <!-- ── Header ── -->
+  <div class="ext-header">
+    <img src="../icons/icon48.png" alt="Fofigest" onerror="this.style.display='none'">
+    <span class="ext-header__title">Fofigest</span>
+    <div class="ext-header__user hidden" id="header-user">
+      <strong id="user-name"></strong>
+      <span id="user-empresa"></span>
+    </div>
+    <span class="status-dot status-offline" id="status-dot" title="Sin conexión"></span>
+  </div>
+
+  <!-- ── Servidor no disponible ── -->
+  <div id="state-no-tab" class="state-screen">
+    <i class="fas fa-window-restore" style="color:#858796"></i>
+    <h3>Fofigest no está abierto</h3>
+    <p>Abre Fofigest en una pestaña del navegador para usar la extensión.</p>
+    <button class="btn-outline" id="btn-open-fofigest">
+      <i class="fas fa-external-link-alt"></i> Abrir Fofigest
+    </button>
+  </div>
+
+  <!-- ── No autenticado ── -->
+  <div id="state-not-auth" class="state-screen hidden">
+    <i class="fas fa-lock" style="color:#e74a3b"></i>
+    <h3>Sesión no iniciada</h3>
+    <p>Inicia sesión en Fofigest para acceder a tus tareas.</p>
+    <button class="btn-outline" id="btn-go-login">
+      <i class="fas fa-sign-in-alt"></i> Iniciar sesión
+    </button>
+  </div>
+
+  <!-- ── Contenido principal ── -->
+  <div id="state-main" class="hidden" style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="timers">
+        <i class="fas fa-stopwatch"></i> Timers
+      </button>
+      <button class="tab-btn" data-tab="tablero">
+        <i class="fas fa-th-large"></i> Tablero
+      </button>
+      <button class="tab-btn" data-tab="tasks">
+        <i class="fas fa-tasks"></i> Tareas
+      </button>
+      <button class="tab-btn" data-tab="new">
+        <i class="fas fa-plus"></i> Nueva
+      </button>
+    </div>
+
+    <!-- Panel: Cronómetros -->
+    <div class="tab-panel" id="panel-timers" data-panel="timers">
+      <div class="panel-header">
+        <h4><i class="fas fa-stopwatch"></i> Tareas en progreso</h4>
+        <button class="btn-icon" id="btn-refresh-timers" title="Actualizar"><i class="fas fa-sync-alt"></i></button>
+      </div>
+      <div id="timers-list">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>
+      </div>
+    </div>
+
+    <!-- Panel: Tablero (Mini Kanban) -->
+    <div class="tab-panel hidden" id="panel-tablero" data-panel="tablero">
+      <div class="tablero-header">
+        <div class="tablero-pills" id="tablero-pills">
+          <div class="loading" style="padding:8px 0"><i class="fas fa-spinner fa-spin"></i></div>
+        </div>
+        <button class="btn-icon" id="btn-refresh-tablero" title="Actualizar"><i class="fas fa-sync-alt"></i></button>
+      </div>
+      <div id="tablero-list">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Cargando tablero...</div>
+      </div>
+    </div>
+
+    <!-- Panel: Tareas -->
+    <div class="tab-panel hidden" id="panel-tasks" data-panel="tasks">
+      <div class="tasks-filters">
+        <select id="filter-estado">
+          <option value="">Todos los estados</option>
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="PROGRESO">En Progreso</option>
+          <option value="REVISIÓN">Revisión</option>
+          <option value="IMPEDIMENTOS">Impedimentos</option>
+        </select>
+        <input type="text" id="filter-busqueda" placeholder="Buscar tarea...">
+      </div>
+      <div class="tasks-list">
+        <div class="loading"><i class="fas fa-spinner fa-spin"></i> Cargando...</div>
+      </div>
+    </div>
+
+    <!-- Panel: Nueva Tarea -->
+    <div class="tab-panel hidden" id="panel-new" data-panel="new">
+      <form class="new-task-form" id="form-new-task" autocomplete="off">
+
+        <div class="form-group">
+          <label for="new-titulo">Título *</label>
+          <input type="text" id="new-titulo" placeholder="Descripción breve de la tarea" required maxlength="100">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="new-empresa">Empresa *</label>
+            <input type="text" id="new-empresa" placeholder="Empresa cliente" required>
+          </div>
+          <div class="form-group">
+            <label for="new-codigo-proyecto">Código proyecto *</label>
+            <input type="text" id="new-codigo-proyecto" placeholder="PROJ-001" required maxlength="50">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="new-responsable">Responsable *</label>
+          <input type="text" id="new-responsable" placeholder="Nombre del responsable" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="new-fecha-inicio">Inicio *</label>
+            <input type="date" id="new-fecha-inicio" required>
+          </div>
+          <div class="form-group">
+            <label for="new-fecha-fin">Fin</label>
+            <input type="date" id="new-fecha-fin">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="new-horas">Horas estimadas</label>
+            <input type="number" id="new-horas" placeholder="8" min="0.5" max="999" step="0.5" value="8">
+          </div>
+          <div class="form-group">
+            <label for="new-estado">Estado</label>
+            <select id="new-estado">
+              <option value="PENDIENTE">Pendiente</option>
+              <option value="PROGRESO">En Progreso</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="new-tipo">Tipo de consumo</label>
+          <select id="new-tipo">
+            <option value="Desarrollo">Desarrollo</option>
+            <option value="Reuniones">Reuniones</option>
+            <option value="Soporte">Soporte</option>
+            <option value="Desarrollo por control de cambio">Control de cambio</option>
+            <option value="Oportunidad de mejora">Oportunidad de mejora</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-primary" id="btn-create-task">
+          <i class="fas fa-plus"></i> Crear Tarea
+        </button>
+
+      </form>
+    </div>
+
+  </div><!-- /state-main -->
+
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -2,6 +2,8 @@
 config.py
 .env
 .env.*
+*.env
+Gemini.env
 secrets.py
 *.pem
 *.key

@@ -16,6 +16,12 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <!-- VAPID public key para push notifications -->
   <meta name="vapid-public-key" content="{{ vapid_public_key | default('') }}">
+  <!-- URL base del servidor (usada por la extensión Chrome) -->
+  <meta name="fofigest-host" content="{{ request.host_url.rstrip('/') }}">
+  <!-- Datos del usuario autenticado (leídos por la extensión Chrome desde el DOM) -->
+  {% if current_user.is_authenticated %}
+  <meta name="fg-current-user" content="{{ current_user.serialize() | tojson | forceescape }}">
+  {% endif %}
 
   <!-- Google Fonts: Nunito -->
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;900&display=swap" rel="stylesheet">

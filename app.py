@@ -16,7 +16,7 @@ import uuid
 import hashlib
 from datetime import datetime
 import markdown
-from flask_wtf.csrf import CSRFProtect
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
@@ -172,7 +172,7 @@ app.config['MAIL_USE_TLS'] = True  # Usar TLS (seguridad)
 app.config['MAIL_USE_SSL'] = False  # No usar SSL (se usa TLS)
 app.config['MAIL_USERNAME'] = config.config["EMAIL"]  # Tu correo electrónico
 app.config['MAIL_PASSWORD'] = config.config["contraseña_google"]  # Contraseña de tu correo (considera usar variables de entorno para mayor seguridad)
-app.config['MAIL_DEFAULT_SENDER'] = ('Tu nombre', 'franklinranmirez07@hotmail.com')  # Nombre del remitente y correo por defecto
+app.config['MAIL_DEFAULT_SENDER'] = ('Notificaciones Fofigest', 'franklinranmirez07@hotmail.com')  # Nombre del remitente y correo por defecto
 mail = Mail(app)
 # Inicialización de la base de datos con la instancia de la aplicación Flask
 models.db.init_app(app)
@@ -3096,6 +3096,87 @@ def _get_historial_notificaciones():
         .limit(50)
         .all()
     )
+
+
+# ──────────────────────────────────────────────────────────────
+# EXTENSIÓN CHROME — API endpoints
+# ──────────────────────────────────────────────────────────────
+
+@app.route('/api/extension/auth', methods=['GET'])
+def api_extension_auth():
+    """Verifica sesión y devuelve datos del usuario + CSRF token para la extensión Chrome.
+    NO usa @login_required porque ese decorator redirige (302) cuando no hay sesión.
+    Devuelve siempre JSON 200 con csrf_token para que el popup pueda hacer mutaciones
+    (POST/PUT) sin necesitar una pestaña Fofigest abierta.
+    """
+    csrf_token = generate_csrf()
+    if not current_user.is_authenticated:
+        return jsonify({'authenticated': False, 'csrf_token': csrf_token}), 200
+    return jsonify({
+        'authenticated': True,
+        'csrf_token': csrf_token,
+        'user': {
+            'id':        current_user.id,
+            'nombres':   current_user.nombres,
+            'apellidos': current_user.apellidos,
+            'correo':    current_user.correo,
+            'empresa':   current_user.empresa,
+            'permisos':  current_user.permisos,
+        }
+    })
+
+
+@app.route('/api/extension/tareas-proximas', methods=['GET'])
+@login_required
+def api_extension_tareas_proximas():
+    """Tareas que vencen en los próximos 3 días (para notificaciones)."""
+    hoy    = datetime.utcnow().date()
+    limite = hoy + timedelta(days=3)
+
+    query = models.Tareas.query.filter(
+        models.Tareas.fecha_fin != None,
+        models.Tareas.fecha_fin >= hoy,
+        models.Tareas.fecha_fin <= limite,
+        models.Tareas.estado != 'COMPLETADOS'
+    )
+    if session.get('username') == 'usuario':
+        query = query.filter(models.Tareas.empresa == session.get('empresa'))
+
+    tareas = query.order_by(models.Tareas.fecha_fin.asc()).all()
+    return jsonify([t.serialize() for t in tareas])
+
+
+@app.route('/api/extension/timer/save', methods=['POST'])
+@login_required
+def api_extension_timer_save():
+    """Agrega horas al campo horas_dedicadas de una tarea (guardado de cronómetro)."""
+    data = request.get_json(silent=True) or {}
+    tarea_id        = data.get('id')
+    horas_adicionales = float(data.get('horas', 0))
+
+    if not tarea_id or horas_adicionales <= 0:
+        return jsonify({'ok': False, 'error': 'Datos inválidos: se requiere id y horas > 0'}), 400
+
+    tarea = models.Tareas.query.get(tarea_id)
+    if not tarea:
+        return jsonify({'ok': False, 'error': 'Tarea no encontrada'}), 404
+
+    horas_antes = round(tarea.horas_dedicadas or 0, 2)
+    tarea.horas_dedicadas = round(horas_antes + horas_adicionales, 2)
+
+    try:
+        models.db.session.commit()
+        registrar_trazabilidad(tarea.codigo_tarea, 'MODIFICACIÓN', [{
+            'campo':    'horas_dedicadas',
+            'anterior': str(horas_antes),
+            'nuevo':    str(tarea.horas_dedicadas)
+        }])
+        models.db.session.commit()
+        return jsonify({'ok': True, 'horas_dedicadas': tarea.horas_dedicadas})
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f"Error en /api/extension/timer/save: {str(e)}")
+        return jsonify({'ok': False, 'error': 'Error interno al guardar'}), 500
 
 
 if __name__ == '__main__':
