@@ -79,13 +79,38 @@ function escAttr(str) {
 }
 
 // ── Chrome storage (timers) ───────────────────────────────────
+function contextValido() {
+    try { return !!chrome.runtime?.id; } catch { return false; }
+}
+
+function syncTimerToPage(taskId, timer, action) {
+    if (!state.fofigestTab) return;
+    try {
+        chrome.tabs.sendMessage(state.fofigestTab.id, {
+            type: 'TIMER_SYNC',
+            action,
+            taskId,
+            accumulated: timer?.accumulated || 0,
+            startedAt:   timer?.startTime  || null
+        });
+    } catch {}
+}
+
 async function getTimers() {
-    const { fg_timers } = await chrome.storage.local.get('fg_timers');
-    return fg_timers || {};
+    if (!contextValido()) return {};
+    try {
+        const { fg_timers } = await chrome.storage.local.get('fg_timers');
+        return fg_timers || {};
+    } catch {
+        return {};
+    }
 }
 
 async function saveTimers(timers) {
-    await chrome.storage.local.set({ fg_timers: timers });
+    if (!contextValido()) return;
+    try {
+        await chrome.storage.local.set({ fg_timers: timers });
+    } catch {}
 }
 
 function getElapsed(timer) {
@@ -296,7 +321,7 @@ function renderTimerCards(container, tasks) {
         const hDed     = task.horas_dedicadas || 0;
         const hEst     = task.horas_estimadas || 0;
         const progreso = hEst > 0 ? Math.min(100, Math.round((hDed / hEst) * 100)) : 0;
-        const hasSaved = elapsed > 1000;
+        const hasSaved = elapsed > 0;
 
         return `
         <div class="timer-card" data-id="${task.id}">
@@ -353,8 +378,13 @@ function renderTimerCards(container, tasks) {
 function startTimerInterval() {
     clearTimerInterval();
     timerInterval = setInterval(async () => {
+        if (!contextValido()) { clearTimerInterval(); return; }
         if (state.currentTab !== 'timers') return;
-        state.timers = await getTimers();
+        try {
+            state.timers = await getTimers();
+        } catch {
+            return;
+        }
         document.querySelectorAll('[data-timer]').forEach(el => {
             const timer = state.timers[el.dataset.timer];
             if (timer?.running) {
@@ -385,6 +415,9 @@ async function toggleTimer(taskId, taskTitle, taskEmpresa) {
     await saveTimers(timers);
     state.timers = timers;
 
+    // Sincronizar estado del timer con la app (localStorage del tablero)
+    syncTimerToPage(taskId, timer, timer.running ? 'start' : 'pause');
+
     const btn     = document.querySelector(`.btn-timer-toggle[data-id="${taskId}"]`);
     const display = document.querySelector(`[data-timer="${taskId}"]`);
     if (btn) {
@@ -393,15 +426,29 @@ async function toggleTimer(taskId, taskTitle, taskEmpresa) {
     }
     if (display) display.classList.toggle('running', timer.running);
 
+    // Agregar botón guardar en la tarjeta de Cronómetros
     const card = document.querySelector(`.timer-card[data-id="${taskId}"]`);
-    if (card && !card.querySelector('.btn-timer-save') && (timer.accumulated || 0) > 1000) {
+    if (card && !card.querySelector('.btn-timer-save') && (timer.accumulated || 0) > 0) {
         const btnsDiv = card.querySelector('.timer-btns');
         const saveBtn = document.createElement('button');
         saveBtn.className  = 'btn-timer-save';
         saveBtn.dataset.id = taskId;
         saveBtn.innerHTML  = '<i class="fas fa-save"></i> Guardar';
         saveBtn.addEventListener('click', () => saveTimer(taskId));
-        btnsDiv.appendChild(saveBtn);
+        btnsDiv.insertBefore(saveBtn, btnsDiv.querySelector('.btn-card-edit'));
+    }
+
+    // Agregar botón guardar en la tarjeta del Tablero (mini-kanban)
+    const tableroCard = document.querySelector(`.tablero-card[data-id="${taskId}"]`);
+    if (tableroCard && !tableroCard.querySelector('.btn-tablero-save') && (timer.accumulated || 0) > 0) {
+        const actDiv = tableroCard.querySelector('.tablero-card__actions');
+        const saveBtn = document.createElement('button');
+        saveBtn.className  = 'btn-tablero-save btn-card-timer';
+        saveBtn.dataset.id = taskId;
+        saveBtn.title = 'Guardar tiempo';
+        saveBtn.innerHTML  = '<i class="fas fa-save"></i>';
+        saveBtn.addEventListener('click', () => saveTimer(taskId));
+        actDiv.insertBefore(saveBtn, actDiv.firstChild);
     }
 }
 
@@ -410,20 +457,40 @@ async function saveTimer(taskId) {
     const timer  = timers[taskId];
     if (!timer) return;
 
-    const elapsed = getElapsed(timer);
-    if (elapsed < 1000) { showToast('Tiempo demasiado pequeño', 'warning'); return; }
+    // Pausar si está corriendo antes de calcular el tiempo final
+    if (timer.running && timer.startTime) {
+        timer.accumulated = getElapsed(timer);
+        timer.running = false;
+        timer.startTime = null;
+        timers[taskId] = timer;
+        await saveTimers(timers);
+        state.timers = timers;
+    }
 
-    const horas = msToHours(elapsed);
+    const elapsed = timer.accumulated || 0;
+    const horas   = msToHours(elapsed);
+
+    if (horas <= 0) {
+        showToast('Tiempo demasiado pequeño para guardar (mín. 18 seg)', 'warning');
+        return;
+    }
+
+    const timeStr = formatTime(elapsed);
+    const confirmado = window.confirm(
+        `Guardar tiempo registrado\n\nTiempo acumulado: ${timeStr} = ${horas} h\n\n¿Agregar este tiempo a las horas dedicadas de la tarea?`
+    );
+    if (!confirmado) return;
+
     const btn   = document.querySelector(`.btn-timer-save[data-id="${taskId}"]`);
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; }
 
     try {
         const res = await apiCall('POST', '/api/extension/timer/save', { id: parseInt(taskId), horas });
         if (res.ok) {
-            if (timer.running) { timer.running = false; timer.startTime = null; }
             delete timers[taskId];
             await saveTimers(timers);
             state.timers = timers;
+            syncTimerToPage(taskId, null, 'remove');
             showToast(`✅ ${formatTime(elapsed)} guardado`, 'success');
             setTimeout(loadTimersTab, 700);
         } else {
@@ -506,8 +573,10 @@ function renderTableroTasks(container, tasks) {
         const hEst    = t.horas_estimadas || 0;
         const prog    = hEst > 0 ? Math.min(100, Math.round((hDed / hEst) * 100)) : 0;
         const urgente = isUrgent(t.fecha_fin) && t.estado !== 'COMPLETADOS';
-        const timer   = state.timers[t.id];
-        const running = timer?.running || false;
+        const timer    = state.timers[t.id];
+        const running  = timer?.running || false;
+        const elapsed  = getElapsed(timer);
+        const hasSaved = elapsed > 0;
 
         const opciones = ESTADOS_KANBAN
             .filter(e => e.key !== t.estado)
@@ -541,6 +610,10 @@ function renderTableroTasks(container, tasks) {
                             title="${running ? 'Cronómetro corriendo' : 'Iniciar cronómetro'}">
                         <i class="fas fa-${running ? 'pause' : 'stopwatch'}"></i>
                     </button>` : ''}
+                    ${hasSaved ? `
+                    <button class="btn-card-timer btn-tablero-save" data-id="${t.id}" title="Guardar tiempo (${formatTime(elapsed)})">
+                        <i class="fas fa-save"></i>
+                    </button>` : ''}
                     <button class="btn-card-edit btn-edit-task" data-id="${t.id}" title="Editar tarea">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -570,6 +643,10 @@ function renderTableroTasks(container, tasks) {
                 showToast('⏱ Cronómetro iniciado', 'info');
             }
         });
+    });
+
+    container.querySelectorAll('.btn-tablero-save').forEach(btn => {
+        btn.addEventListener('click', () => saveTimer(btn.dataset.id));
     });
 
     container.querySelectorAll('.btn-edit-task').forEach(btn => {

@@ -1533,6 +1533,29 @@ function eliminarTarea() {
 {% endif %}
 
 /* ── Inicialización ── */
+/* Sincronización con la extensión Chrome — reacciona sin recargar la página */
+window.addEventListener('fg-timer-sync', function (e) {
+    const { taskId, action } = e.detail;
+    if (TimerManager._intervals[taskId]) {
+        clearInterval(TimerManager._intervals[taskId]);
+        delete TimerManager._intervals[taskId];
+    }
+    if (action === 'start') {
+        TimerManager._updateDisplay(taskId);
+        TimerManager._updateUI(taskId, true);
+        TimerManager._intervals[taskId] = setInterval(function () {
+            TimerManager._tick(taskId);
+        }, 1000);
+    } else if (action === 'pause') {
+        TimerManager._updateDisplay(taskId);
+        TimerManager._updateUI(taskId, false);
+    } else if (action === 'remove') {
+        const displayEl = document.querySelector(`.kb-timer-display[data-id="${taskId}"]`);
+        if (displayEl) displayEl.textContent = '00:00:00';
+        TimerManager._updateUI(taskId, false);
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     TimerManager.init();
     /* Limpiar el campo readonly de código si el modal se abre para nuevo */

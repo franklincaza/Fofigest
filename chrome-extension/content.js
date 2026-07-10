@@ -19,6 +19,25 @@
     } catch (_) {}
 
     chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+        if (message.type === 'TIMER_SYNC') {
+            const { action, taskId, accumulated, startedAt } = message;
+            const key = `fofigest_timer_${taskId}`;
+            if (action === 'remove') {
+                localStorage.removeItem(key);
+            } else {
+                localStorage.setItem(key, JSON.stringify({
+                    accumulated: Math.floor((accumulated || 0) / 1000),
+                    startedAt: action === 'start' ? (startedAt || Date.now()) : null,
+                    isRunning: action === 'start'
+                }));
+            }
+            window.dispatchEvent(new CustomEvent('fg-timer-sync', {
+                detail: { taskId: parseInt(taskId, 10), action }
+            }));
+            sendResponse({ ok: true });
+            return true;
+        }
+
         if (message.type !== 'API_CALL') return false;
 
         const { method = 'GET', path, body } = message;
