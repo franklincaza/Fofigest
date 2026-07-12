@@ -173,7 +173,7 @@ app.config['MAIL_USE_TLS'] = True  # Usar TLS (seguridad)
 app.config['MAIL_USE_SSL'] = False  # No usar SSL (se usa TLS)
 app.config['MAIL_USERNAME'] = config.config["EMAIL"]  # Tu correo electrónico
 app.config['MAIL_PASSWORD'] = config.config["contraseña_google"]  # Contraseña de tu correo (considera usar variables de entorno para mayor seguridad)
-app.config['MAIL_DEFAULT_SENDER'] = ('Notificaciones Fofigest', 'franklinranmirez07@hotmail.com')  # Nombre del remitente y correo por defecto
+app.config['MAIL_DEFAULT_SENDER'] = ('Notificaciones Fofigest', config.config["EMAIL"])  # Remitente por defecto: misma cuenta Gmail del SMTP
 mail = Mail(app)
 # Inicialización de la base de datos con la instancia de la aplicación Flask
 models.db.init_app(app)
