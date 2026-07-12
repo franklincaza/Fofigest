@@ -354,6 +354,16 @@ class CuentaCobro(db.Model):
     detalles = db.relationship('DetalleCuentaCobro', backref='cuenta', lazy=True, cascade='all, delete-orphan')
     colillas = db.relationship('ColillaPago', backref='cuenta', lazy=True)
     confirmacion = db.relationship('ConfirmacionPago', backref='cuenta', uselist=False, lazy=True)
+    abonos = db.relationship('AbonoCuentaCobro', backref='cuenta', lazy=True, cascade='all, delete-orphan',
+                             order_by='AbonoCuentaCobro.fecha_abono')
+
+    @property
+    def valor_pagado(self):
+        return sum(float(a.monto) for a in self.abonos)
+
+    @property
+    def saldo_pendiente(self):
+        return float(self.valor_total) - self.valor_pagado
 
     def serialize(self):
         return {
@@ -436,6 +446,26 @@ class ConfirmacionPago(db.Model):
             'token_confirmacion': self.token_confirmacion,
             'inconveniente': self.inconveniente,
             'fecha_inconveniente': self.fecha_inconveniente.strftime('%Y-%m-%d %H:%M:%S') if self.fecha_inconveniente else None
+        }
+
+
+class AbonoCuentaCobro(db.Model):
+    __tablename__ = 'abono_cuenta_cobro'
+    id = db.Column(db.Integer, primary_key=True)
+    cuenta_cobro_id = db.Column(db.Integer, db.ForeignKey('cuenta_cobro.id'), nullable=False)
+    monto = db.Column(db.Numeric(12, 2), nullable=False)
+    fecha_abono = db.Column(db.DateTime, default=datetime.now)
+    registrado_por = db.Column(db.String(100), nullable=False)
+    observacion = db.Column(db.Text, nullable=True)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'cuenta_cobro_id': self.cuenta_cobro_id,
+            'monto': float(self.monto) if self.monto else 0,
+            'fecha_abono': self.fecha_abono.strftime('%Y-%m-%d %H:%M:%S') if self.fecha_abono else None,
+            'registrado_por': self.registrado_por,
+            'observacion': self.observacion
         }
 
 

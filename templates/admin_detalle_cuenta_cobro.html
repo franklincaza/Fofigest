@@ -179,6 +179,119 @@
     </div>
   </div>
 
+  <!-- Abonos -->
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-primary"><i class="fas fa-money-bill-wave me-2"></i>Abonos al Pago</h6>
+      {% set pct = ((cuenta.valor_pagado / (cuenta.valor_total | float) * 100) | round(1)) if cuenta.valor_total > 0 else 0 %}
+      <span class="small text-muted">{{ pct }}% pagado</span>
+    </div>
+    <div class="card-body">
+
+      <!-- Resumen financiero -->
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div class="border rounded p-3 text-center bg-light">
+            <div class="small text-muted mb-1">Valor Total</div>
+            <div class="fw-bold text-dark">${{ '{:,.0f}'.format(cuenta.valor_total) }} COP</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="border rounded p-3 text-center bg-light">
+            <div class="small text-muted mb-1">Total Abonado</div>
+            <div class="fw-bold text-success">${{ '{:,.0f}'.format(cuenta.valor_pagado) }} COP</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="border rounded p-3 text-center bg-light">
+            <div class="small text-muted mb-1">Saldo Pendiente</div>
+            <div class="fw-bold {% if cuenta.saldo_pendiente <= 0 %}text-success{% else %}text-danger{% endif %}">
+              ${{ '{:,.0f}'.format(cuenta.saldo_pendiente) }} COP
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de progreso -->
+      <div class="progress mb-4" style="height:12px">
+        <div class="progress-bar bg-success" role="progressbar"
+             style="width:{{ pct }}%"
+             aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+
+      <!-- Formulario nuevo abono -->
+      {% if cuenta.estado in ('APROBADA', 'REVISIÓN') and cuenta.saldo_pendiente > 0 %}
+      <form method="POST" action="{{ url_for('admin_registrar_abono', id=cuenta.id) }}" id="formAbono">
+        <div class="row g-3 align-items-end">
+          <div class="col-md-3">
+            <label class="form-label fw-semibold">Monto del abono (COP)</label>
+            <input type="number" name="monto" class="form-control" min="1"
+                   max="{{ cuenta.saldo_pendiente | round(0) | int }}"
+                   step="1" placeholder="Ej: 500000" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Observación <span class="text-muted fw-normal">(opcional)</span></label>
+            <input type="text" name="observacion_abono" class="form-control"
+                   placeholder="Ej: Pago parcial transferencia Bancolombia">
+          </div>
+          <div class="col-md-3">
+            <button type="button" class="btn btn-primary w-100" onclick="confirmarAbono()">
+              <i class="fas fa-plus-circle me-1"></i>Registrar abono
+            </button>
+          </div>
+        </div>
+      </form>
+      {% elif cuenta.saldo_pendiente <= 0 %}
+      <div class="alert alert-success mb-0 py-2">
+        <i class="fas fa-check-circle me-1"></i>Cuenta pagada en su totalidad.
+      </div>
+      {% else %}
+      <div class="alert alert-secondary mb-0 py-2 small">
+        <i class="fas fa-info-circle me-1"></i>Solo se pueden registrar abonos en cuentas con estado APROBADA o REVISIÓN.
+      </div>
+      {% endif %}
+
+      <!-- Historial de abonos -->
+      {% if cuenta.abonos %}
+      <hr>
+      <h6 class="fw-bold text-secondary small mb-2"><i class="fas fa-history me-1"></i>Historial de abonos</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th class="text-end">Monto</th>
+              <th>Registrado por</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in cuenta.abonos %}
+            <tr>
+              <td class="text-muted small">{{ loop.index }}</td>
+              <td class="small">{{ a.fecha_abono.strftime('%d/%m/%Y %H:%M') if a.fecha_abono else '—' }}</td>
+              <td class="text-end fw-bold text-success">${{ '{:,.0f}'.format(a.monto) }} COP</td>
+              <td class="small text-muted">{{ a.registrado_por }}</td>
+              <td class="small">{{ a.observacion or '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr class="table-secondary fw-bold">
+              <td colspan="2" class="text-end small">Total abonado</td>
+              <td class="text-end text-success">${{ '{:,.0f}'.format(cuenta.valor_pagado) }} COP</td>
+              <td colspan="2"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+
   <!-- Tareas incluidas -->
   <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
@@ -505,6 +618,27 @@ document.getElementById('selectEstado').addEventListener('change', function() {
     }).then(r => { if (!r.isConfirmed) this.value = '{{ cuenta.estado }}'; });
   }
 });
+
+function confirmarAbono() {
+  const input = document.querySelector('#formAbono input[name="monto"]');
+  const monto = parseFloat(input.value);
+  if (!monto || monto <= 0) {
+    Swal.fire('Campo requerido', 'Ingresa un monto válido.', 'warning');
+    return;
+  }
+  const saldo = {{ cuenta.saldo_pendiente | round(0) | int }};
+  const esPagoCompleto = monto >= saldo - 1;
+  Swal.fire({
+    title: esPagoCompleto ? '¿Registrar pago final?' : '¿Registrar abono?',
+    html: `Monto: <strong>$${monto.toLocaleString('es-CO')} COP</strong>${esPagoCompleto ? '<br><span class="text-success">Esto completará el pago y marcará la cuenta como <strong>PAGADA</strong>.</span>' : ''}`,
+    icon: esPagoCompleto ? 'question' : 'info',
+    showCancelButton: true,
+    confirmButtonColor: esPagoCompleto ? '#1cc88a' : '#4e73df',
+    cancelButtonColor: '#858796',
+    confirmButtonText: 'Sí, registrar',
+    cancelButtonText: 'Cancelar'
+  }).then(r => { if (r.isConfirmed) document.getElementById('formAbono').submit(); });
+}
 
 function desvincularTarea(cuentaId, tareaId, detalleId) {
   Swal.fire({

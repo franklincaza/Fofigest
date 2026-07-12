@@ -109,6 +109,81 @@
     </div>
   </div>
 
+  <!-- Abonos -->
+  {% if cuenta.abonos or cuenta.estado in ('APROBADA', 'REVISIÓN', 'PAGADA') %}
+  <div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-primary"><i class="fas fa-money-bill-wave me-2"></i>Estado del Pago</h6>
+      {% set pct = ((cuenta.valor_pagado / (cuenta.valor_total | float) * 100) | round(1)) if cuenta.valor_total > 0 else 0 %}
+      <span class="small text-muted">{{ pct }}% pagado</span>
+    </div>
+    <div class="card-body">
+      <div class="row g-3 mb-3">
+        <div class="col-md-4">
+          <div class="border rounded p-3 text-center bg-light">
+            <div class="small text-muted mb-1">Valor Total</div>
+            <div class="fw-bold">${{ '{:,.0f}'.format(cuenta.valor_total) }} COP</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="border rounded p-3 text-center bg-light">
+            <div class="small text-muted mb-1">Total Abonado</div>
+            <div class="fw-bold text-success">${{ '{:,.0f}'.format(cuenta.valor_pagado) }} COP</div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="border rounded p-3 text-center bg-light">
+            <div class="small text-muted mb-1">Saldo Pendiente</div>
+            <div class="fw-bold {% if cuenta.saldo_pendiente <= 0 %}text-success{% else %}text-warning{% endif %}">
+              ${{ '{:,.0f}'.format(cuenta.saldo_pendiente) }} COP
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="progress mb-3" style="height:10px">
+        <div class="progress-bar bg-success" role="progressbar"
+             style="width:{{ pct }}%"
+             aria-valuenow="{{ pct }}" aria-valuemin="0" aria-valuemax="100">
+        </div>
+      </div>
+      {% if cuenta.abonos %}
+      <h6 class="fw-bold text-secondary small mb-2"><i class="fas fa-history me-1"></i>Historial de abonos</h6>
+      <div class="table-responsive">
+        <table class="table table-sm table-bordered mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Fecha</th>
+              <th class="text-end">Monto</th>
+              <th>Observación</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for a in cuenta.abonos %}
+            <tr>
+              <td class="text-muted small">{{ loop.index }}</td>
+              <td class="small">{{ a.fecha_abono.strftime('%d/%m/%Y %H:%M') if a.fecha_abono else '—' }}</td>
+              <td class="text-end fw-bold text-success">${{ '{:,.0f}'.format(a.monto) }} COP</td>
+              <td class="small">{{ a.observacion or '—' }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tfoot>
+            <tr class="table-secondary fw-bold">
+              <td colspan="2" class="text-end small">Total abonado</td>
+              <td class="text-end text-success">${{ '{:,.0f}'.format(cuenta.valor_pagado) }} COP</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      {% else %}
+      <p class="text-muted small mb-0"><i class="fas fa-info-circle me-1"></i>Aún no se han registrado abonos.</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Tareas incluidas -->
   <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">

@@ -2654,6 +2654,53 @@ def admin_detalle_cuenta_cobro(id):
     return render_template('admin_detalle_cuenta_cobro.html', cuenta=cuenta, perfil=perfil)
 
 
+def _enviar_email_abono(cuenta, monto, saldo_restante, observacion=None):
+    try:
+        correo = _correo_usuario(cuenta.usuario_id)
+        if not correo:
+            return
+        obs_html = (f'<p><strong>Nota:</strong> <em>{observacion}</em></p>') if observacion else ''
+        pct = int(round((float(cuenta.valor_pagado) / float(cuenta.valor_total) * 100), 0)) if float(cuenta.valor_total) > 0 else 0
+        msg = Message(
+            subject=f'Abono registrado — Cuenta #{cuenta.numero_cuenta}',
+            recipients=[correo]
+        )
+        msg.html = f"""
+        <h2 style="color:#4e73df">💰 Abono registrado en tu cuenta de cobro</h2>
+        <p>Hola {_nombre_usuario(cuenta.usuario_id)},</p>
+        <p>Se ha registrado un nuevo abono en tu cuenta <strong>{cuenta.numero_cuenta}</strong>
+        ({cuenta.mes} {cuenta.anio} — {cuenta.empresa_pagadora}).</p>
+        <table style="border-collapse:collapse;width:100%;max-width:420px;margin:.75rem 0;font-size:10pt">
+          <tr>
+            <td style="padding:.35rem .6rem;color:#555">Monto abonado:</td>
+            <td style="padding:.35rem .6rem;font-weight:700;color:#1cc88a">${monto:,.0f} COP</td>
+          </tr>
+          <tr style="background:#f8f9fc">
+            <td style="padding:.35rem .6rem;color:#555">Total pagado:</td>
+            <td style="padding:.35rem .6rem;font-weight:700">${float(cuenta.valor_pagado):,.0f} COP</td>
+          </tr>
+          <tr>
+            <td style="padding:.35rem .6rem;color:#555">Saldo pendiente:</td>
+            <td style="padding:.35rem .6rem;font-weight:700;color:#e74a3b">${saldo_restante:,.0f} COP</td>
+          </tr>
+          <tr style="background:#f8f9fc">
+            <td style="padding:.35rem .6rem;color:#555">Progreso:</td>
+            <td style="padding:.35rem .6rem;font-weight:700">{pct}% del total</td>
+          </tr>
+        </table>
+        {obs_html}
+        <p><a href="{_url_ver_cuenta(cuenta.id)}"
+              style="background:#4e73df;color:white;padding:10px 20px;
+                     border-radius:5px;text-decoration:none;display:inline-block;">
+            Ver mi cuenta de cobro
+        </a></p>
+        <p style="font-size:.8rem;color:#858796">
+            Cuando el pago esté completo recibirás una notificación adicional.</p>"""
+        mail.send(msg)
+    except Exception as e:
+        logging.error(f'Error enviando email abono cuenta {cuenta.id}: {e}')
+
+
 def _enviar_email_cambio_estado(cuenta, nuevo_estado, observacion=None):
     try:
         correo = _correo_usuario(cuenta.usuario_id)
@@ -2798,6 +2845,113 @@ def admin_subir_colilla(id):
         models.db.session.rollback()
         logging.error(f'Error subiendo colilla: {e}')
         flash('Error al subir el archivo.', 'danger')
+
+    return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+
+@app.route('/admin/cuenta-cobro/<int:id>/abono', methods=['POST'])
+@login_required
+def admin_registrar_abono(id):
+    _check_admin()
+    cuenta = models.CuentaCobro.query.get_or_404(id)
+
+    if cuenta.estado not in ('APROBADA', 'REVISIÓN'):
+        flash('Solo se pueden registrar abonos en cuentas APROBADAS o en REVISIÓN.', 'danger')
+        return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+    monto_str = request.form.get('monto', '').strip().replace(',', '.')
+    observacion = request.form.get('observacion_abono', '').strip() or None
+
+    try:
+        monto = float(monto_str)
+        if monto <= 0:
+            raise ValueError('monto no positivo')
+    except (ValueError, TypeError):
+        flash('Monto inválido. Ingrese un valor numérico positivo.', 'danger')
+        return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+    saldo = float(cuenta.valor_total) - sum(float(a.monto) for a in cuenta.abonos)
+    if monto > saldo + 0.01:
+        flash(f'El monto supera el saldo pendiente (${saldo:,.0f} COP).', 'danger')
+        return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
+
+    try:
+        abono = models.AbonoCuentaCobro(
+            cuenta_cobro_id=cuenta.id,
+            monto=monto,
+            registrado_por=session.get('correo', 'admin'),
+            observacion=observacion
+        )
+        models.db.session.add(abono)
+        models.db.session.flush()
+
+        total_pagado = sum(float(a.monto) for a in cuenta.abonos)
+        pago_completo = total_pagado >= float(cuenta.valor_total) - 0.01
+        saldo_restante = float(cuenta.valor_total) - total_pagado
+
+        if pago_completo:
+            cuenta.estado = 'PAGADA'
+            cuenta.fecha_pago = datetime.now()
+            token = str(uuid.uuid4())
+            confirmacion = models.ConfirmacionPago.query.filter_by(cuenta_cobro_id=cuenta.id).first()
+            if confirmacion is None:
+                confirmacion = models.ConfirmacionPago(cuenta_cobro_id=cuenta.id)
+                models.db.session.add(confirmacion)
+            confirmacion.confirmado = False
+            confirmacion.token_confirmacion = token
+            confirmacion.fecha_confirmacion = None
+
+        models.db.session.commit()
+
+        if pago_completo:
+            title = f'Pago completo — {cuenta.numero_cuenta}'
+            message = (f'Se registró el abono final de ${monto:,.0f} COP. '
+                       f'Tu cuenta ha sido marcada como PAGADA.')
+        else:
+            title = f'Abono registrado — {cuenta.numero_cuenta}'
+            message = (f'Se registró un abono de ${monto:,.0f} COP. '
+                       f'Saldo pendiente: ${saldo_restante:,.0f} COP.')
+
+        notif = models.Notification(
+            user_id=cuenta.usuario_id,
+            sender_id=current_user.id,
+            title=title,
+            message=message,
+            url=url_for('detalle_cuenta_cobro', id=cuenta.id),
+            url_label='Ver cuenta',
+            type='abono_cuenta_cobro'
+        )
+        models.db.session.add(notif)
+        models.db.session.commit()
+
+        push_service.send_to_user(
+            cuenta.usuario_id, title, message,
+            url_for('detalle_cuenta_cobro', id=cuenta.id)
+        )
+        logging.info(
+            f'Abono ${monto:,.0f} registrado en cuenta {cuenta.numero_cuenta} '
+            f'por {session.get("correo")}'
+        )
+
+        if pago_completo:
+            _enviar_email_pago_procesado(cuenta, token)
+            flash(
+                f'Abono de ${monto:,.0f} COP registrado. '
+                f'Cuenta marcada como PAGADA. Se notificó al trabajador.',
+                'success'
+            )
+        else:
+            _enviar_email_abono(cuenta, monto, saldo_restante, observacion)
+            flash(
+                f'Abono de ${monto:,.0f} COP registrado. '
+                f'Saldo pendiente: ${saldo_restante:,.0f} COP.',
+                'success'
+            )
+
+    except Exception as e:
+        models.db.session.rollback()
+        logging.error(f'Error registrando abono cuenta {id}: {e}')
+        flash('Error al registrar el abono.', 'danger')
 
     return redirect(url_for('admin_detalle_cuenta_cobro', id=id))
 
