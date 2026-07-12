@@ -2,12 +2,168 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-
+import logging
 
 # Initialize the SQLAlchemy instance
 db = SQLAlchemy()
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# AUTO-MIGRACIÓN — sincroniza el esquema de la BD con los modelos automáticamente
+# ═══════════════════════════════════════════════════════════════════════════════
+
+def auto_migrate(db):
+    """
+    Detecta diferencias entre los modelos SQLAlchemy y el esquema real de la BD,
+    y aplica automáticamente los cambios necesarios al arrancar la aplicación.
+
+    Soporta:
+      · SQLite  (desarrollo local)
+      · PostgreSQL / Supabase  (producción)
+
+    Operaciones que realiza:
+      1. Crea tablas nuevas que existen en los modelos pero no en la BD.
+      2. Agrega columnas que faltan en tablas existentes (ALTER TABLE ADD COLUMN).
+      3. En PostgreSQL, crea/actualiza los tipos ENUM necesarios.
+
+    No modifica columnas existentes ni las elimina — solo agrega lo que falta.
+    """
+    engine    = db.engine
+    is_pg     = engine.dialect.name == 'postgresql'
+
+    # ── 1. Para PostgreSQL: crear/actualizar enum types ANTES de create_all ──
+    #    (create_all los necesita para crear tablas que los referencian)
+    if is_pg:
+        _sync_pg_enums(engine, db)
+
+    # ── 2. Crear tablas nuevas ─────────────────────────────────────────────────
+    try:
+        db.create_all()
+    except Exception as e:
+        logging.warning(f'auto_migrate · create_all falló: {e}')
+
+    # ── 3. Agregar columnas faltantes a tablas existentes ─────────────────────
+    from sqlalchemy import inspect as sa_inspect, text
+
+    inspector      = sa_inspect(engine)
+    existing_tables = set(inspector.get_table_names())
+
+    for mapper in db.Model.registry.mappers:
+        table  = mapper.local_table
+        tname  = table.name
+
+        if tname not in existing_tables:
+            logging.warning(f'auto_migrate · tabla {tname!r} no existe después de create_all')
+            continue
+
+        db_cols = {c['name'] for c in inspector.get_columns(tname)}
+
+        for col in table.columns:
+            if col.name in db_cols:
+                continue  # la columna ya existe, nada que hacer
+
+            # ── Determinar tipo SQL de la columna nueva ──────────────────────
+            try:
+                col_type_str = col.type.compile(dialect=engine.dialect)
+            except Exception:
+                col_type_str = 'TEXT'   # fallback seguro
+
+            # ── Cláusula DEFAULT (solo para literales, no para callables) ────
+            default_clause = ''
+            if col.server_default is not None:
+                raw = getattr(col.server_default, 'arg', None)
+                if raw is not None:
+                    default_clause = f' DEFAULT {raw}'
+            elif col.default is not None and hasattr(col.default, 'arg'):
+                arg = col.default.arg
+                if not callable(arg):                       # excluir datetime.now, etc.
+                    if isinstance(arg, bool):
+                        default_clause = f" DEFAULT {'TRUE' if arg else 'FALSE'}"
+                    elif isinstance(arg, (int, float)):
+                        default_clause = f' DEFAULT {arg}'
+                    elif isinstance(arg, str):
+                        esc = arg.replace("'", "''")
+                        default_clause = f" DEFAULT '{esc}'"
+
+            # SQLite no admite NOT NULL en ADD COLUMN sin DEFAULT → lo relajamos
+            nullable_clause = ''
+            if not col.nullable and is_pg and default_clause:
+                nullable_clause = ' NOT NULL'
+
+            sql = (f'ALTER TABLE "{tname}" ADD COLUMN '
+                   f'"{col.name}" {col_type_str}{default_clause}{nullable_clause}')
+
+            try:
+                with engine.connect() as conn:
+                    if is_pg:
+                        conn.execution_options(isolation_level='AUTOCOMMIT')
+                    conn.execute(text(sql))
+                    if not is_pg:
+                        conn.commit()
+                logging.info(f'auto_migrate · ✓ {tname}.{col.name} ({col_type_str})')
+            except Exception as e:
+                logging.warning(f'auto_migrate · no se pudo agregar {tname}.{col.name}: {e}')
+
+    # ── 4. PostgreSQL: segunda pasada de enums (por si se agregaron columnas) ─
+    if is_pg:
+        _sync_pg_enums(engine, db)
+
+
+def _sync_pg_enums(engine, db):
+    """
+    Para PostgreSQL: recorre todos los modelos y garantiza que cada tipo ENUM
+    exista en la BD con todos sus valores actuales.
+    Crea el tipo si no existe; agrega valores nuevos si faltan.
+    """
+    from sqlalchemy import text
+
+    for mapper in db.Model.registry.mappers:
+        for col in mapper.local_table.columns:
+            col_type = col.type
+            # Solo columnas SQLAlchemy Enum con nombre explícito
+            if not hasattr(col_type, 'enums') or not getattr(col_type, 'name', None):
+                continue
+
+            type_name = col_type.name
+            values    = list(col_type.enums)
+
+            # ── Crear el tipo si no existe ───────────────────────────────────
+            try:
+                with engine.connect() as conn:
+                    conn.execution_options(isolation_level='AUTOCOMMIT')
+                    vals_sql = ', '.join(f"'{v}'" for v in values)
+                    conn.execute(text(
+                        f"DO $$ BEGIN "
+                        f"  IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname='{type_name}') "
+                        f"  THEN CREATE TYPE {type_name} AS ENUM ({vals_sql}); "
+                        f"END IF; END $$;"
+                    ))
+            except Exception as e:
+                logging.warning(f'_sync_pg_enums · create {type_name}: {e}')
+                continue
+
+            # ── Agregar valores que falten ───────────────────────────────────
+            try:
+                with engine.connect() as conn:
+                    rows = conn.execute(
+                        text("SELECT enumlabel FROM pg_enum e "
+                             "JOIN pg_type t ON e.enumtypid = t.oid "
+                             "WHERE t.typname = :n"),
+                        {'n': type_name}
+                    ).fetchall()
+                existing = {r[0] for r in rows}
+
+                for val in values:
+                    if val not in existing:
+                        with engine.connect() as conn2:
+                            conn2.execution_options(isolation_level='AUTOCOMMIT')
+                            conn2.execute(text(
+                                f"ALTER TYPE {type_name} ADD VALUE '{val}'"
+                            ))
+                        logging.info(f'_sync_pg_enums · {type_name}: +{val!r}')
+            except Exception as e:
+                logging.warning(f'_sync_pg_enums · sync {type_name}: {e}')
 
 class Empresas(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -369,4 +525,65 @@ class PushSubscription(db.Model):
             'endpoint': self.endpoint,
             'is_active': self.is_active,
             'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
+        }
+
+
+# ── Módulo Reuniones ─────────────────────────────────────────────────────────
+
+class Reunion(db.Model):
+    __tablename__ = 'reuniones'
+
+    id                 = db.Column(db.Integer, primary_key=True)
+    titulo             = db.Column(db.String(200), nullable=False)
+    descripcion        = db.Column(db.Text, nullable=True)
+    fecha_inicio       = db.Column(db.DateTime, nullable=False)
+    fecha_fin          = db.Column(db.DateTime, nullable=False)
+    organizador_correo = db.Column(db.String(100), nullable=False)
+    empresa            = db.Column(db.String(100), nullable=False)
+    tarea_origen_id    = db.Column(db.Integer, nullable=True)
+    plataforma         = db.Column(db.Enum('Teams', 'Google Meet', 'Zoom', 'Presencial', 'Otro',
+                                           name='plataforma_reunion'), nullable=False, default='Teams')
+    url_reunion        = db.Column(db.String(500), nullable=True)
+    estado             = db.Column(db.Enum('PROGRAMADA', 'EN_CURSO', 'REALIZADA', 'CANCELADA',
+                                           name='estado_reunion'), nullable=False, default='PROGRAMADA')
+    created_at         = db.Column(db.DateTime, default=datetime.now)
+
+    participantes = db.relationship('ReunionParticipante', backref='reunion',
+                                    lazy=True, cascade='all, delete-orphan')
+
+    def serialize(self):
+        return {
+            'id':                 self.id,
+            'titulo':             self.titulo,
+            'descripcion':        self.descripcion,
+            'fecha_inicio':       self.fecha_inicio.strftime('%Y-%m-%dT%H:%M') if self.fecha_inicio else None,
+            'fecha_fin':          self.fecha_fin.strftime('%Y-%m-%dT%H:%M') if self.fecha_fin else None,
+            'organizador_correo': self.organizador_correo,
+            'empresa':            self.empresa,
+            'tarea_origen_id':    self.tarea_origen_id,
+            'plataforma':         self.plataforma,
+            'url_reunion':        self.url_reunion,
+            'estado':             self.estado,
+            'created_at':         self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
+            'participantes':      [p.serialize() for p in self.participantes],
+        }
+
+
+class ReunionParticipante(db.Model):
+    __tablename__ = 'reunion_participantes'
+
+    id               = db.Column(db.Integer, primary_key=True)
+    reunion_id       = db.Column(db.Integer, db.ForeignKey('reuniones.id'), nullable=False)
+    correo_usuario   = db.Column(db.String(100), nullable=False)
+    estado_respuesta = db.Column(db.Enum('PENDIENTE', 'ACEPTADA', 'RECHAZADA',
+                                         name='estado_invitacion'), nullable=False, default='PENDIENTE')
+    tarea_generada_id = db.Column(db.Integer, nullable=True)
+
+    def serialize(self):
+        return {
+            'id':                self.id,
+            'reunion_id':        self.reunion_id,
+            'correo_usuario':    self.correo_usuario,
+            'estado_respuesta':  self.estado_respuesta,
+            'tarea_generada_id': self.tarea_generada_id,
         }

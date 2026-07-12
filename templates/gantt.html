@@ -780,6 +780,11 @@ body.modo-cliente #btn-cliente-toggle .txt-off { display: inline; }
           <i class="fas fa-trash-alt me-1"></i>Eliminar
         </button>
         <div class="d-flex gap-2">
+          <button class="btn btn-info btn-sm" id="btn-reunion"
+                  onclick="window.location.href='/reuniones?tarea_id='+el('d-cod').value"
+                  title="Crear reunión desde esta tarea" style="color:#fff">
+            <i class="fas fa-video me-1"></i>Reunión
+          </button>
           <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
           <button class="btn btn-primary btn-sm" id="btn-save">
             <i class="fas fa-save me-1"></i>Guardar

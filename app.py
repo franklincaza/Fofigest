@@ -126,6 +126,7 @@ app.secret_key = 'GDSGODSGFY56D4F8asc8assS6854DCSX85Z13ZXC8478SD94C6XZ1asSDA6F48
 
 # Configuración de sesiones permanentes
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=30)  # Sesión válida por 30 días
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SESSION_COOKIE_SECURE'] = False  # Cambiar a True en producción con HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True  # Protección XSS
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # Protección CSRF
@@ -184,76 +185,13 @@ login_manager.login_view = 'login'
 ckeditor = CKEditor(app)
 CKEDITOR_PKG_TYPE ="basic"
 
-# Crear las tablas en la base de datos si no existen.
-# Es recomendable envolver este código dentro de un app context
-# para evitar problemas de conexión con la base de datos.
+# Sincronizar esquema de BD con los modelos automaticamente al arrancar.
+# auto_migrate: crea tablas nuevas, agrega columnas faltantes y mantiene
+# los tipos ENUM de PostgreSQL sin intervencion manual.
 with app.app_context():
-    models.db.create_all()  # Crear todas las tablas definidas en los modelos de SQLAlchemy
-    # Migración manual: agrega columnas OTP si no existen (SQLite no las crea automáticamente)
-    try:
-        from sqlalchemy import inspect as sa_inspect
-        inspector = sa_inspect(models.db.engine)
-        existing_cols = [col['name'] for col in inspector.get_columns('usuarios')]
-        if 'otp_code' not in existing_cols:
-            models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_code VARCHAR(6)'))
-        if 'otp_expiry' not in existing_cols:
-            models.db.session.execute(text('ALTER TABLE usuarios ADD COLUMN otp_expiry TIMESTAMP'))
-        models.db.session.commit()
-    except Exception as e:
-        models.db.session.rollback()
-        app.logger.warning(f'OTP migration skipped: {e}')
-
-    # Migración: columnas de facturación en tareas
-    try:
-        from sqlalchemy import inspect as sa_inspect
-        inspector2 = sa_inspect(models.db.engine)
-        existing_cols_tareas = [col['name'] for col in inspector2.get_columns('tareas')]
-        if 'facturada' not in existing_cols_tareas:
-            models.db.session.execute(text('ALTER TABLE tareas ADD COLUMN facturada BOOLEAN DEFAULT FALSE'))
-        if 'cuenta_cobro_id' not in existing_cols_tareas:
-            models.db.session.execute(text('ALTER TABLE tareas ADD COLUMN cuenta_cobro_id INTEGER'))
-        models.db.session.commit()
-    except Exception as e:
-        models.db.session.rollback()
-        app.logger.warning(f'Tareas billing migration skipped: {e}')
-
-    # Migración: columna firma_imagen en perfil_pago
-    try:
-        inspector3 = sa_inspect(models.db.engine)
-        existing_cols_perfil = [col['name'] for col in inspector3.get_columns('perfil_pago')]
-        if 'firma_imagen' not in existing_cols_perfil:
-            models.db.session.execute(text('ALTER TABLE perfil_pago ADD COLUMN firma_imagen TEXT'))
-            models.db.session.commit()
-    except Exception as e:
-        models.db.session.rollback()
-        app.logger.warning(f'PerfilPago firma_imagen migration skipped: {e}')
-
-    # Migración: sincronizar enum estado_cuenta con valores del modelo (solo PostgreSQL)
-    if models.db.engine.dialect.name == 'postgresql':
-        try:
-            required_enum_vals = ['PENDIENTE', 'REVISI\u00d3N', 'APROBADA', 'PAGADA', 'RECHAZADA']
-            with models.db.engine.connect() as raw_conn:
-                existing_rows = raw_conn.execute(
-                    text("SELECT enumlabel FROM pg_enum e JOIN pg_type t ON e.enumtypid=t.oid WHERE t.typname='estado_cuenta'")
-                ).fetchall()
-                existing_enum_vals = {r[0] for r in existing_rows}
-            for val in required_enum_vals:
-                if val not in existing_enum_vals:
-                    with models.db.engine.connect() as raw_conn2:
-                        raw_conn2.execution_options(isolation_level='AUTOCOMMIT')
-                        raw_conn2.execute(text(f"ALTER TYPE estado_cuenta ADD VALUE '{val}'"))
-                    app.logger.info(f'estado_cuenta enum: added value {val!r}')
-        except Exception as e:
-            app.logger.warning(f'estado_cuenta enum migration skipped: {e}')
-
-    # Crear directorio de colillas si no existe
+    models.auto_migrate(models.db)
+    # Directorio de archivos adjuntos de pagos
     os.makedirs(os.path.join(app.root_path, 'static', 'colillas'), exist_ok=True)
-
-    # Migración: tablas de notificaciones push
-    try:
-        models.db.create_all()  # crea notifications y push_subscriptions si no existen
-    except Exception as e:
-        app.logger.warning(f'Notifications migration skipped: {e}')
 
 # Cargar usuario
 @login_manager.user_loader
@@ -3177,6 +3115,413 @@ def api_extension_timer_save():
         models.db.session.rollback()
         logging.error(f"Error en /api/extension/timer/save: {str(e)}")
         return jsonify({'ok': False, 'error': 'Error interno al guardar'}), 500
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MÓDULO REUNIONES — gestión, integración Google Calendar y Microsoft Teams
+# ══════════════════════════════════════════════════════════════════════════════
+
+from urllib.parse import quote as _url_quote
+
+
+def _ics_escape(text):
+    if not text:
+        return ''
+    return (text.replace('\\', '\\\\')
+                .replace('\n', '\\n')
+                .replace(',', '\\,')
+                .replace(';', '\\;'))
+
+
+def _generar_ics(reunion):
+    """Genera contenido ICS (RFC 5545) para la reunión, compatible con Google Calendar y Outlook/Teams."""
+    start = reunion.fecha_inicio.strftime('%Y%m%dT%H%M%S')
+    end   = reunion.fecha_fin.strftime('%Y%m%dT%H%M%S')
+    now   = datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')
+    uid   = f"reunion-{reunion.id}-{reunion.empresa}@fofigest"
+
+    org_user = models.Usuarios.query.filter_by(correo=reunion.organizador_correo).first()
+    org_cn   = f"{org_user.nombres} {org_user.apellidos}".strip() if org_user else reunion.organizador_correo
+
+    location = _ics_escape(reunion.url_reunion or reunion.plataforma)
+    summary  = _ics_escape(reunion.titulo)
+    desc     = _ics_escape(reunion.descripcion or '')
+
+    lines = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Fofigest//Fofigest//ES',
+        'CALSCALE:GREGORIAN',
+        'METHOD:REQUEST',
+        'BEGIN:VEVENT',
+        f'DTSTART:{start}',
+        f'DTEND:{end}',
+        f'DTSTAMP:{now}',
+        f'UID:{uid}',
+        f'SUMMARY:{summary}',
+        f'DESCRIPTION:{desc}',
+        f'LOCATION:{location}',
+        'STATUS:CONFIRMED',
+        f'ORGANIZER;CN={_ics_escape(org_cn)}:mailto:{reunion.organizador_correo}',
+    ]
+    for p in reunion.participantes:
+        u  = models.Usuarios.query.filter_by(correo=p.correo_usuario).first()
+        cn = f"{u.nombres} {u.apellidos}".strip() if u else p.correo_usuario
+        lines.append(f'ATTENDEE;RSVP=TRUE;CN={_ics_escape(cn)}:mailto:{p.correo_usuario}')
+    lines += ['END:VEVENT', 'END:VCALENDAR']
+    return '\r\n'.join(lines)
+
+
+def _url_google_calendar(reunion):
+    start = reunion.fecha_inicio.strftime('%Y%m%dT%H%M%S')
+    end   = reunion.fecha_fin.strftime('%Y%m%dT%H%M%S')
+    return (
+        'https://calendar.google.com/calendar/render?action=TEMPLATE'
+        f'&text={_url_quote(reunion.titulo)}'
+        f'&dates={start}/{end}'
+        f'&details={_url_quote(reunion.descripcion or "")}'
+        f'&location={_url_quote(reunion.url_reunion or reunion.plataforma)}'
+    )
+
+
+def _url_teams_calendar(reunion):
+    start     = reunion.fecha_inicio.strftime('%Y-%m-%dT%H:%M:%S')
+    end       = reunion.fecha_fin.strftime('%Y-%m-%dT%H:%M:%S')
+    attendees = ','.join(p.correo_usuario for p in reunion.participantes)
+    return (
+        'https://teams.microsoft.com/l/meeting/new?'
+        f'subject={_url_quote(reunion.titulo)}'
+        f'&startTime={_url_quote(start)}'
+        f'&endTime={_url_quote(end)}'
+        f'&content={_url_quote(reunion.descripcion or "")}'
+        f'&attendees={_url_quote(attendees)}'
+    )
+
+
+# ── Vista principal ────────────────────────────────────────────────────────────
+
+@app.route('/reuniones')
+@login_required
+def reuniones_lista():
+    empresa = session.get('empresa')
+    correo  = session.get('correo')
+    rol     = session.get('username')
+
+    if rol in ('admin', 'superadmin', 'dev'):
+        mis_reuniones = (models.Reunion.query
+                         .filter_by(empresa=empresa)
+                         .order_by(models.Reunion.fecha_inicio.desc()).all())
+    else:
+        mis_reuniones = (models.Reunion.query
+                         .filter_by(empresa=empresa, organizador_correo=correo)
+                         .order_by(models.Reunion.fecha_inicio.desc()).all())
+
+    participaciones  = models.ReunionParticipante.query.filter_by(correo_usuario=correo).all()
+    ids_invitado     = {p.reunion_id for p in participaciones}
+    invitaciones     = (models.Reunion.query
+                        .filter(models.Reunion.id.in_(ids_invitado),
+                                models.Reunion.organizador_correo != correo,
+                                models.Reunion.estado != 'CANCELADA')
+                        .order_by(models.Reunion.fecha_inicio.asc()).all())
+
+    usuarios_empresa = models.Usuarios.query.filter_by(empresa=empresa).all()
+    proyectos        = models.Proyecto.query.filter_by(empresa=empresa).all()
+    mis_respuestas   = {p.reunion_id: p.estado_respuesta for p in participaciones}
+    mis_tareas_gen   = {p.reunion_id: p.tarea_generada_id for p in participaciones}
+
+    return render_template('reuniones.html',
+        mis_reuniones=mis_reuniones,
+        invitaciones=invitaciones,
+        usuarios_empresa=usuarios_empresa,
+        proyectos=proyectos,
+        mis_respuestas=mis_respuestas,
+        mis_tareas_gen=mis_tareas_gen,
+    )
+
+
+# ── CRUD de reuniones ─────────────────────────────────────────────────────────
+
+@app.route('/reuniones', methods=['POST'])
+@login_required
+def reuniones_crear():
+    data  = request.get_json(silent=True) or {}
+    titulo         = (data.get('titulo') or '').strip()
+    descripcion    = (data.get('descripcion') or '').strip()
+    fecha_inicio_s = data.get('fecha_inicio', '')
+    fecha_fin_s    = data.get('fecha_fin', '')
+    plataforma     = data.get('plataforma', 'Teams')
+    url_reunion    = (data.get('url_reunion') or '').strip() or None
+    participantes  = data.get('participantes', [])
+    tarea_origen   = data.get('tarea_origen_id') or None
+
+    if not titulo or not fecha_inicio_s or not fecha_fin_s:
+        return jsonify({'ok': False, 'error': 'Título, fecha inicio y fecha fin son obligatorios'}), 400
+
+    try:
+        fecha_inicio = datetime.strptime(fecha_inicio_s, '%Y-%m-%dT%H:%M')
+        fecha_fin    = datetime.strptime(fecha_fin_s,    '%Y-%m-%dT%H:%M')
+    except ValueError:
+        return jsonify({'ok': False, 'error': 'Formato de fecha inválido (use YYYY-MM-DDTHH:MM)'}), 400
+
+    if fecha_fin <= fecha_inicio:
+        return jsonify({'ok': False, 'error': 'La fecha fin debe ser posterior a la fecha inicio'}), 400
+
+    empresa = session.get('empresa')
+    correo  = session.get('correo')
+
+    reunion = models.Reunion(
+        titulo=titulo, descripcion=descripcion,
+        fecha_inicio=fecha_inicio, fecha_fin=fecha_fin,
+        organizador_correo=correo, empresa=empresa,
+        plataforma=plataforma, url_reunion=url_reunion,
+        tarea_origen_id=tarea_origen, estado='PROGRAMADA',
+    )
+    models.db.session.add(reunion)
+    models.db.session.flush()
+
+    correos_unicos = set(participantes) - {correo}
+    for pc in correos_unicos:
+        models.db.session.add(models.ReunionParticipante(
+            reunion_id=reunion.id, correo_usuario=pc, estado_respuesta='PENDIENTE'
+        ))
+    models.db.session.commit()
+
+    # Notificaciones internas + push a participantes
+    org = models.Usuarios.query.filter_by(correo=correo).first()
+    org_nombre = f"{org.nombres} {org.apellidos}".strip() if org else correo
+    for pc in correos_unicos:
+        dest = models.Usuarios.query.filter_by(correo=pc).first()
+        if not dest:
+            continue
+        notif = models.Notification(
+            user_id=dest.id,
+            sender_id=current_user.id if current_user.is_authenticated else None,
+            title=f"Nueva invitación: {titulo[:60]}",
+            message=f"{org_nombre} te invitó a '{titulo}' el {fecha_inicio.strftime('%d/%m/%Y %H:%M')}",
+            url='/reuniones', url_label='Ver reuniones', type='meeting_invite',
+        )
+        models.db.session.add(notif)
+        try:
+            push_service.send_to_user(
+                dest.id,
+                f"Reunión: {titulo[:50]}",
+                f"Invitación para el {fecha_inicio.strftime('%d/%m/%Y %H:%M')}",
+                '/reuniones',
+            )
+        except Exception as e:
+            logging.warning(f"Push reunion_invite: {e}")
+    models.db.session.commit()
+
+    return jsonify({'ok': True, 'id': reunion.id, 'reunion': reunion.serialize()})
+
+
+@app.route('/reuniones/<int:reunion_id>', methods=['GET'])
+@login_required
+def reunion_detalle_api(reunion_id):
+    reunion = models.db.session.get(models.Reunion, reunion_id)
+    if not reunion:
+        return jsonify({'ok': False, 'error': 'Reunión no encontrada'}), 404
+    correo = session.get('correo')
+    rol    = session.get('username')
+    es_part = any(p.correo_usuario == correo for p in reunion.participantes)
+    if not (reunion.organizador_correo == correo or rol in ('admin', 'superadmin', 'dev') or es_part):
+        return jsonify({'ok': False, 'error': 'Sin permisos'}), 403
+    return jsonify({
+        'ok': True,
+        'reunion': reunion.serialize(),
+        'url_google_calendar': _url_google_calendar(reunion),
+        'url_teams': _url_teams_calendar(reunion),
+    })
+
+
+@app.route('/reuniones/<int:reunion_id>', methods=['PUT'])
+@login_required
+def reunion_actualizar(reunion_id):
+    reunion = models.db.session.get(models.Reunion, reunion_id)
+    if not reunion:
+        return jsonify({'ok': False, 'error': 'Reunión no encontrada'}), 404
+    correo = session.get('correo')
+    rol    = session.get('username')
+    if not (reunion.organizador_correo == correo or rol in ('admin', 'superadmin')):
+        return jsonify({'ok': False, 'error': 'Sin permisos'}), 403
+    if reunion.estado == 'CANCELADA':
+        return jsonify({'ok': False, 'error': 'No se puede editar una reunión cancelada'}), 400
+
+    data = request.get_json(silent=True) or {}
+    for campo, attr in [('titulo', 'titulo'), ('descripcion', 'descripcion'),
+                        ('plataforma', 'plataforma'), ('estado', 'estado')]:
+        if campo in data:
+            setattr(reunion, attr, (data[campo] or '').strip() if campo in ('titulo', 'descripcion') else data[campo])
+    if 'url_reunion' in data:
+        reunion.url_reunion = (data['url_reunion'] or '').strip() or None
+    for campo, attr in [('fecha_inicio', 'fecha_inicio'), ('fecha_fin', 'fecha_fin')]:
+        if data.get(campo):
+            try:
+                setattr(reunion, attr, datetime.strptime(data[campo], '%Y-%m-%dT%H:%M'))
+            except ValueError:
+                pass
+
+    if 'participantes' in data:
+        nuevos   = set(data['participantes']) - {correo}
+        actuales = {p.correo_usuario for p in reunion.participantes}
+        for pc in nuevos - actuales:
+            models.db.session.add(models.ReunionParticipante(
+                reunion_id=reunion.id, correo_usuario=pc, estado_respuesta='PENDIENTE'
+            ))
+        for p in list(reunion.participantes):
+            if p.correo_usuario not in nuevos:
+                models.db.session.delete(p)
+
+    models.db.session.commit()
+    return jsonify({'ok': True, 'reunion': reunion.serialize()})
+
+
+@app.route('/reuniones/<int:reunion_id>', methods=['DELETE'])
+@login_required
+def reunion_cancelar(reunion_id):
+    reunion = models.db.session.get(models.Reunion, reunion_id)
+    if not reunion:
+        return jsonify({'ok': False, 'error': 'Reunión no encontrada'}), 404
+    correo = session.get('correo')
+    rol    = session.get('username')
+    if not (reunion.organizador_correo == correo or rol in ('admin', 'superadmin')):
+        return jsonify({'ok': False, 'error': 'Sin permisos'}), 403
+    reunion.estado = 'CANCELADA'
+    models.db.session.commit()
+    return jsonify({'ok': True})
+
+
+@app.route('/reuniones/<int:reunion_id>/responder', methods=['POST'])
+@login_required
+def reunion_responder(reunion_id):
+    reunion = models.db.session.get(models.Reunion, reunion_id)
+    if not reunion:
+        return jsonify({'ok': False, 'error': 'Reunión no encontrada'}), 404
+    correo = session.get('correo')
+    parte  = models.ReunionParticipante.query.filter_by(
+        reunion_id=reunion_id, correo_usuario=correo).first()
+    if not parte:
+        return jsonify({'ok': False, 'error': 'No estás invitado a esta reunión'}), 403
+
+    data      = request.get_json(silent=True) or {}
+    respuesta = data.get('respuesta')
+    if respuesta not in ('ACEPTADA', 'RECHAZADA'):
+        return jsonify({'ok': False, 'error': 'Respuesta debe ser ACEPTADA o RECHAZADA'}), 400
+
+    parte.estado_respuesta = respuesta
+    models.db.session.commit()
+
+    # Notificar al organizador
+    org = models.Usuarios.query.filter_by(correo=reunion.organizador_correo).first()
+    if org:
+        u      = models.Usuarios.query.filter_by(correo=correo).first()
+        nombre = f"{u.nombres} {u.apellidos}".strip() if u else correo
+        models.db.session.add(models.Notification(
+            user_id=org.id,
+            sender_id=current_user.id,
+            title=f"Reunión: {reunion.titulo[:55]}",
+            message=f"{nombre} {'aceptó' if respuesta == 'ACEPTADA' else 'rechazó'} la reunión '{reunion.titulo}'",
+            url='/reuniones', url_label='Ver reuniones', type='meeting_response',
+        ))
+        models.db.session.commit()
+    return jsonify({'ok': True, 'estado': respuesta})
+
+
+@app.route('/reuniones/<int:reunion_id>/convertir-tarea', methods=['POST'])
+@login_required
+def reunion_convertir_tarea(reunion_id):
+    reunion = models.db.session.get(models.Reunion, reunion_id)
+    if not reunion:
+        return jsonify({'ok': False, 'error': 'Reunión no encontrada'}), 404
+    correo  = session.get('correo')
+    empresa = session.get('empresa')
+    es_part = any(p.correo_usuario == correo for p in reunion.participantes)
+    if not (reunion.organizador_correo == correo or es_part):
+        return jsonify({'ok': False, 'error': 'Sin permisos'}), 403
+
+    data             = request.get_json(silent=True) or {}
+    codigo_proyecto  = (data.get('codigo_proyecto') or '').strip()
+    titulo           = (data.get('titulo') or reunion.titulo).strip()
+    descripcion      = (data.get('descripcion') or reunion.descripcion or '').strip()
+    responsable      = (data.get('responsable') or correo).strip()
+    horas_estimadas  = float(data.get('horas_estimadas') or 1)
+    mes              = data.get('mes', 'Enero')
+
+    if not codigo_proyecto:
+        return jsonify({'ok': False, 'error': 'Debes seleccionar un proyecto'}), 400
+
+    existing    = models.Tareas.query.filter(
+        models.Tareas.codigo_tarea.like(f'REUN-{reunion_id}-%')).count()
+    codigo_tarea = f'REUN-{reunion_id}-{existing + 1}'
+
+    nueva_tarea = models.Tareas(
+        empresa=empresa,
+        codigo_proyecto=codigo_proyecto,
+        codigo_tarea=codigo_tarea,
+        titulo=titulo,
+        descripcion=descripcion,
+        fecha_inicio=reunion.fecha_inicio.date(),
+        fecha_fin=reunion.fecha_fin.date(),
+        responsable=responsable,
+        horas_dedicadas=0,
+        horas_estimadas=horas_estimadas,
+        estado='PENDIENTE',
+        tipo_consumo='Reuniones',
+        mes=mes,
+        facturada=False,
+    )
+    models.db.session.add(nueva_tarea)
+    models.db.session.flush()
+
+    parte = models.ReunionParticipante.query.filter_by(
+        reunion_id=reunion_id, correo_usuario=correo).first()
+    if parte:
+        parte.tarea_generada_id = nueva_tarea.id
+    models.db.session.commit()
+    registrar_trazabilidad(codigo_tarea, 'CREACIÓN')
+
+    return jsonify({'ok': True, 'tarea': nueva_tarea.serialize()})
+
+
+@app.route('/reuniones/<int:reunion_id>/ics')
+@login_required
+def reunion_descargar_ics(reunion_id):
+    reunion = models.db.session.get(models.Reunion, reunion_id)
+    if not reunion:
+        abort(404)
+    correo  = session.get('correo')
+    rol     = session.get('username')
+    es_part = any(p.correo_usuario == correo for p in reunion.participantes)
+    if not (reunion.organizador_correo == correo or rol in ('admin', 'superadmin', 'dev') or es_part):
+        abort(403)
+
+    ics_content   = _generar_ics(reunion)
+    buf           = BytesIO(ics_content.encode('utf-8'))
+    nombre_archivo = f"reunion_{reunion.id}.ics"
+    return send_file(buf, mimetype='text/calendar',
+                     as_attachment=True, download_name=nombre_archivo)
+
+
+@app.route('/api/reuniones/json')
+@login_required
+def api_reuniones_json():
+    empresa = session.get('empresa')
+    correo  = session.get('correo')
+    rol     = session.get('username')
+    if rol in ('admin', 'superadmin', 'dev'):
+        reuniones = models.Reunion.query.filter_by(empresa=empresa).all()
+    else:
+        organizadas   = models.Reunion.query.filter_by(empresa=empresa, organizador_correo=correo).all()
+        participaciones = models.ReunionParticipante.query.filter_by(correo_usuario=correo).all()
+        ids_inv       = {p.reunion_id for p in participaciones}
+        invitadas     = models.Reunion.query.filter(models.Reunion.id.in_(ids_inv)).all()
+        reuniones     = list({r.id: r for r in organizadas + invitadas}.values())
+    return jsonify([r.serialize() for r in reuniones])
+
+
+# Exponer helpers de calendario como funciones globales de Jinja2
+app.jinja_env.globals['_url_google_calendar'] = _url_google_calendar
+app.jinja_env.globals['_url_teams_calendar']  = _url_teams_calendar
 
 
 if __name__ == '__main__':

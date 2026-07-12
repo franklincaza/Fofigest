@@ -442,6 +442,11 @@
                   <i class="fas fa-trash"></i>
                 </button>
                 {% endif %}
+                <a href="/reuniones?tarea_id={{ tarea.id }}"
+                   class="btn btn-info btn-sm me-1" title="Crear reunión desde esta tarea"
+                   style="color:#fff">
+                  <i class="fas fa-video"></i>
+                </a>
                 <div class="tbl-timer-wrap mt-1">
                   <i class="fas fa-stopwatch" style="color:#d1d3e2;font-size:.68rem;"></i>
                   <span class="tbl-timer-display" data-id="{{ tarea.id }}">00:00:00</span>

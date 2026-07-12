@@ -276,7 +276,11 @@
         </p>
         <div class="firma-line"></div>
         <div class="firma-center">
+          {% if perfil.firma_imagen %}
+          <img src="{{ perfil.firma_imagen }}" alt="Firma" style="max-height:80px;max-width:260px;display:block;margin:0 auto .4rem;">
+          {% else %}
           {{ perfil.firma_texto or '________________________________' }}<br>
+          {% endif %}
           {{ perfil.nombres_completos }}<br>CC: {{ perfil.documento }}
         </div>
         <p class="mt-3">
@@ -309,9 +313,9 @@
 .documento-cuenta .firma-line { border-top:1px solid #333; width:80%; margin:1.5rem auto .5rem; }
 .documento-cuenta .firma-center { text-align:center; }
 @media print {
-  .sidebar,.topbar,footer,.btn,.card-header,form,.alert { display:none !important; }
+  .sidebar,.topbar,footer,.btn,.card-header,.breadcrumb,form,.alert { display:none !important; }
   #documentoAdmin { display:block !important; border:none; }
-  .card { box-shadow:none !important; }
+  .card,.table-responsive,.documento-cuenta { box-shadow:none !important; }
   #page-content { display:block !important; }
   #splash-screen { display:none !important; }
 }

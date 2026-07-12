@@ -1,0 +1,979 @@
+{% extends 'Base.html' %}
+{% block content %}
+
+<style>
+  .reunion-card {
+    border: 1px solid var(--border-color);
+    border-radius: .5rem;
+    background: var(--bg-card);
+    transition: box-shadow var(--transition), transform var(--transition);
+    height: 100%;
+  }
+  .reunion-card:hover { box-shadow: 0 .25rem 1rem rgba(58,59,69,.12); transform: translateY(-2px); }
+  .reunion-card.cancelada { opacity: .55; }
+
+  .reunion-card .card-body { padding: 1rem; }
+  .reunion-card .card-footer {
+    background: var(--bg-page);
+    border-top: 1px solid var(--border-color);
+    padding: .65rem 1rem;
+    border-radius: 0 0 .5rem .5rem;
+  }
+
+  .plat-badge {
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    padding: .25em .65em;
+    border-radius: 50px;
+  }
+  .plat-teams    { background: #4b53bc; color: #fff; }
+  .plat-gmeet   { background: #0f9d58; color: #fff; }
+  .plat-zoom    { background: #2d8cff; color: #fff; }
+  .plat-presenc { background: #f6c23e; color: #333; }
+  .plat-otro    { background: #858796; color: #fff; }
+
+  .estado-badge {
+    font-size: .65rem;
+    padding: .25em .6em;
+    border-radius: 50px;
+    font-weight: 700;
+    letter-spacing: .03em;
+  }
+  .est-programada { background: #e8edfc; color: #4e73df; }
+  .est-encurso    { background: #d5f5f5; color: #17a589; }
+  .est-realizada  { background: #d5f5e3; color: #1cc88a; }
+  .est-cancelada  { background: #fde8e4; color: #e74a3b; }
+
+  .resp-badge { font-size: .65rem; padding: .2em .55em; border-radius: 50px; }
+  .resp-pendiente { background: #fff3cd; color: #856404; }
+  .resp-aceptada  { background: #d1e7dd; color: #0f5132; }
+  .resp-rechazada { background: #f8d7da; color: #842029; }
+
+  .stat-card {
+    border: none;
+    border-radius: .5rem;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    box-shadow: 0 .1rem .75rem rgba(58,59,69,.08);
+  }
+  .stat-icon {
+    width: 46px; height: 46px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .stat-value { font-size: 1.5rem; font-weight: 800; line-height: 1; color: var(--text-heading); }
+  .stat-label { font-size: .78rem; color: var(--text-muted); }
+
+  .reunion-meta { font-size: .8rem; color: var(--text-muted); margin-bottom: .3rem; }
+  .reunion-meta i { width: 14px; text-align: center; margin-right: .3rem; }
+  .reunion-title { font-size: .95rem; font-weight: 700; color: var(--text-heading); margin-bottom: .5rem; line-height: 1.3; }
+
+  .btn-xs { font-size: .72rem; padding: .22rem .55rem; }
+
+  .tab-btn {
+    border: none; background: none; padding: .55rem 1.1rem;
+    font-size: .83rem; font-weight: 600; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: var(--text-muted); transition: all var(--transition);
+  }
+  .tab-btn.active { border-bottom-color: var(--color-primary); color: var(--color-primary); }
+  .tab-btn:hover { color: var(--color-primary); }
+  .badge-count {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; border-radius: 50%;
+    font-size: .6rem; font-weight: 800; margin-left: .35rem;
+  }
+
+  .empty-state {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--text-muted);
+  }
+  .empty-state i { font-size: 2.5rem; opacity: .3; margin-bottom: .75rem; }
+  .empty-state p { font-size: .9rem; margin-bottom: 0; }
+
+  /* Dark mode */
+  .modo-oscuro .reunion-card { background: #1e1e2d; border-color: #3c3c50; }
+  .modo-oscuro .reunion-card .card-footer { background: #252535; border-color: #3c3c50; }
+  .modo-oscuro .reunion-title { color: #e0e0e0; }
+  .modo-oscuro .stat-value { color: #e0e0e0; }
+  .modo-oscuro .modal-content { background: #1e1e2d; color: #c3c3cd; }
+  .modo-oscuro .modal-header, .modo-oscuro .modal-footer { border-color: #3c3c50; }
+  .modo-oscuro .form-control, .modo-oscuro .form-select { background: #2d2d3a; color: #c3c3cd; border-color: #3c3c50; }
+  .modo-oscuro .tab-btn { color: #888; }
+  .modo-oscuro .tab-btn.active { color: #7b96f5; border-bottom-color: #7b96f5; }
+  .modo-oscuro .est-programada { background: #1a2340; color: #7b96f5; }
+  .modo-oscuro .est-encurso    { background: #0d2d2d; color: #48d1cc; }
+  .modo-oscuro .est-realizada  { background: #0d2d1a; color: #1cc88a; }
+  .modo-oscuro .est-cancelada  { background: #2d0d0d; color: #e74a3b; }
+</style>
+
+<div class="container-fluid">
+
+  <!-- Encabezado -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 fw-bold" style="color: var(--text-heading)">
+      <i class="fas fa-video me-2" style="color: var(--color-primary)"></i>Reuniones
+    </h1>
+    <button class="btn btn-primary btn-sm" onclick="abrirNuevaReunion()">
+      <i class="fas fa-plus me-1"></i>Nueva Reunión
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-md-3">
+      <div class="stat-card bg-white">
+        <div class="stat-icon" style="background:#e8edfc">
+          <i class="fas fa-calendar-alt" style="color:var(--color-primary)"></i>
+        </div>
+        <div>
+          <div class="stat-value">{{ mis_reuniones | selectattr('estado', 'ne', 'CANCELADA') | list | length }}</div>
+          <div class="stat-label">Mis reuniones activas</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card bg-white">
+        <div class="stat-icon" style="background:#fff3cd">
+          <i class="fas fa-envelope-open-text" style="color:#f6c23e"></i>
+        </div>
+        <div>
+          <div class="stat-value">
+            {{ mis_respuestas.values() | selectattr('equalto', 'PENDIENTE') | list | length if mis_respuestas else invitaciones | length }}
+          </div>
+          <div class="stat-label">Invitaciones pendientes</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card bg-white">
+        <div class="stat-icon" style="background:#d5f5f5">
+          <i class="fas fa-calendar-week" style="color:var(--color-info)"></i>
+        </div>
+        <div>
+          <div class="stat-value" id="stat-semana">—</div>
+          <div class="stat-label">Esta semana</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="stat-card bg-white">
+        <div class="stat-icon" style="background:#d5f5e3">
+          <i class="fas fa-check-circle" style="color:var(--color-success)"></i>
+        </div>
+        <div>
+          <div class="stat-value">
+            {{ mis_reuniones | selectattr('estado', 'equalto', 'REALIZADA') | list | length }}
+          </div>
+          <div class="stat-label">Realizadas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="card shadow-sm mb-4" style="border-radius: var(--radius)">
+
+    <div class="card-header p-0" style="border-bottom: 1px solid var(--border-color)">
+      <div class="d-flex">
+        <button class="tab-btn active" id="tab-mis" onclick="cambiarTab('mis')">
+          <i class="fas fa-user-tie me-1"></i>Mis Reuniones
+          <span class="badge-count bg-primary text-white">{{ mis_reuniones | length }}</span>
+        </button>
+        <button class="tab-btn" id="tab-inv" onclick="cambiarTab('inv')">
+          <i class="fas fa-envelope me-1"></i>Invitaciones
+          {% if invitaciones %}
+          <span class="badge-count bg-warning text-dark">{{ invitaciones | length }}</span>
+          {% endif %}
+        </button>
+      </div>
+    </div>
+
+    <div class="card-body">
+
+      <!-- Tab: Mis Reuniones -->
+      <div id="panel-mis">
+        {% if mis_reuniones %}
+        <div class="row g-3">
+          {% for r in mis_reuniones %}
+          <div class="col-sm-6 col-xl-4">
+            <div class="reunion-card {{ 'cancelada' if r.estado == 'CANCELADA' }}">
+              <div class="card-body">
+
+                <!-- Header row -->
+                <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+                  <span class="reunion-title">{{ r.titulo }}</span>
+                  <span class="plat-badge flex-shrink-0
+                    {% if r.plataforma == 'Teams' %}plat-teams
+                    {% elif r.plataforma == 'Google Meet' %}plat-gmeet
+                    {% elif r.plataforma == 'Zoom' %}plat-zoom
+                    {% elif r.plataforma == 'Presencial' %}plat-presenc
+                    {% else %}plat-otro{% endif %}">
+                    {{ r.plataforma }}
+                  </span>
+                </div>
+
+                <!-- Meta -->
+                <p class="reunion-meta">
+                  <i class="fas fa-calendar-day"></i>
+                  {{ r.fecha_inicio.strftime('%d/%m/%Y') }}
+                  &nbsp;·&nbsp;
+                  <i class="fas fa-clock"></i>
+                  {{ r.fecha_inicio.strftime('%H:%M') }} – {{ r.fecha_fin.strftime('%H:%M') }}
+                </p>
+                <p class="reunion-meta">
+                  <i class="fas fa-users"></i>
+                  {{ r.participantes | length }} participante{{ 's' if r.participantes | length != 1 }}
+                  {% if r.tarea_origen_id %}
+                  &nbsp;·&nbsp;<i class="fas fa-tasks text-primary"></i>
+                  <span class="text-primary" style="font-size:.75rem">Desde tarea</span>
+                  {% endif %}
+                </p>
+
+                <!-- Estado + URL -->
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <span class="estado-badge
+                    {% if r.estado == 'PROGRAMADA' %}est-programada
+                    {% elif r.estado == 'EN_CURSO' %}est-encurso
+                    {% elif r.estado == 'REALIZADA' %}est-realizada
+                    {% else %}est-cancelada{% endif %}">
+                    {{ r.estado }}
+                  </span>
+                  {% if r.url_reunion %}
+                  <a href="{{ r.url_reunion }}" target="_blank" rel="noopener"
+                     class="text-primary text-decoration-none" style="font-size:.75rem">
+                    <i class="fas fa-external-link-alt me-1"></i>Unirse
+                  </a>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <div class="d-flex flex-wrap gap-1">
+                  <button class="btn btn-outline-primary btn-xs"
+                          onclick="verDetalle({{ r.id }})"
+                          title="Ver detalles">
+                    <i class="fas fa-eye me-1"></i>Ver
+                  </button>
+                  {% if r.estado != 'CANCELADA' %}
+                  <button class="btn btn-outline-secondary btn-xs"
+                          onclick="abrirEditarReunion({{ r.id }})"
+                          title="Editar reunión">
+                    <i class="fas fa-edit me-1"></i>Editar
+                  </button>
+                  {% endif %}
+                  <a href="/reuniones/{{ r.id }}/ics"
+                     class="btn btn-outline-secondary btn-xs"
+                     title="Descargar archivo ICS">
+                    <i class="fas fa-file-download me-1"></i>ICS
+                  </a>
+                  <a id="btn-gcal-{{ r.id }}"
+                     href="{{ _url_google_calendar(r) }}"
+                     target="_blank" rel="noopener"
+                     class="btn btn-xs"
+                     style="background:#4285F4;color:#fff;border:none"
+                     title="Agregar a Google Calendar">
+                    <i class="fas fa-calendar-plus me-1"></i>Google
+                  </a>
+                  <a id="btn-teams-{{ r.id }}"
+                     href="{{ _url_teams_calendar(r) }}"
+                     target="_blank" rel="noopener"
+                     class="btn btn-xs"
+                     style="background:#4b53bc;color:#fff;border:none"
+                     title="Crear reunión en Teams">
+                    <i class="fas fa-video me-1"></i>Teams
+                  </a>
+                  {% if r.estado not in ('CANCELADA', 'REALIZADA') %}
+                  <button class="btn btn-outline-danger btn-xs ms-auto"
+                          onclick="cancelarReunion({{ r.id }})"
+                          title="Cancelar reunión">
+                    <i class="fas fa-times"></i>
+                  </button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i class="fas fa-video d-block"></i>
+          <p>No has creado ninguna reunión aún.</p>
+          <button class="btn btn-primary btn-sm mt-2" onclick="abrirNuevaReunion()">
+            <i class="fas fa-plus me-1"></i>Crear primera reunión
+          </button>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Tab: Invitaciones -->
+      <div id="panel-inv" style="display:none">
+        {% if invitaciones %}
+        <div class="row g-3">
+          {% for r in invitaciones %}
+          {% set mi_resp = mis_respuestas.get(r.id, 'PENDIENTE') %}
+          {% set ya_tarea = mis_tareas_gen.get(r.id) %}
+          <div class="col-sm-6 col-xl-4">
+            <div class="reunion-card {{ 'cancelada' if r.estado == 'CANCELADA' }}">
+              <div class="card-body">
+
+                <div class="d-flex justify-content-between align-items-start mb-2 gap-2">
+                  <span class="reunion-title">{{ r.titulo }}</span>
+                  <span class="plat-badge flex-shrink-0
+                    {% if r.plataforma == 'Teams' %}plat-teams
+                    {% elif r.plataforma == 'Google Meet' %}plat-gmeet
+                    {% elif r.plataforma == 'Zoom' %}plat-zoom
+                    {% elif r.plataforma == 'Presencial' %}plat-presenc
+                    {% else %}plat-otro{% endif %}">
+                    {{ r.plataforma }}
+                  </span>
+                </div>
+
+                <p class="reunion-meta">
+                  <i class="fas fa-user-tie"></i>
+                  Org: {{ r.organizador_correo }}
+                </p>
+                <p class="reunion-meta">
+                  <i class="fas fa-calendar-day"></i>
+                  {{ r.fecha_inicio.strftime('%d/%m/%Y %H:%M') }} – {{ r.fecha_fin.strftime('%H:%M') }}
+                </p>
+                {% if r.descripcion %}
+                <p class="reunion-meta" style="font-style:italic">
+                  "{{ r.descripcion[:80] }}{% if r.descripcion | length > 80 %}…{% endif %}"
+                </p>
+                {% endif %}
+
+                <div class="d-flex gap-2 flex-wrap align-items-center mt-2">
+                  <span class="estado-badge
+                    {% if r.estado == 'PROGRAMADA' %}est-programada
+                    {% elif r.estado == 'EN_CURSO' %}est-encurso
+                    {% elif r.estado == 'REALIZADA' %}est-realizada
+                    {% else %}est-cancelada{% endif %}">
+                    {{ r.estado }}
+                  </span>
+                  <span class="resp-badge
+                    {% if mi_resp == 'ACEPTADA' %}resp-aceptada
+                    {% elif mi_resp == 'RECHAZADA' %}resp-rechazada
+                    {% else %}resp-pendiente{% endif %}">
+                    {{ 'Tu respuesta: ' + mi_resp }}
+                  </span>
+                  {% if ya_tarea %}
+                  <span class="badge bg-success" style="font-size:.65rem">
+                    <i class="fas fa-tasks me-1"></i>Convertida
+                  </span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="card-footer">
+                <div class="d-flex flex-wrap gap-1">
+                  {% if mi_resp == 'PENDIENTE' and r.estado != 'CANCELADA' %}
+                  <button class="btn btn-xs btn-success"
+                          onclick="responderInvitacion({{ r.id }}, 'ACEPTADA')">
+                    <i class="fas fa-check me-1"></i>Aceptar
+                  </button>
+                  <button class="btn btn-xs btn-outline-danger"
+                          onclick="responderInvitacion({{ r.id }}, 'RECHAZADA')">
+                    <i class="fas fa-times me-1"></i>Rechazar
+                  </button>
+                  {% endif %}
+                  <a href="/reuniones/{{ r.id }}/ics" class="btn btn-outline-secondary btn-xs"
+                     title="Descargar ICS">
+                    <i class="fas fa-file-download me-1"></i>ICS
+                  </a>
+                  <a href="{{ _url_google_calendar(r) }}"
+                     target="_blank" rel="noopener"
+                     class="btn btn-xs" style="background:#4285F4;color:#fff;border:none"
+                     title="Google Calendar">
+                    <i class="fas fa-calendar-plus me-1"></i>Google
+                  </a>
+                  <a href="{{ _url_teams_calendar(r) }}"
+                     target="_blank" rel="noopener"
+                     class="btn btn-xs" style="background:#4b53bc;color:#fff;border:none"
+                     title="Teams">
+                    <i class="fas fa-video me-1"></i>Teams
+                  </a>
+                  {% if not ya_tarea and r.estado != 'CANCELADA' %}
+                  <button class="btn btn-outline-primary btn-xs ms-auto"
+                          onclick="abrirConvertirTarea({{ r.id }}, '{{ r.titulo | e }}', '{{ r.fecha_inicio.strftime('%Y-%m-%dT%H:%M') }}', '{{ r.fecha_fin.strftime('%Y-%m-%dT%H:%M') }}')"
+                          title="Convertir en tarea">
+                    <i class="fas fa-tasks me-1"></i>→ Tarea
+                  </button>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+          <i class="fas fa-envelope-open d-block"></i>
+          <p>No tienes invitaciones a reuniones por ahora.</p>
+        </div>
+        {% endif %}
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /card -->
+
+</div><!-- /container-fluid -->
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: NUEVA / EDITAR REUNIÓN
+════════════════════════════════════════════ -->
+<div class="modal fade" id="modalReunion" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius: var(--radius)">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="modalReunionLabel">
+          <i class="fas fa-video me-2 text-primary"></i>Nueva Reunión
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="formReunion" autocomplete="off">
+          <input type="hidden" id="r-id" value="">
+          <input type="hidden" id="r-tarea-origen" value="">
+
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Título <span class="text-danger">*</span></label>
+              <input type="text" class="form-control" id="r-titulo" placeholder="Ej: Revisión sprint 5" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold small">Descripción / Agenda</label>
+              <textarea class="form-control" id="r-descripcion" rows="3"
+                        placeholder="Puntos a tratar, objetivos…"></textarea>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold small">Fecha y hora de inicio <span class="text-danger">*</span></label>
+              <input type="datetime-local" class="form-control" id="r-fecha-inicio" required>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold small">Fecha y hora de fin <span class="text-danger">*</span></label>
+              <input type="datetime-local" class="form-control" id="r-fecha-fin" required>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold small">Plataforma</label>
+              <select class="form-select" id="r-plataforma">
+                <option value="Teams">Microsoft Teams</option>
+                <option value="Google Meet">Google Meet</option>
+                <option value="Zoom">Zoom</option>
+                <option value="Presencial">Presencial</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label fw-semibold small">URL de la reunión</label>
+              <input type="url" class="form-control" id="r-url"
+                     placeholder="https://teams.microsoft.com/…">
+              <div class="form-text">Opcional. Link de unión a la sesión.</div>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold small">
+                Participantes
+                <span class="text-muted ms-1" style="font-size:.78rem">(usuarios de tu empresa)</span>
+              </label>
+              <div class="border rounded p-2" style="max-height:150px;overflow-y:auto;background:var(--bg-page)">
+                {% for u in usuarios_empresa %}
+                <div class="form-check">
+                  <input class="form-check-input part-check" type="checkbox"
+                         id="part-{{ u.id }}" value="{{ u.correo }}"
+                         data-nombre="{{ u.nombres }} {{ u.apellidos }}">
+                  <label class="form-check-label small" for="part-{{ u.id }}">
+                    {{ u.nombres }} {{ u.apellidos }}
+                    <span class="text-muted">({{ u.correo }})</span>
+                  </label>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="guardarReunion()" id="btn-guardar-reunion">
+          <i class="fas fa-save me-1"></i>Guardar Reunión
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: VER DETALLE
+════════════════════════════════════════════ -->
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius: var(--radius)">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="detalle-titulo">
+          <i class="fas fa-calendar-check me-2 text-primary"></i>Detalle de Reunión
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="detalle-body">
+        <div class="text-center py-4">
+          <i class="fas fa-spinner fa-spin text-primary"></i>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-between" id="detalle-footer">
+        <div id="detalle-calendar-btns" class="d-flex gap-2 flex-wrap"></div>
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════
+     MODAL: CONVERTIR A TAREA
+════════════════════════════════════════════ -->
+<div class="modal fade" id="modalConvertir" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: var(--radius)">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold">
+          <i class="fas fa-tasks me-2 text-primary"></i>Convertir reunión en tarea
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="conv-reunion-id">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label fw-semibold small">Proyecto <span class="text-danger">*</span></label>
+            <select class="form-select" id="conv-proyecto">
+              <option value="">— Selecciona un proyecto —</option>
+              {% for p in proyectos %}
+              <option value="{{ p.codigo_proyecto }}">{{ p.nombre_proyecto }} ({{ p.codigo_proyecto }})</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label fw-semibold small">Título de la tarea</label>
+            <input type="text" class="form-control" id="conv-titulo">
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label fw-semibold small">Horas estimadas</label>
+            <input type="number" class="form-control" id="conv-horas" min="0.25" step="0.25" value="1">
+          </div>
+          <div class="col-sm-6">
+            <label class="form-label fw-semibold small">Mes</label>
+            <select class="form-select" id="conv-mes">
+              <option>Enero</option><option>Febrero</option><option>Marzo</option>
+              <option>Abril</option><option>Mayo</option><option>Junio</option>
+              <option>Julio</option><option>Agosto</option><option>Septiembre</option>
+              <option>Octubre</option><option>Noviembre</option><option>Diciembre</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="ejecutarConvertirTarea()">
+          <i class="fas fa-tasks me-1"></i>Crear Tarea
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+/* ────────────────────────────────────────────────────────────
+   TABS
+──────────────────────────────────────────────────────────── */
+function cambiarTab(tab) {
+  document.getElementById('panel-mis').style.display = tab === 'mis' ? '' : 'none';
+  document.getElementById('panel-inv').style.display = tab === 'inv' ? '' : 'none';
+  document.getElementById('tab-mis').classList.toggle('active', tab === 'mis');
+  document.getElementById('tab-inv').classList.toggle('active', tab === 'inv');
+}
+
+/* ────────────────────────────────────────────────────────────
+   STATS — contar reuniones esta semana
+──────────────────────────────────────────────────────────── */
+(function contarSemana() {
+  const hoy   = new Date();
+  const lunes = new Date(hoy);
+  const dom   = new Date(hoy);
+  lunes.setDate(hoy.getDate() - ((hoy.getDay() + 6) % 7));
+  dom.setDate(lunes.getDate() + 6);
+  lunes.setHours(0,0,0,0); dom.setHours(23,59,59,999);
+
+  fetch('/api/reuniones/json')
+    .then(r => r.json())
+    .then(list => {
+      const cnt = list.filter(r => {
+        const d = new Date(r.fecha_inicio);
+        return d >= lunes && d <= dom && r.estado !== 'CANCELADA';
+      }).length;
+      document.getElementById('stat-semana').textContent = cnt;
+    })
+    .catch(() => { document.getElementById('stat-semana').textContent = '—'; });
+}());
+
+/* ────────────────────────────────────────────────────────────
+   ABRIR MODAL NUEVA REUNIÓN
+──────────────────────────────────────────────────────────── */
+function abrirNuevaReunion(tareaId, tituloTarea) {
+  document.getElementById('r-id').value            = '';
+  document.getElementById('r-tarea-origen').value  = tareaId || '';
+  document.getElementById('r-titulo').value        = tituloTarea ? `Reunión: ${tituloTarea}` : '';
+  document.getElementById('r-descripcion').value   = '';
+  document.getElementById('r-plataforma').value    = 'Teams';
+  document.getElementById('r-url').value           = '';
+  document.querySelectorAll('.part-check').forEach(c => { c.checked = false; });
+  document.getElementById('modalReunionLabel').innerHTML =
+    '<i class="fas fa-video me-2 text-primary"></i>Nueva Reunión';
+  document.getElementById('btn-guardar-reunion').innerHTML =
+    '<i class="fas fa-save me-1"></i>Guardar Reunión';
+
+  // default times: next hour rounded, +1h
+  const now  = new Date(); now.setSeconds(0,0);
+  now.setMinutes(0); now.setHours(now.getHours() + 1);
+  const end  = new Date(now.getTime() + 60*60*1000);
+  document.getElementById('r-fecha-inicio').value = toDatetimeLocal(now);
+  document.getElementById('r-fecha-fin').value    = toDatetimeLocal(end);
+
+  new bootstrap.Modal(document.getElementById('modalReunion')).show();
+}
+
+function toDatetimeLocal(d) {
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0') + 'T' +
+    String(d.getHours()).padStart(2,'0') + ':' +
+    String(d.getMinutes()).padStart(2,'0');
+}
+
+/* ────────────────────────────────────────────────────────────
+   ABRIR MODAL EDITAR REUNIÓN
+──────────────────────────────────────────────────────────── */
+function abrirEditarReunion(id) {
+  fetch(`/reuniones/${id}`)
+    .then(r => r.json())
+    .then(res => {
+      if (!res.ok) { Swal.fire('Error', res.error, 'error'); return; }
+      const r = res.reunion;
+      document.getElementById('r-id').value           = r.id;
+      document.getElementById('r-tarea-origen').value = r.tarea_origen_id || '';
+      document.getElementById('r-titulo').value       = r.titulo;
+      document.getElementById('r-descripcion').value  = r.descripcion || '';
+      document.getElementById('r-fecha-inicio').value = r.fecha_inicio;
+      document.getElementById('r-fecha-fin').value    = r.fecha_fin;
+      document.getElementById('r-plataforma').value   = r.plataforma;
+      document.getElementById('r-url').value          = r.url_reunion || '';
+      const correosPart = r.participantes.map(p => p.correo_usuario);
+      document.querySelectorAll('.part-check').forEach(c => {
+        c.checked = correosPart.includes(c.value);
+      });
+      document.getElementById('modalReunionLabel').innerHTML =
+        '<i class="fas fa-edit me-2 text-primary"></i>Editar Reunión';
+      document.getElementById('btn-guardar-reunion').innerHTML =
+        '<i class="fas fa-save me-1"></i>Actualizar';
+      new bootstrap.Modal(document.getElementById('modalReunion')).show();
+    });
+}
+
+/* ────────────────────────────────────────────────────────────
+   GUARDAR (CREAR / ACTUALIZAR)
+──────────────────────────────────────────────────────────── */
+function guardarReunion() {
+  const id         = document.getElementById('r-id').value;
+  const titulo     = document.getElementById('r-titulo').value.trim();
+  const descripcion= document.getElementById('r-descripcion').value.trim();
+  const fi         = document.getElementById('r-fecha-inicio').value;
+  const ff         = document.getElementById('r-fecha-fin').value;
+  const plataforma = document.getElementById('r-plataforma').value;
+  const url        = document.getElementById('r-url').value.trim();
+  const tarea      = document.getElementById('r-tarea-origen').value;
+  const participantes = Array.from(document.querySelectorAll('.part-check:checked'))
+                             .map(c => c.value);
+
+  if (!titulo || !fi || !ff) {
+    Swal.fire('Campos requeridos', 'Completa título, fecha inicio y fecha fin.', 'warning');
+    return;
+  }
+  if (new Date(ff) <= new Date(fi)) {
+    Swal.fire('Fechas inválidas', 'La fecha de fin debe ser posterior al inicio.', 'warning');
+    return;
+  }
+
+  const payload = { titulo, descripcion, fecha_inicio: fi, fecha_fin: ff,
+                    plataforma, url_reunion: url, participantes,
+                    tarea_origen_id: tarea || null };
+
+  const method = id ? 'PUT' : 'POST';
+  const url_ep = id ? `/reuniones/${id}` : '/reuniones';
+
+  document.getElementById('btn-guardar-reunion').disabled = true;
+
+  fetch(url_ep, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  .then(r => r.json())
+  .then(res => {
+    document.getElementById('btn-guardar-reunion').disabled = false;
+    if (!res.ok) { Swal.fire('Error', res.error, 'error'); return; }
+    bootstrap.Modal.getInstance(document.getElementById('modalReunion')).hide();
+    Swal.fire({
+      icon: 'success',
+      title: id ? 'Reunión actualizada' : 'Reunión creada',
+      text: id ? 'Los cambios se guardaron correctamente.' : 'La reunión fue programada y se notificó a los participantes.',
+      timer: 2200, showConfirmButton: false,
+    }).then(() => location.reload());
+  })
+  .catch(() => {
+    document.getElementById('btn-guardar-reunion').disabled = false;
+    Swal.fire('Error', 'No se pudo guardar la reunión.', 'error');
+  });
+}
+
+/* ────────────────────────────────────────────────────────────
+   VER DETALLE
+──────────────────────────────────────────────────────────── */
+function verDetalle(id) {
+  document.getElementById('detalle-body').innerHTML =
+    '<div class="text-center py-4"><i class="fas fa-spinner fa-spin text-primary"></i></div>';
+  document.getElementById('detalle-calendar-btns').innerHTML = '';
+
+  const modal = new bootstrap.Modal(document.getElementById('modalDetalle'));
+  modal.show();
+
+  fetch(`/reuniones/${id}`)
+    .then(r => r.json())
+    .then(res => {
+      if (!res.ok) {
+        document.getElementById('detalle-body').innerHTML = '<p class="text-danger">Error al cargar.</p>';
+        return;
+      }
+      const r = res.reunion;
+      document.getElementById('detalle-titulo').innerHTML =
+        `<i class="fas fa-calendar-check me-2 text-primary"></i>${escHtml(r.titulo)}`;
+
+      const partsHtml = r.participantes.length
+        ? r.participantes.map(p =>
+            `<span class="badge bg-light text-dark border me-1 mb-1" style="font-size:.75rem">
+              ${escHtml(p.correo_usuario)}
+              <span class="ms-1 resp-badge resp-${p.estado_respuesta.toLowerCase()}"
+                    style="font-size:.6rem">${p.estado_respuesta}</span>
+            </span>`).join('')
+        : '<span class="text-muted small">Sin participantes registrados.</span>';
+
+      document.getElementById('detalle-body').innerHTML = `
+        <div class="row g-3">
+          <div class="col-sm-6">
+            <small class="text-muted d-block fw-semibold mb-1">Plataforma</small>
+            <span>${escHtml(r.plataforma)}</span>
+          </div>
+          <div class="col-sm-6">
+            <small class="text-muted d-block fw-semibold mb-1">Estado</small>
+            <span>${escHtml(r.estado)}</span>
+          </div>
+          <div class="col-sm-6">
+            <small class="text-muted d-block fw-semibold mb-1">Inicio</small>
+            <span>${formatDT(r.fecha_inicio)}</span>
+          </div>
+          <div class="col-sm-6">
+            <small class="text-muted d-block fw-semibold mb-1">Fin</small>
+            <span>${formatDT(r.fecha_fin)}</span>
+          </div>
+          <div class="col-12">
+            <small class="text-muted d-block fw-semibold mb-1">Organizador</small>
+            <span>${escHtml(r.organizador_correo)}</span>
+          </div>
+          ${r.url_reunion ? `
+          <div class="col-12">
+            <small class="text-muted d-block fw-semibold mb-1">URL de reunión</small>
+            <a href="${escHtml(r.url_reunion)}" target="_blank" rel="noopener" class="text-primary">
+              <i class="fas fa-external-link-alt me-1"></i>${escHtml(r.url_reunion)}
+            </a>
+          </div>` : ''}
+          ${r.descripcion ? `
+          <div class="col-12">
+            <small class="text-muted d-block fw-semibold mb-1">Descripción / Agenda</small>
+            <p class="mb-0" style="white-space:pre-wrap">${escHtml(r.descripcion)}</p>
+          </div>` : ''}
+          <div class="col-12">
+            <small class="text-muted d-block fw-semibold mb-1">Participantes (${r.participantes.length})</small>
+            <div>${partsHtml}</div>
+          </div>
+        </div>`;
+
+      document.getElementById('detalle-calendar-btns').innerHTML = `
+        <a href="/reuniones/${r.id}/ics"
+           class="btn btn-sm btn-outline-secondary">
+          <i class="fas fa-file-download me-1"></i>Descargar ICS
+        </a>
+        <a href="${escHtml(res.url_google_calendar)}"
+           target="_blank" rel="noopener"
+           class="btn btn-sm" style="background:#4285F4;color:#fff">
+          <i class="fas fa-calendar-plus me-1"></i>Google Calendar
+        </a>
+        <a href="${escHtml(res.url_teams)}"
+           target="_blank" rel="noopener"
+           class="btn btn-sm" style="background:#4b53bc;color:#fff">
+          <i class="fas fa-video me-1"></i>Microsoft Teams
+        </a>`;
+    })
+    .catch(() => {
+      document.getElementById('detalle-body').innerHTML =
+        '<p class="text-danger">No se pudo cargar el detalle.</p>';
+    });
+}
+
+function formatDT(s) {
+  if (!s) return '—';
+  const d = new Date(s.replace('T', ' '));
+  return d.toLocaleDateString('es-CO', { day:'2-digit', month:'2-digit', year:'numeric' }) +
+         ' ' + d.toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit' });
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;')
+                        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ────────────────────────────────────────────────────────────
+   CANCELAR REUNIÓN
+──────────────────────────────────────────────────────────── */
+function cancelarReunion(id) {
+  Swal.fire({
+    title: '¿Cancelar reunión?',
+    text: 'Esta acción marcará la reunión como cancelada y notificará a los participantes.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, cancelar',
+    cancelButtonText: 'No',
+    confirmButtonColor: '#e74a3b',
+  }).then(res => {
+    if (!res.isConfirmed) return;
+    fetch(`/reuniones/${id}`, { method: 'DELETE' })
+      .then(r => r.json())
+      .then(res => {
+        if (!res.ok) { Swal.fire('Error', res.error, 'error'); return; }
+        Swal.fire({ icon:'success', title:'Cancelada', timer:1500, showConfirmButton:false })
+            .then(() => location.reload());
+      });
+  });
+}
+
+/* ────────────────────────────────────────────────────────────
+   RESPONDER INVITACIÓN
+──────────────────────────────────────────────────────────── */
+function responderInvitacion(id, respuesta) {
+  const accion = respuesta === 'ACEPTADA' ? 'aceptar' : 'rechazar';
+  Swal.fire({
+    title: `¿${accion.charAt(0).toUpperCase()+accion.slice(1)} invitación?`,
+    icon: respuesta === 'ACEPTADA' ? 'question' : 'warning',
+    showCancelButton: true,
+    confirmButtonText: respuesta === 'ACEPTADA' ? 'Sí, aceptar' : 'Sí, rechazar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: respuesta === 'ACEPTADA' ? '#1cc88a' : '#e74a3b',
+  }).then(res => {
+    if (!res.isConfirmed) return;
+    fetch(`/reuniones/${id}/responder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ respuesta }),
+    })
+    .then(r => r.json())
+    .then(res => {
+      if (!res.ok) { Swal.fire('Error', res.error, 'error'); return; }
+      Swal.fire({ icon:'success', title:`Reunión ${res.estado.toLowerCase()}`,
+                  timer:1600, showConfirmButton:false }).then(() => location.reload());
+    });
+  });
+}
+
+/* ────────────────────────────────────────────────────────────
+   CONVERTIR REUNIÓN → TAREA
+──────────────────────────────────────────────────────────── */
+function abrirConvertirTarea(id, titulo, fi) {
+  document.getElementById('conv-reunion-id').value = id;
+  document.getElementById('conv-titulo').value     = 'Reunión: ' + titulo;
+  // Auto-select current month
+  const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const mesActual = fi ? meses[new Date(fi.replace('T',' ')).getMonth()] : meses[new Date().getMonth()];
+  document.getElementById('conv-mes').value = mesActual;
+  document.getElementById('conv-proyecto').value = '';
+  document.getElementById('conv-horas').value = '1';
+  new bootstrap.Modal(document.getElementById('modalConvertir')).show();
+}
+
+function ejecutarConvertirTarea() {
+  const id      = document.getElementById('conv-reunion-id').value;
+  const proyecto= document.getElementById('conv-proyecto').value;
+  const titulo  = document.getElementById('conv-titulo').value.trim();
+  const horas   = parseFloat(document.getElementById('conv-horas').value) || 1;
+  const mes     = document.getElementById('conv-mes').value;
+
+  if (!proyecto) {
+    Swal.fire('Campo requerido', 'Selecciona un proyecto.', 'warning');
+    return;
+  }
+
+  fetch(`/reuniones/${id}/convertir-tarea`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ codigo_proyecto: proyecto, titulo, horas_estimadas: horas, mes }),
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (!res.ok) { Swal.fire('Error', res.error, 'error'); return; }
+    bootstrap.Modal.getInstance(document.getElementById('modalConvertir')).hide();
+    Swal.fire({
+      icon: 'success',
+      title: 'Tarea creada',
+      html: `La tarea <strong>${escHtml(res.tarea.titulo)}</strong> fue creada exitosamente.<br>
+             <small class="text-muted">Código: ${res.tarea.codigo_tarea}</small>`,
+      confirmButtonText: 'Ver tareas',
+      showCancelButton: true,
+      cancelButtonText: 'Seguir aquí',
+    }).then(r => { if (r.isConfirmed) window.location.href = '/tareas'; else location.reload(); });
+  })
+  .catch(() => Swal.fire('Error', 'No se pudo crear la tarea.', 'error'));
+}
+
+/* ────────────────────────────────────────────────────────────
+   URL PARAMS — pre-fill desde tarea
+──────────────────────────────────────────────────────────── */
+(function checkUrlParams() {
+  const params  = new URLSearchParams(window.location.search);
+  const tareaId = params.get('tarea_id');
+  if (!tareaId) return;
+
+  fetch(`/tareas/${tareaId}`)
+    .then(r => r.json())
+    .then(t => {
+      if (!t || t.error) return;
+      const titulo = t.titulo || '';
+      const ahora  = new Date(); ahora.setSeconds(0,0); ahora.setMinutes(0);
+      ahora.setHours(ahora.getHours() + 1);
+      const fin = new Date(ahora.getTime() + 60*60*1000);
+      document.getElementById('r-tarea-origen').value = tareaId;
+      document.getElementById('r-titulo').value       = `Reunión: ${titulo}`;
+      document.getElementById('r-descripcion').value  = t.descripcion || '';
+      document.getElementById('r-fecha-inicio').value = toDatetimeLocal(ahora);
+      document.getElementById('r-fecha-fin').value    = toDatetimeLocal(fin);
+      new bootstrap.Modal(document.getElementById('modalReunion')).show();
+    })
+    .catch(() => {});
+}());
+</script>
+
+{% endblock %}

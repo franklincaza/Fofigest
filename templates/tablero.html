@@ -195,6 +195,7 @@ body { font-family: 'Nunito', sans-serif; }
 .kb-act:hover         { background: #eaecf4; }
 .kb-act.edit:hover    { color: #4e73df; }
 .kb-act.delete:hover  { color: #e74a3b; }
+.kb-act.meeting:hover { color: #17a2b8; }
 
 /* Tareas facturadas — ocultar acciones y resaltar bloqueo PAGADA */
 .kb-card[data-facturada="true"] .kb-act.edit,
@@ -351,9 +352,10 @@ body { font-family: 'Nunito', sans-serif; }
 .modo-oscuro .kb-timer-btn--running { background: #4e73df; border-color: #4e73df; color: #fff; }
 .modo-oscuro .kb-timer-save       { color: #5a6075; }
 .modo-oscuro .kb-timer-save:hover { color: #1cc88a; background: #2a2a3a; }
-.modo-oscuro .kb-act:hover        { background: #3c3c50; }
-.modo-oscuro .kb-act.edit:hover   { color: #7b96f5; }
-.modo-oscuro .kb-act.delete:hover { color: #e74a3b; }
+.modo-oscuro .kb-act:hover          { background: #3c3c50; }
+.modo-oscuro .kb-act.edit:hover    { color: #7b96f5; }
+.modo-oscuro .kb-act.delete:hover  { color: #e74a3b; }
+.modo-oscuro .kb-act.meeting:hover { color: #5bc8da; }
 .modo-oscuro .kb-progress .progress { background: #3c3c50; }
 .modo-oscuro .kb-progress__label  { color: #9a9db5; }
 .modo-oscuro .kb-stat             { background: #1e1e2d; border-color: #3c3c50; color: #c3c3cd; }
@@ -436,6 +438,12 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
+                        <a class="kb-act meeting"
+                           href="/reuniones?tarea_id={{ tarea.id }}"
+                           title="Crear reunión desde esta tarea"
+                           onclick="event.stopPropagation();">
+                            <i class="fas fa-video"></i>
+                        </a>
                         {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
@@ -529,6 +537,12 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
+                        <a class="kb-act meeting"
+                           href="/reuniones?tarea_id={{ tarea.id }}"
+                           title="Crear reunión desde esta tarea"
+                           onclick="event.stopPropagation();">
+                            <i class="fas fa-video"></i>
+                        </a>
                         {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
@@ -622,6 +636,12 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
+                        <a class="kb-act meeting"
+                           href="/reuniones?tarea_id={{ tarea.id }}"
+                           title="Crear reunión desde esta tarea"
+                           onclick="event.stopPropagation();">
+                            <i class="fas fa-video"></i>
+                        </a>
                         {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
@@ -715,6 +735,12 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
+                        <a class="kb-act meeting"
+                           href="/reuniones?tarea_id={{ tarea.id }}"
+                           title="Crear reunión desde esta tarea"
+                           onclick="event.stopPropagation();">
+                            <i class="fas fa-video"></i>
+                        </a>
                         {% if session.get('username') == "admin" %}
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
@@ -809,6 +835,12 @@ body { font-family: 'Nunito', sans-serif; }
                                 title="Editar tarea">
                             <i class="fas fa-pen"></i>
                         </button>
+                        <a class="kb-act meeting"
+                           href="/reuniones?tarea_id={{ tarea.id }}"
+                           title="Crear reunión desde esta tarea"
+                           onclick="event.stopPropagation();">
+                            <i class="fas fa-video"></i>
+                        </a>
                         <button class="kb-act delete"
                                 onclick="eliminarTarea({{ tarea.id }}); event.stopPropagation();"
                                 title="Eliminar tarea">
