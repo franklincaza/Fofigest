@@ -2259,6 +2259,35 @@ def _generar_numero_cuenta(anio):
     return f'CC-{anio}-{n:03d}'
 
 
+def _url_ver_cuenta(cuenta_id):
+    token = serializer.dumps(str(cuenta_id), salt='ver-cuenta-publico')
+    return f'{host}ver-cuenta/{token}'
+
+
+def _enviar_email_recibo_trabajador(cuenta):
+    try:
+        correo = _correo_usuario(cuenta.usuario_id)
+        if not correo:
+            return
+        msg = Message(
+            subject=f'Confirmación registrada — Cuenta #{cuenta.numero_cuenta}',
+            recipients=[correo]
+        )
+        msg.html = f"""
+        <h2 style="color:#1cc88a">Tu confirmación fue registrada</h2>
+        <p>Hola {_nombre_usuario(cuenta.usuario_id)},</p>
+        <p>Hemos registrado que confirmaste el recibo del pago de tu cuenta
+        <strong>{cuenta.numero_cuenta}</strong>.</p>
+        <p><strong>Empresa:</strong> {cuenta.empresa_pagadora}</p>
+        <p><strong>Período:</strong> {cuenta.mes} {cuenta.anio}</p>
+        <p><strong>Valor:</strong> ${float(cuenta.valor_total):,.0f} COP</p>
+        <p style="font-size:.85rem;color:#858796">Guarda este correo como comprobante.
+        Si tienes alguna duda, contacta al administrador.</p>"""
+        mail.send(msg)
+    except Exception as e:
+        logging.error(f'Error enviando email recibo trabajador: {e}')
+
+
 def _enviar_email_nueva_cuenta(cuenta):
     try:
         admin_email = config.config['EMAIL']
@@ -2282,7 +2311,7 @@ def _enviar_email_nueva_cuenta(cuenta):
         <p><strong>Total horas:</strong> {total_horas}h</p>
         <p><strong>Valor total:</strong> ${float(cuenta.valor_total):,.0f} COP</p>
         <p><strong>Tareas incluidas:</strong></p><ul>{items_html}</ul>
-        <p><a href="{host}admin/cuenta-cobro/{cuenta.id}" style="background:#4e73df;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
+        <p><a href="{_url_ver_cuenta(cuenta.id)}" style="background:#4e73df;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
             Ver en Fofigest
         </a></p>"""
         mail.send(msg)
@@ -2340,7 +2369,7 @@ def _enviar_email_confirmacion_admin(cuenta, tipo, inconveniente=None):
         msg.html = f"""
         <h2 style="color:#4e73df">Fofigest — Cuenta de Cobro</h2>
         {cuerpo}
-        <p><a href="{host}admin/cuenta-cobro/{cuenta.id}" style="background:#4e73df;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
+        <p><a href="{_url_ver_cuenta(cuenta.id)}" style="background:#4e73df;color:white;padding:10px 20px;border-radius:5px;text-decoration:none;">
             Ver detalle
         </a></p>"""
         mail.send(msg)
@@ -2625,6 +2654,42 @@ def admin_detalle_cuenta_cobro(id):
     return render_template('admin_detalle_cuenta_cobro.html', cuenta=cuenta, perfil=perfil)
 
 
+def _enviar_email_cambio_estado(cuenta, nuevo_estado, observacion=None):
+    try:
+        correo = _correo_usuario(cuenta.usuario_id)
+        if not correo:
+            return
+        estilos = {
+            'APROBADA':  {'color': '#4e73df', 'icono': '✓', 'texto': 'ha sido <strong>aprobada</strong>'},
+            'REVISIÓN':  {'color': '#36b9cc', 'icono': '⚠', 'texto': 'está en <strong>revisión</strong>'},
+            'RECHAZADA': {'color': '#e74a3b', 'icono': '✗', 'texto': 'ha sido <strong>rechazada</strong>'},
+        }
+        est = estilos.get(nuevo_estado, {'color': '#858796', 'icono': '•', 'texto': f'cambió a <strong>{nuevo_estado}</strong>'})
+        obs_html = (f'<p><strong>Observación del administrador:</strong><br>'
+                    f'<em>{observacion}</em></p>') if observacion else ''
+        msg = Message(
+            subject=f'Cuenta #{cuenta.numero_cuenta} — {nuevo_estado}',
+            recipients=[correo]
+        )
+        msg.html = f"""
+        <h2 style="color:{est['color']}">{est['icono']} Tu cuenta de cobro {est['texto']}</h2>
+        <p>Hola {_nombre_usuario(cuenta.usuario_id)},</p>
+        <p>El estado de tu cuenta <strong>{cuenta.numero_cuenta}</strong>
+        ({cuenta.mes} {cuenta.anio} — {cuenta.empresa_pagadora}) ha sido actualizado.</p>
+        <p><strong>Valor:</strong> ${float(cuenta.valor_total):,.0f} COP</p>
+        {obs_html}
+        <p><a href="{_url_ver_cuenta(cuenta.id)}"
+              style="background:{est['color']};color:white;padding:10px 20px;
+                     border-radius:5px;text-decoration:none;display:inline-block;">
+            Ver detalles
+        </a></p>
+        <p style="font-size:.8rem;color:#858796">
+            Si no reconoces esta cuenta, ignora este mensaje.</p>"""
+        mail.send(msg)
+    except Exception as e:
+        logging.error(f'Error enviando email cambio estado cuenta {cuenta.id}: {e}')
+
+
 @app.route('/admin/cuenta-cobro/<int:id>/estado', methods=['POST'])
 @login_required
 def admin_cambiar_estado_cuenta(id):
@@ -2671,7 +2736,15 @@ def admin_cambiar_estado_cuenta(id):
                 f'Cuenta {cuenta.numero_cuenta} RECHAZADA por {session.get("correo")}. '
                 f'Tareas liberadas: {tareas_liberadas}'
             )
-            flash(f'Cuenta rechazada. {len(tareas_liberadas)} tarea(s) liberadas para re-facturación.', 'success')
+            _enviar_email_cambio_estado(cuenta, 'RECHAZADA', observacion)
+            flash(f'Cuenta rechazada. {len(tareas_liberadas)} tarea(s) liberadas. Se notificó al trabajador.', 'success')
+
+        elif nuevo_estado in ('APROBADA', 'REVISIÓN'):
+            models.db.session.commit()
+            logging.info(f'Cuenta {cuenta.numero_cuenta} → {nuevo_estado} por {session.get("correo")}')
+            _enviar_email_cambio_estado(cuenta, nuevo_estado, observacion)
+            flash(f'Estado actualizado a {nuevo_estado}. Se notificó al trabajador por correo.', 'success')
+
         else:
             models.db.session.commit()
             flash('Estado actualizado correctamente.', 'success')
@@ -2777,6 +2850,7 @@ def confirmar_pago_aceptar(token):
         models.db.session.commit()
         logging.info(f'Pago confirmado para cuenta {conf.cuenta.numero_cuenta}')
         _enviar_email_confirmacion_admin(conf.cuenta, 'confirmado')
+        _enviar_email_recibo_trabajador(conf.cuenta)
         return render_template('confirmar_pago.html', conf=conf, cuenta=conf.cuenta,
                                ya_usado=True, mensaje='¡Gracias! Confirmación registrada exitosamente.')
     except Exception as e:
@@ -2808,6 +2882,19 @@ def confirmar_pago_inconveniente(token):
         logging.error(f'Error reportando inconveniente token {token}: {e}')
         return render_template('confirmar_pago.html', conf=conf, cuenta=conf.cuenta,
                                ya_usado=False, error='Error al reportar el inconveniente.')
+
+
+# ── 2.5 Vista pública de cuenta de cobro (token firmado desde email) ─────────
+
+@app.route('/ver-cuenta/<token>', methods=['GET'])
+def ver_cuenta_publico(token):
+    try:
+        cuenta_id = int(serializer.loads(token, salt='ver-cuenta-publico'))
+    except Exception:
+        abort(404)
+    cuenta = models.CuentaCobro.query.get_or_404(cuenta_id)
+    perfil = models.PerfilPago.query.filter_by(usuario_id=cuenta.usuario_id).first()
+    return render_template('ver_cuenta_cobro_publica.html', cuenta=cuenta, perfil=perfil)
 
 
 # ──────────────────────────────────────────────────────────

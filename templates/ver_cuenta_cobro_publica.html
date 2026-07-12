@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cuenta de Cobro {{ cuenta.numero_cuenta }} — Fofigest</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <style>
+    body { background: #f8f9fc; font-family: 'Segoe UI', sans-serif; }
+    .brand-header {
+      background: linear-gradient(135deg, #4e73df, #224abe);
+      padding: 1.5rem;
+      text-align: center;
+      color: #fff;
+      border-radius: .5rem .5rem 0 0;
+    }
+    .brand-header h1 { font-size: 1.5rem; font-weight: 800; margin: 0; }
+    .card-main { max-width: 720px; margin: 3rem auto; border: none; box-shadow: 0 .5rem 2rem rgba(0,0,0,.12); border-radius: .5rem; }
+    .card-main .card-body { padding: 2rem; }
+    .section-title { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: #858796; margin-bottom: .75rem; }
+    .dato-row { display: flex; justify-content: space-between; align-items: center; padding: .45rem 0; border-bottom: 1px solid #e3e6f0; gap: 1rem; }
+    .dato-row:last-child { border-bottom: none; }
+    .dato-label { color: #858796; font-size: .875rem; flex-shrink: 0; }
+    .dato-valor { font-weight: 600; color: #3a3b45; font-size: .875rem; text-align: right; }
+    .valor-total { font-size: 1.8rem; font-weight: 900; color: #1cc88a; text-align: center; margin: 1.25rem 0 .25rem; }
+    .valor-label { text-align: center; color: #858796; font-size: .8rem; margin-bottom: 1.5rem; }
+    .badge-estado { font-size: .9rem; padding: .45em .9em; }
+    .tabla-tareas th { font-size: .8rem; color: #858796; font-weight: 600; }
+    .tabla-tareas td { font-size: .85rem; vertical-align: middle; }
+    .conf-box { border-radius: .4rem; padding: 1rem 1.25rem; margin-top: 1.25rem; font-size: .875rem; }
+    .conf-ok { background: #d1f5ea; border-left: 4px solid #1cc88a; color: #0d6147; }
+    .conf-issue { background: #fde8e8; border-left: 4px solid #e74a3b; color: #7f1d1d; }
+    .conf-pending { background: #fff3cd; border-left: 4px solid #f6c23e; color: #7d5d00; }
+    hr.soft { border-color: #e3e6f0; }
+  </style>
+</head>
+<body>
+
+<div class="card-main card">
+  <div class="brand-header">
+    <h1><i class="fas fa-file-invoice-dollar me-2"></i>Fofigest</h1>
+    <p class="mb-0 mt-1" style="opacity:.85;font-size:.9rem">Detalle de Cuenta de Cobro</p>
+  </div>
+
+  <div class="card-body">
+
+    <!-- Encabezado y estado -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <div>
+        <p class="mb-0 text-muted small">N° de cuenta</p>
+        <h4 class="mb-0 fw-bold" style="color:#3a3b45">{{ cuenta.numero_cuenta }}</h4>
+      </div>
+      <div>
+        {% if cuenta.estado == 'PENDIENTE' %}
+          <span class="badge bg-warning text-dark badge-estado">PENDIENTE</span>
+        {% elif cuenta.estado == 'REVISIÓN' %}
+          <span class="badge bg-info text-dark badge-estado">REVISIÓN</span>
+        {% elif cuenta.estado == 'APROBADA' %}
+          <span class="badge bg-primary badge-estado">APROBADA</span>
+        {% elif cuenta.estado == 'PAGADA' %}
+          <span class="badge bg-success badge-estado">PAGADA</span>
+        {% elif cuenta.estado == 'RECHAZADA' %}
+          <span class="badge bg-danger badge-estado">RECHAZADA</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <hr class="soft">
+
+    <!-- Datos de la cuenta -->
+    <p class="section-title"><i class="fas fa-info-circle me-1"></i>Información general</p>
+    <div class="mb-3">
+      {% if cuenta.usuario %}
+      <div class="dato-row">
+        <span class="dato-label">Trabajador</span>
+        <span class="dato-valor">{{ cuenta.usuario.nombres }} {{ cuenta.usuario.apellidos }}</span>
+      </div>
+      {% endif %}
+      <div class="dato-row">
+        <span class="dato-label">Empresa pagadora</span>
+        <span class="dato-valor">{{ cuenta.empresa_pagadora }}</span>
+      </div>
+      <div class="dato-row">
+        <span class="dato-label">NIT</span>
+        <span class="dato-valor">{{ cuenta.nit_pagadora }}</span>
+      </div>
+      <div class="dato-row">
+        <span class="dato-label">Período</span>
+        <span class="dato-valor">{{ cuenta.mes }} {{ cuenta.anio }}</span>
+      </div>
+      <div class="dato-row">
+        <span class="dato-label">Fecha de creación</span>
+        <span class="dato-valor">{{ cuenta.fecha_creacion.strftime('%d/%m/%Y') if cuenta.fecha_creacion else '—' }}</span>
+      </div>
+      {% if cuenta.fecha_pago %}
+      <div class="dato-row">
+        <span class="dato-label">Fecha de pago</span>
+        <span class="dato-valor">{{ cuenta.fecha_pago.strftime('%d/%m/%Y') }}</span>
+      </div>
+      {% endif %}
+      {% if cuenta.concepto %}
+      <div class="dato-row">
+        <span class="dato-label">Concepto</span>
+        <span class="dato-valor" style="max-width:60%;text-align:right">{{ cuenta.concepto }}</span>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Valor total -->
+    <div class="valor-total">${{ '{:,.0f}'.format(cuenta.valor_total) }} COP</div>
+    <p class="valor-label">Valor total de la cuenta</p>
+
+    <!-- Tareas incluidas -->
+    {% if cuenta.detalles %}
+    <hr class="soft">
+    <p class="section-title"><i class="fas fa-tasks me-1"></i>Tareas incluidas</p>
+    <div class="table-responsive">
+      <table class="table table-sm tabla-tareas">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Tarea</th>
+            <th class="text-end">Horas</th>
+            <th class="text-end">$/h</th>
+            <th class="text-end">Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in cuenta.detalles %}
+          <tr>
+            <td class="text-muted">{{ d.codigo_tarea }}</td>
+            <td>{{ d.titulo_tarea }}</td>
+            <td class="text-end">{{ d.horas_dedicadas }}h</td>
+            <td class="text-end">${{ '{:,.0f}'.format(d.precio_hora) }}</td>
+            <td class="text-end fw-semibold">${{ '{:,.0f}'.format(d.subtotal) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% endif %}
+
+    <!-- Datos bancarios -->
+    {% if perfil %}
+    <hr class="soft">
+    <p class="section-title"><i class="fas fa-university me-1"></i>Datos bancarios del trabajador</p>
+    <div class="mb-3">
+      <div class="dato-row">
+        <span class="dato-label">Titular</span>
+        <span class="dato-valor">{{ perfil.nombres_completos }}</span>
+      </div>
+      <div class="dato-row">
+        <span class="dato-label">Documento</span>
+        <span class="dato-valor">{{ perfil.documento }}</span>
+      </div>
+      <div class="dato-row">
+        <span class="dato-label">Banco</span>
+        <span class="dato-valor">{{ perfil.banco }}</span>
+      </div>
+      <div class="dato-row">
+        <span class="dato-label">Tipo de cuenta</span>
+        <span class="dato-valor">{{ perfil.tipo_cuenta }}</span>
+      </div>
+      <div class="dato-row">
+        <span class="dato-label">N° de cuenta</span>
+        <span class="dato-valor">{{ perfil.numero_cuenta }}</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Observación del admin -->
+    {% if cuenta.observacion_admin %}
+    <hr class="soft">
+    <p class="section-title"><i class="fas fa-comment me-1"></i>Observación</p>
+    <p class="text-muted small mb-0">{{ cuenta.observacion_admin }}</p>
+    {% endif %}
+
+    <!-- Estado de confirmación -->
+    <hr class="soft">
+    <p class="section-title"><i class="fas fa-check-circle me-1"></i>Confirmación del trabajador</p>
+    {% if cuenta.confirmacion %}
+      {% if cuenta.confirmacion.confirmado %}
+      <div class="conf-box conf-ok">
+        <i class="fas fa-check-circle me-1"></i>
+        <strong>Pago confirmado</strong> —
+        El trabajador confirmó el recibo el
+        {{ cuenta.confirmacion.fecha_confirmacion.strftime('%d/%m/%Y a las %H:%M') if cuenta.confirmacion.fecha_confirmacion else '' }}.
+      </div>
+      {% elif cuenta.confirmacion.inconveniente %}
+      <div class="conf-box conf-issue">
+        <i class="fas fa-exclamation-circle me-1"></i>
+        <strong>Inconveniente reportado</strong>
+        {% if cuenta.confirmacion.fecha_inconveniente %} el {{ cuenta.confirmacion.fecha_inconveniente.strftime('%d/%m/%Y') }}{% endif %}:<br>
+        <em>{{ cuenta.confirmacion.inconveniente }}</em>
+      </div>
+      {% else %}
+      <div class="conf-box conf-pending">
+        <i class="fas fa-clock me-1"></i>
+        <strong>Pendiente de confirmación</strong> — El trabajador aún no ha confirmado el pago.
+      </div>
+      {% endif %}
+    {% else %}
+    <div class="conf-box conf-pending">
+      <i class="fas fa-clock me-1"></i>
+      <strong>Pendiente</strong> — No se ha iniciado el proceso de confirmación para esta cuenta.
+    </div>
+    {% endif %}
+
+    <p class="text-muted text-center mt-4 mb-0" style="font-size:.78rem">
+      <i class="fas fa-lock me-1"></i>Vista de solo lectura generada desde notificación de correo — Fofigest
+    </p>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
