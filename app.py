@@ -3868,6 +3868,57 @@ def descargar_mcp_script():
                      mimetype='text/x-python')
 
 
+@app.route('/chrome-extension')
+@login_required
+def chrome_extension_page():
+    """Página de descarga e instalación de la extensión Chrome (dev/admin)."""
+    if session.get('username') not in ('admin', 'superadmin', 'dev'):
+        abort(403)
+    return render_template('chrome_extension.html')
+
+
+@app.route('/download/chrome_extension.zip')
+@login_required
+def descargar_chrome_extension():
+    """Descarga la carpeta chrome-extension/ como ZIP en memoria (dev/admin)."""
+    if session.get('username') not in ('admin', 'superadmin', 'dev'):
+        abort(403)
+
+    import sys as _sys
+    import zipfile
+
+    if getattr(_sys, 'frozen', False):
+        base = os.path.dirname(_sys.executable)
+    else:
+        base = os.path.dirname(os.path.abspath(__file__))
+
+    ext_dir = os.path.join(base, 'chrome-extension')
+    if not os.path.isdir(ext_dir):
+        abort(404)
+
+    buf = BytesIO()
+    with zipfile.ZipFile(buf, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for root, dirs, files in os.walk(ext_dir):
+            # Excluir archivos de utilidad que el usuario no necesita instalar
+            dirs[:] = [d for d in dirs if d not in ('__pycache__',)]
+            for fname in files:
+                if fname.endswith('.pyc'):
+                    continue
+                abs_path = os.path.join(root, fname)
+                arc_name = os.path.join(
+                    'fofigest-extension',
+                    os.path.relpath(abs_path, ext_dir)
+                )
+                zf.write(abs_path, arc_name)
+    buf.seek(0)
+    return send_file(
+        buf,
+        as_attachment=True,
+        download_name='fofigest-chrome-extension.zip',
+        mimetype='application/zip'
+    )
+
+
 @app.route('/api/auth/apikey', methods=['POST'])
 @login_required
 def crear_api_key():

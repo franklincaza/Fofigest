@@ -33,6 +33,8 @@
 - [🚀 Despliegue](#-despliegue)
 - [⚙️ Configuración](#️-configuración)
 - [📱 PWA](#-pwa)
+- [🤖 MCP — Integración con IA](#-mcp--integración-con-ia-claude-vscode-cursor)
+- [🧩 Extensión Chrome](#-extensión-chrome)
 - [🗺️ Roadmap](#-roadmap)
 - [🤝 Contribuir](#-contribuir)
 - [📄 Licencia](#-licencia)
@@ -503,6 +505,73 @@ Reinicia Claude Desktop / recarga la ventana de VSCode. Deberías ver `fofigest`
 
 ---
 
+---
+
+## 🧩 Extensión Chrome
+
+La **Extensión Chrome de Fofigest** permite gestionar cronómetros, consultar tareas y crear nuevas tareas directamente desde la barra del navegador, sin necesidad de abrir la aplicación completa.
+
+> **Disponible para:** roles `dev` y `admin` · Compatible con Chrome, Edge y Brave.
+
+### ¿Qué puedes hacer?
+
+| Función | Descripción |
+|---|---|
+| ⏱️ **Cronómetros por tarea** | Inicia, pausa y guarda horas; el contador persiste aunque cambies de pestaña |
+| 📋 **Tareas próximas** | Tareas que vencen en ≤ 3 días con alerta visual |
+| ➕ **Crear tarea rápida** | Crea tareas sin salir de tu flujo de trabajo |
+| 🔔 **Notificaciones automáticas** | Recordatorio diario 8 AM y alertas de vencimiento |
+
+### Instalación
+
+#### 1️⃣ Descargar la extensión
+
+- Inicia sesión en Fofigest como **admin** o **dev**.
+- Ve a **Integraciones → Extensión Chrome** (barra lateral).
+- Haz clic en **"Descargar extensión"** para obtener `fofigest-chrome-extension.zip`.
+- Descomprime el archivo en una carpeta **permanente** (ej: `C:\Fofigest\extension\`).
+
+> ⚠️ No muevas la carpeta después de instalarla; Chrome perderá la ruta.
+
+#### 2️⃣ Cargar en Chrome / Edge / Brave
+
+1. Abre `chrome://extensions` en la barra de direcciones.
+2. Activa **"Modo de desarrollador"** (esquina superior derecha).
+3. Haz clic en **"Cargar extensión sin empaquetar"**.
+4. Selecciona la carpeta `fofigest-extension/` descomprimida.
+
+#### 3️⃣ Usar la extensión
+
+1. Abre Fofigest en una pestaña del mismo navegador (requerido para la autenticación).
+2. Haz clic en el ícono de Fofigest en la barra de herramientas.
+3. ¡Listo! Tres pestañas disponibles: **Cronómetros**, **Tareas**, **Nueva**.
+
+### Compatibilidad
+
+| Modo | URL del servidor | Estado |
+|---|---|---|
+| Desktop (EXE) | `http://127.0.0.1:5000` | ✅ Compatible |
+| Web local | `http://localhost:5000` | ✅ Compatible |
+| Servidor remoto | `https://tu-dominio.com` | ⚙️ Requiere editar `host_permissions` en `manifest.json` |
+
+### Arquitectura
+
+```
+chrome-extension/
+├── manifest.json        MV3 — permisos y host_permissions
+├── background.js        Service worker — alarmas y notificaciones
+├── content.js           Proxy de API — usa la sesión de Fofigest abierta
+└── popup/
+    ├── popup.html       3 pestañas: Cronómetros · Tareas · Nueva
+    ├── popup.css        Paleta Fofigest (#4e73df, Nunito)
+    └── popup.js        Lógica completa + estado en chrome.storage.local
+```
+
+**Flujo de comunicación:**  
+`popup.js` → `chrome.tabs.sendMessage` → `content.js` → `fetch same-origin` → Flask
+
+---
+
 ## 🗺️ Roadmap
 
 ### ✅ Versión 4.0 (Actual)
@@ -521,6 +590,7 @@ Reinicia Claude Desktop / recarga la ventana de VSCode. Deberías ver `fofigest`
 - [x] **MCP — Integración con IA** (Claude Desktop, VSCode, Cursor) con RBAC por rol
 - [x] API Keys por usuario con hash SHA-256
 - [x] Restricciones de acceso por empresa para rol `usuario`
+- [x] **Extensión Chrome** — cronómetros, tareas y notificaciones desde el navegador (dev/admin)
 - [ ] API RESTful documentada (Swagger/OpenAPI)
 - [ ] Integración con calendario (Google Calendar, Outlook)
 - [ ] Notificaciones en tiempo real (WebSockets)

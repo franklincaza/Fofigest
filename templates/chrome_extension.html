@@ -1,0 +1,268 @@
+{% extends "Base.html" %}
+{% block content %}
+<div class="container-fluid">
+
+  <!-- Encabezado -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color:var(--text-heading)">
+      <i class="fab fa-chrome me-2 text-primary"></i>Extensión Chrome — Fofigest
+    </h1>
+    <a href="{{ url_for('vista_mis_api_keys') }}" class="btn btn-sm btn-secondary">
+      <i class="fas fa-arrow-left me-1"></i>Volver a API Keys
+    </a>
+  </div>
+
+  <!-- Banner informativo -->
+  <div class="alert alert-primary d-flex align-items-start gap-3 mb-4" role="alert">
+    <i class="fab fa-chrome fs-3 mt-1 flex-shrink-0"></i>
+    <div class="flex-grow-1">
+      <strong>¿Qué hace la extensión?</strong><br>
+      Controla cronómetros, consulta tareas próximas y crea nuevas tareas de Fofigest
+      directamente desde la barra de Chrome — sin abrir la app completa.<br>
+      <span class="text-muted small">
+        Compatible con Chrome, Edge y Brave. Requiere Fofigest activo en una pestaña del mismo navegador.
+      </span>
+    </div>
+    <div class="flex-shrink-0 ms-2 text-center">
+      <a href="{{ url_for('descargar_chrome_extension') }}"
+         class="btn btn-primary"
+         download>
+        <i class="fas fa-download me-1"></i>Descargar extensión<br>
+        <span class="small font-monospace">fofigest-chrome-extension.zip</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- ── Funcionalidades ── -->
+    <div class="col-lg-4 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-star me-2"></i>Funcionalidades
+          </h6>
+        </div>
+        <div class="card-body">
+          <ul class="list-unstyled mb-0">
+            <li class="mb-3 d-flex align-items-start gap-2">
+              <i class="fas fa-stopwatch text-primary mt-1 flex-shrink-0"></i>
+              <div>
+                <strong>Cronómetros por tarea</strong><br>
+                <span class="text-muted small">
+                  Inicia, pausa y guarda horas directamente en la tarea,
+                  incluso si cambias de pestaña.
+                </span>
+              </div>
+            </li>
+            <li class="mb-3 d-flex align-items-start gap-2">
+              <i class="fas fa-tasks text-warning mt-1 flex-shrink-0"></i>
+              <div>
+                <strong>Tareas próximas</strong><br>
+                <span class="text-muted small">
+                  Muestra tareas que vencen en los próximos 3 días con alerta visual.
+                </span>
+              </div>
+            </li>
+            <li class="mb-3 d-flex align-items-start gap-2">
+              <i class="fas fa-plus-circle text-success mt-1 flex-shrink-0"></i>
+              <div>
+                <strong>Crear tarea rápida</strong><br>
+                <span class="text-muted small">
+                  Crea tareas con un click sin salir de lo que estás haciendo.
+                </span>
+              </div>
+            </li>
+            <li class="d-flex align-items-start gap-2">
+              <i class="fas fa-bell text-danger mt-1 flex-shrink-0"></i>
+              <div>
+                <strong>Notificaciones automáticas</strong><br>
+                <span class="text-muted small">
+                  Recordatorio diario a las 8 AM para registrar horas y alertas de tareas por vencer.
+                </span>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Guía de instalación ── -->
+    <div class="col-lg-8 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-list-ol me-2"></i>Instalación paso a paso
+          </h6>
+        </div>
+        <div class="card-body">
+
+          <!-- Paso 1 -->
+          <div class="d-flex gap-3 mb-4">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:2rem;height:2rem;font-weight:700;">1</div>
+            <div>
+              <strong>Descargar y descomprimir el ZIP</strong>
+              <p class="text-muted small mb-1 mt-1">
+                Haz clic en <em>"Descargar extensión"</em> y descomprime el archivo en una carpeta
+                permanente (ej: <code>C:\Fofigest\extension\</code>).
+                No la muevas después de instalarla — Chrome pierde la ruta si lo haces.
+              </p>
+              <a href="{{ url_for('descargar_chrome_extension') }}"
+                 class="btn btn-sm btn-outline-primary" download>
+                <i class="fas fa-download me-1"></i>Descargar ZIP
+              </a>
+            </div>
+          </div>
+
+          <!-- Paso 2 -->
+          <div class="d-flex gap-3 mb-4">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:2rem;height:2rem;font-weight:700;">2</div>
+            <div>
+              <strong>Abrir las extensiones del navegador</strong>
+              <p class="text-muted small mb-1 mt-1">
+                En Chrome o Edge, escribe en la barra de direcciones:
+              </p>
+              <code id="extUrl" class="d-block mb-2 p-2 rounded"
+                    style="background:var(--bs-dark,#212529);color:#0dcaf0;font-size:.82rem;">
+                chrome://extensions
+              </code>
+              <button class="btn btn-sm btn-outline-secondary" onclick="copiarUrl()">
+                <i class="fas fa-copy me-1"></i>Copiar URL
+              </button>
+            </div>
+          </div>
+
+          <!-- Paso 3 -->
+          <div class="d-flex gap-3 mb-4">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:2rem;height:2rem;font-weight:700;">3</div>
+            <div>
+              <strong>Activar el modo desarrollador</strong>
+              <p class="text-muted small mb-0 mt-1">
+                En la esquina superior derecha de la página de extensiones,
+                activa el interruptor <strong>"Modo de desarrollador"</strong>.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 4 -->
+          <div class="d-flex gap-3 mb-4">
+            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:2rem;height:2rem;font-weight:700;">4</div>
+            <div>
+              <strong>Cargar sin empaquetar</strong>
+              <p class="text-muted small mb-0 mt-1">
+                Haz clic en <strong>"Cargar extensión sin empaquetar"</strong> y selecciona
+                la carpeta <code>fofigest-extension/</code> que descomprimiste en el paso 1.
+              </p>
+            </div>
+          </div>
+
+          <!-- Paso 5 -->
+          <div class="d-flex gap-3">
+            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width:2rem;height:2rem;font-weight:700;">5</div>
+            <div>
+              <strong>¡Listo! Usar la extensión</strong>
+              <p class="text-muted small mb-0 mt-1">
+                Abre Fofigest en otra pestaña del mismo navegador y haz clic en el ícono
+                <img src="{{ url_for('static', filename='img/logo_F-Photoroom_512.png') }}"
+                     style="width:16px;height:16px;object-fit:contain;vertical-align:middle;"
+                     alt=""> en la barra de herramientas de Chrome.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Compatibilidad web vs desktop -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-info-circle me-2"></i>Compatibilidad — Web vs Desktop
+          </h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-3">Contexto</th>
+                  <th>URL del servidor</th>
+                  <th>Estado</th>
+                  <th>Notas</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="ps-3">
+                    <i class="fas fa-desktop text-primary me-2"></i>
+                    <strong>Fofigest Desktop (EXE)</strong>
+                  </td>
+                  <td><code>http://127.0.0.1:5000</code></td>
+                  <td><span class="badge bg-success">Compatible</span></td>
+                  <td class="text-muted small">La extensión ya está configurada para este host.</td>
+                </tr>
+                <tr>
+                  <td class="ps-3">
+                    <i class="fas fa-globe text-info me-2"></i>
+                    <strong>Fofigest Web (localhost)</strong>
+                  </td>
+                  <td><code>http://localhost:5000</code></td>
+                  <td><span class="badge bg-success">Compatible</span></td>
+                  <td class="text-muted small">Ambos hosts están en <code>manifest.json</code>.</td>
+                </tr>
+                <tr>
+                  <td class="ps-3">
+                    <i class="fas fa-cloud text-warning me-2"></i>
+                    <strong>Servidor remoto / producción</strong>
+                  </td>
+                  <td><code>https://tu-dominio.com</code></td>
+                  <td><span class="badge bg-warning text-dark">Requiere ajuste</span></td>
+                  <td class="text-muted small">
+                    Edita <code>host_permissions</code> en <code>manifest.json</code>
+                    con tu dominio antes de cargar la extensión.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Requisito: pestaña abierta -->
+  <div class="alert alert-warning d-flex align-items-start gap-2 mb-4" role="alert">
+    <i class="fas fa-exclamation-triangle mt-1 flex-shrink-0"></i>
+    <div>
+      <strong>Requisito:</strong> La extensión necesita que Fofigest esté abierto
+      en al menos una pestaña del mismo navegador para comunicarse con el servidor.
+      Sin esa pestaña, el popup mostrará el mensaje <em>"Abre Fofigest en el navegador"</em>.
+    </div>
+  </div>
+
+</div>
+
+<script>
+function copiarUrl() {
+  navigator.clipboard.writeText('chrome://extensions').then(() => {
+    Swal.fire({
+      icon: 'success',
+      title: '¡Copiado!',
+      text: 'Pega la URL en la barra de direcciones de Chrome.',
+      timer: 1400,
+      showConfirmButton: false
+    });
+  });
+}
+</script>
+{% endblock %}
