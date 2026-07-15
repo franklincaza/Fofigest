@@ -49,6 +49,7 @@
 | Gestión de múltiples empresas | Gráficos Plotly dinámicos | Login OTP por email |
 | Proyectos y tareas ilimitadas | Exportación a Excel | Recuperación de contraseña |
 | Control de horas estimadas/dedicadas | Análisis de consumo por tipo | Permisos granulares (admin/usuario) |
+| **🤖 MCP para IA (Claude/VSCode)** | **API Keys por usuario** | **RBAC en API MCP** |
 
 </div>
 
@@ -64,6 +65,7 @@
 - **🔍 Búsqueda Avanzada**: Filtros multi-criterio en tiempo real
 - **📊 Dashboard Inteligente**: Monitoreo de desempeño con Flask-MonitoringDashboard
 - **💾 Backup Automático**: Descarga de respaldos de base de datos
+- **🤖 MCP para IA**: Controla tareas y proyectos desde Claude Desktop, VSCode o Cursor sin compartir contraseña
 
 ---
 
@@ -376,6 +378,131 @@ Fofigest es una **Progressive Web App** instalable en dispositivos móviles y es
 
 ---
 
+## 🤖 MCP — Integración con IA (Claude, VSCode, Cursor)
+
+El **Model Context Protocol (MCP)** permite que tu asistente de IA interactúe con Fofigest directamente: consultar proyectos, crear y actualizar tareas, registrar horas, cambiar estados y más — sin exponer contraseñas ni datos sensibles.
+
+### ¿Qué puede hacer el MCP?
+
+| Herramienta | Descripción | Rol mínimo |
+|---|---|---|
+| `mi_perfil` | Muestra tu perfil y empresa | usuario |
+| `listar_tareas` | Lista tareas (filtradas por empresa si eres usuario) | usuario |
+| `obtener_tarea` | Detalle completo de una tarea | usuario |
+| `crear_tarea` | Crea una nueva tarea | dev |
+| `actualizar_tarea` | Edita campos de una tarea | dev |
+| `cambiar_estado_tarea` | Cambia el estado (COMPLETADOS solo para admin) | dev |
+| `registrar_horas` | Registra horas dedicadas | dev / usuario* |
+| `asignar_tarea` | Asigna responsable | dev |
+| `eliminar_tarea` | Elimina una tarea | **admin** |
+| `listar_proyectos` | Lista proyectos (filtrados por empresa) | usuario |
+| `resumen_proyecto` | Resumen completo de un proyecto | usuario |
+| `listar_usuarios` | Lista usuarios del sistema | dev |
+
+> \* `usuario` puede registrar horas solo si es responsable de la tarea y pertenece a la misma empresa.
+
+---
+
+### Instalación del MCP — Guía paso a paso
+
+#### Paso 1 — Generar tu API Key
+
+1. Inicia sesión en Fofigest.
+2. Ve a **Mi Perfil → Mis API Keys** (`/mis-api-keys`).
+3. Escribe un nombre descriptivo (ej: `"Claude Desktop"`) y haz clic en **Generar**.
+4. **Copia la clave inmediatamente** — solo se muestra una vez.
+5. En la misma pantalla puedes descargar el script `mcp_fofigest.py`.
+
+#### Paso 2 — Instalar dependencias Python
+
+```bash
+pip install mcp httpx
+```
+
+#### Paso 3 — Ubicar el script MCP
+
+> ⚠️ **Importante**: pon el script en una ruta corta y sin espacios para evitar problemas de resolución.
+
+**Opción recomendada — ruta fija simple:**
+
+```
+C:\MCP\mcp_fofigest.py
+```
+
+- Si usas la versión de escritorio (EXE + instalador), el script queda en  
+  `%LOCALAPPDATA%\Fofigest\mcp_fofigest.py` → cópialo manualmente a `C:\MCP\`.
+- Alternativamente descárgalo desde `/mis-api-keys` y guárdalo en `C:\MCP\`.
+
+> ❌ **No uses** `%LOCALAPPDATA%` directamente en el `args` del config MCP — los clientes de IA no expanden variables de entorno de Windows en ese campo.
+
+#### Paso 4 — Crear el archivo de credenciales
+
+Crea el archivo `C:\Users\TU_USUARIO\.fofigest_mcp.json` (la tilde `~` equivale a esa ruta):
+
+```json
+{
+  "server_url": "http://localhost:5000",
+  "api_key": "fgt_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+}
+```
+
+- Reemplaza `localhost:5000` por la IP/dominio de tu servidor Fofigest si es remoto.
+- En Linux/Mac protege el archivo: `chmod 600 ~/.fofigest_mcp.json`
+
+#### Paso 5 — Configurar tu cliente IA
+
+**Claude Desktop** (`claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "fofigest": {
+      "command": "python",
+      "args": ["C:\\MCP\\mcp_fofigest.py"]
+    }
+  }
+}
+```
+
+**VSCode** (`.vscode/mcp.json`):
+
+```json
+{
+  "servers": {
+    "fofigest": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["C:\\MCP\\mcp_fofigest.py"]
+    }
+  }
+}
+```
+
+#### Paso 6 — Verificar la conexión
+
+Reinicia Claude Desktop / recarga la ventana de VSCode. Deberías ver `fofigest` en la lista de servidores MCP disponibles con el indicador verde de conexión exitosa.
+
+**Prueba rápida:**
+```
+"¿Cuántas tareas tiene el proyecto PRY-001?"
+"Crea una tarea de soporte para el proyecto PRY-002"
+"Marca la tarea T-045 como en progreso"
+```
+
+---
+
+### Solución de problemas comunes
+
+| Síntoma | Causa probable | Solución |
+|---|---|---|
+| `FileNotFoundError` al arrancar | Ruta con variable sin expandir o inexistente | Usa ruta absoluta expandida: `C:\MCP\mcp_fofigest.py` |
+| `Configuration file not found` | Falta `~/.fofigest_mcp.json` | Crea el archivo en `C:\Users\TU_USUARIO\.fofigest_mcp.json` |
+| `Invalid API Key` | Clave revocada o copiada incompleta | Genera una nueva desde `/mis-api-keys` |
+| `Connection refused` | Fofigest no está corriendo en el puerto indicado | Verifica que la app esté activa y el `server_url` sea correcto |
+| Error 403 en cambio de estado | Rol insuficiente (COMPLETADOS es solo admin) | Usa una API Key de un usuario con rol admin |
+
+---
+
 ## 🗺️ Roadmap
 
 ### ✅ Versión 4.0 (Actual)
@@ -391,6 +518,9 @@ Fofigest es una **Progressive Web App** instalable en dispositivos móviles y es
 
 ### 🚧 Versión 4.1 (En Progreso)
 
+- [x] **MCP — Integración con IA** (Claude Desktop, VSCode, Cursor) con RBAC por rol
+- [x] API Keys por usuario con hash SHA-256
+- [x] Restricciones de acceso por empresa para rol `usuario`
 - [ ] API RESTful documentada (Swagger/OpenAPI)
 - [ ] Integración con calendario (Google Calendar, Outlook)
 - [ ] Notificaciones en tiempo real (WebSockets)

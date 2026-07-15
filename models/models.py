@@ -617,3 +617,29 @@ class ReunionParticipante(db.Model):
             'estado_respuesta':  self.estado_respuesta,
             'tarea_generada_id': self.tarea_generada_id,
         }
+
+
+# ── MCP — Claves de API para acceso programático ─────────────────────────────
+
+class ApiKey(db.Model):
+    __tablename__ = 'api_keys'
+
+    id         = db.Column(db.Integer, primary_key=True)
+    user_id    = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
+    key_hash   = db.Column(db.String(64), nullable=False, unique=True)   # SHA-256 hex
+    name       = db.Column(db.String(100), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
+    last_used  = db.Column(db.DateTime, nullable=True)
+    is_active  = db.Column(db.Boolean, default=True, nullable=False)
+
+    usuario = db.relationship('Usuarios', backref=db.backref('api_keys', lazy='dynamic'))
+
+    def serialize(self):
+        return {
+            'id':         self.id,
+            'user_id':    self.user_id,
+            'name':       self.name,
+            'created_at': self.created_at.strftime('%Y-%m-%d %H:%M:%S') if self.created_at else None,
+            'last_used':  self.last_used.strftime('%Y-%m-%d %H:%M:%S') if self.last_used else None,
+            'is_active':  self.is_active,
+        }

@@ -1,0 +1,340 @@
+{% extends "Base.html" %}
+{% block content %}
+<div class="container-fluid">
+
+  <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color:var(--text-heading)">
+      <i class="fas fa-key me-2 text-primary"></i>Mis API Keys — Acceso MCP
+    </h1>
+    <a href="{{ url_for('mi_perfil_pago') }}" class="btn btn-sm btn-secondary">
+      <i class="fas fa-arrow-left me-1"></i>Volver
+    </a>
+  </div>
+
+  <div class="alert alert-info d-flex align-items-start gap-3 mb-4" role="alert">
+    <i class="fas fa-robot fs-4 mt-1 flex-shrink-0"></i>
+    <div class="flex-grow-1">
+      <strong>¿Para qué sirven las API Keys?</strong><br>
+      Permiten que tu asistente de IA (Claude, Cursor, etc.) interactúe con Fofigest directamente:
+      crear y actualizar tareas, consultar proyectos, registrar horas y más, sin compartir tu contraseña.
+      Cada clave hereda tu rol y permisos exactos en la app.
+    </div>
+    <div class="flex-shrink-0 ms-2">
+      <a href="/download/mcp_fofigest.py" class="btn btn-sm btn-primary" download>
+        <i class="fas fa-download me-1"></i>Descargar<br>
+        <span class="small">mcp_fofigest.py</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <!-- Panel: Generar nueva clave -->
+    <div class="col-lg-5 mb-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header py-3">
+          <h6 class="m-0 fw-bold text-primary">
+            <i class="fas fa-plus-circle me-2"></i>Generar nueva API Key
+          </h6>
+        </div>
+        <div class="card-body">
+          <p class="text-muted small mb-3">
+            Dale un nombre descriptivo para identificarla luego
+            (ej: "Claude Desktop casa", "VSCode trabajo").
+          </p>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Nombre de la clave</label>
+            <input id="keyName" type="text" class="form-control" maxlength="100"
+                   placeholder="Ej: Claude Desktop" autocomplete="off">
+          </div>
+          <button id="btnGenerar" class="btn btn-primary w-100" onclick="generarKey()">
+            <i class="fas fa-magic me-1"></i>Generar API Key
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Clave generada (oculto hasta generar) -->
+    <div class="col-lg-7 mb-4" id="panelNuevaClave" style="display:none">
+      <div class="card shadow-sm border-success h-100">
+        <div class="card-header py-3 bg-success text-white d-flex justify-content-between align-items-center">
+          <h6 class="m-0 fw-bold">
+            <i class="fas fa-check-circle me-2"></i>¡Clave generada! Cópiala ahora
+          </h6>
+          <button class="btn btn-sm btn-outline-light" onclick="cerrarPanel()">
+            <i class="fas fa-times me-1"></i>Ya la copié, cerrar
+          </button>
+        </div>
+        <div class="card-body">
+          <p class="text-danger fw-semibold small mb-2">
+            <i class="fas fa-exclamation-triangle me-1"></i>
+            Esta clave se muestra <strong>una única vez</strong>. Guárdala antes de cerrar este panel.
+          </p>
+          <div class="input-group mb-3">
+            <input id="nuevaClave" type="text" class="form-control font-monospace small"
+                   readonly onclick="this.select()">
+            <button class="btn btn-outline-secondary" onclick="copiarClave()" title="Copiar al portapapeles">
+              <i class="fas fa-copy"></i>
+            </button>
+          </div>
+
+          <p class="fw-semibold small mb-1 mt-3">
+            <i class="fas fa-file-code me-1 text-muted"></i>
+            Paso 1 — Crea <code>~/.fofigest_mcp.json</code>:
+          </p>
+          <pre class="bg-dark text-success rounded p-3 small mb-0" id="configJson"
+               style="font-size:.78rem;overflow-x:auto;white-space:pre-wrap"></pre>
+
+          <p class="fw-semibold small mb-1 mt-3">
+            <i class="fab fa-windows me-1 text-muted"></i>
+            Paso 2 — Claude Desktop (<code>claude_desktop_config.json</code>):
+          </p>
+          <pre class="bg-dark text-info rounded p-3 small mb-0" id="claudeConfig"
+               style="font-size:.78rem;overflow-x:auto;white-space:pre-wrap"></pre>
+          <div class="alert alert-warning py-1 px-2 mt-1 mb-0 small">
+            <i class="fas fa-info-circle me-1"></i>
+            <strong>Instalación de escritorio (EXE):</strong>
+            el script está en <code id="mcpPathHint"></code>.
+            En otros sistemas, usa la ruta donde lo descargaste.
+          </div>
+
+          <p class="fw-semibold small mb-1 mt-3">
+            <i class="fas fa-code me-1 text-muted"></i>
+            O en VSCode (<code>.vscode/mcp.json</code>):
+          </p>
+          <pre class="bg-dark text-warning rounded p-3 small mb-0" id="vscodeConfig"
+               style="font-size:.78rem;overflow-x:auto;white-space:pre-wrap"></pre>
+
+          <div class="mt-3 text-end">
+            <button class="btn btn-success" onclick="cerrarPanel()">
+              <i class="fas fa-check me-1"></i>Ya copié la clave, cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Tabla de claves existentes -->
+  <div class="card shadow-sm">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+      <h6 class="m-0 fw-bold text-primary">
+        <i class="fas fa-list-alt me-2"></i>Mis API Keys
+      </h6>
+      <span class="badge bg-primary" id="contadorKeys">{{ keys|length }} clave(s)</span>
+    </div>
+    <div class="card-body p-0">
+      {% if keys %}
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-3">Nombre</th>
+              <th>Creada</th>
+              <th>Último uso</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaKeys">
+            {% for key in keys %}
+            <tr id="row-{{ key.id }}">
+              <td class="ps-3 fw-semibold">
+                <i class="fas fa-key text-primary me-2"></i>{{ key.name }}
+              </td>
+              <td class="text-muted small">{{ key.created_at }}</td>
+              <td class="text-muted small">{{ key.last_used or '—' }}</td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-danger btn-eliminar"
+                        data-id="{{ key.id }}"
+                        data-nombre="{{ key.name | e }}"
+                        title="Eliminar esta clave">
+                  <i class="fas fa-trash-alt me-1"></i>Eliminar
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-5 text-muted" id="emptyState">
+        <i class="fas fa-key fa-3x mb-3 opacity-25"></i>
+        <p class="mb-0">Aún no tienes API Keys. Genera una arriba para comenzar.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Seguridad -->
+  <div class="card shadow-sm mt-4 border-warning">
+    <div class="card-body">
+      <h6 class="fw-bold text-warning mb-2">
+        <i class="fas fa-shield-alt me-2"></i>Buenas prácticas de seguridad
+      </h6>
+      <ul class="small mb-0 text-muted">
+        <li>Nunca compartas tu API Key — equivale a tu acceso completo a Fofigest.</li>
+        <li>Usa un nombre por dispositivo/cliente para identificar fácilmente cada clave.</li>
+        <li>Si sospechas que una clave fue expuesta, elimínala de inmediato y genera una nueva.</li>
+        <li>Las claves solo se muestran completas al momento de creación.</li>
+        <li>En Linux/Mac protege el archivo con: <code>chmod 600 ~/.fofigest_mcp.json</code></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const HOST = window.location.origin;
+
+async function generarKey() {
+  const nombre = document.getElementById('keyName').value.trim();
+  if (!nombre) {
+    Swal.fire('Nombre requerido', 'Ingresa un nombre para identificar esta API Key.', 'warning');
+    return;
+  }
+  const btn = document.getElementById('btnGenerar');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Generando...';
+  try {
+    const r = await fetch('/api/auth/apikey', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nombre })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Error al generar la clave');
+    mostrarNuevaClave(d.key, d.name, d.id);
+  } catch (e) {
+    Swal.fire('Error', e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-magic me-1"></i>Generar API Key';
+    document.getElementById('keyName').value = '';
+  }
+}
+
+function mostrarNuevaClave(key, nombre, id) {
+  document.getElementById('nuevaClave').value = key;
+  document.getElementById('panelNuevaClave').style.display = '';
+
+  document.getElementById('configJson').textContent =
+    '# Guarda este contenido en: ~/.fofigest_mcp.json\n' +
+    JSON.stringify({ server_url: HOST, api_key: key }, null, 2);
+
+  // Ruta del script MCP: si corremos dentro del EXE de escritorio,
+  // window.location.hostname es 127.0.0.1 y el script está junto al EXE.
+  // Construimos la ruta típica de Windows (%LOCALAPPDATA%\Fofigest\mcp_fofigest.py).
+  const isDesktop = (window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost');
+  const mcpScriptPath = isDesktop
+    ? '%LOCALAPPDATA%\\Fofigest\\mcp_fofigest.py'
+    : '/ruta/a/mcp_fofigest.py';
+
+  document.getElementById('mcpPathHint').textContent = mcpScriptPath;
+
+  document.getElementById('claudeConfig').textContent = JSON.stringify({
+    mcpServers: {
+      fofigest: { command: 'python', args: [mcpScriptPath] }
+    }
+  }, null, 2);
+
+  document.getElementById('vscodeConfig').textContent = JSON.stringify({
+    servers: {
+      fofigest: { type: 'stdio', command: 'python', args: [mcpScriptPath] }
+    }
+  }, null, 2);
+
+  document.getElementById('panelNuevaClave').scrollIntoView({ behavior: 'smooth' });
+
+  // Agregar fila a la tabla sin recargar la página
+  agregarFilaTabla(id, nombre);
+}
+
+function agregarFilaTabla(id, nombre) {
+  const tbody = document.getElementById('tablaKeys');
+  const empty = document.getElementById('emptyState');
+  if (empty) empty.remove();
+
+  const ahora = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  const tr = document.createElement('tr');
+  tr.id = `row-${id}`;
+  tr.innerHTML = `
+    <td class="ps-3 fw-semibold"><i class="fas fa-key text-primary me-2"></i>${nombre}</td>
+    <td class="text-muted small">${ahora}</td>
+    <td class="text-muted small">—</td>
+    <td class="text-center">
+      <button class="btn btn-sm btn-outline-danger btn-eliminar"
+              data-id="${id}"
+              data-nombre="${nombre.replace(/"/g, '&quot;')}"
+              title="Eliminar esta clave">
+        <i class="fas fa-trash-alt me-1"></i>Eliminar
+      </button>
+    </td>`;
+
+  if (!tbody) {
+    // La tabla no existía (estaba el estado vacío), recargamos para mostrarla
+    location.reload();
+    return;
+  }
+  tbody.prepend(tr);
+  actualizarContador(1);
+}
+
+function cerrarPanel() {
+  document.getElementById('panelNuevaClave').style.display = 'none';
+  document.getElementById('nuevaClave').value = '';
+}
+
+function copiarClave() {
+  const val = document.getElementById('nuevaClave').value;
+  navigator.clipboard.writeText(val).then(() => {
+    Swal.fire({ icon: 'success', title: '¡Copiada!', text: 'API Key copiada al portapapeles.', timer: 1400, showConfirmButton: false });
+  });
+}
+
+async function eliminarKey(id, nombre) {
+  const result = await Swal.fire({
+    title: `¿Eliminar "${nombre}"?`,
+    html: 'Esta acción es <strong>irreversible</strong>.<br>Los clientes que usen esta clave dejarán de funcionar.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#e74a3b',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+  if (!result.isConfirmed) return;
+
+  try {
+    const r = await fetch(`/api/auth/apikey/${id}`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Error al eliminar la clave');
+
+    // Eliminar la fila del DOM sin recargar
+    const fila = document.getElementById(`row-${id}`);
+    if (fila) fila.remove();
+    actualizarContador(-1);
+
+    Swal.fire({ icon: 'success', title: 'Eliminada', text: d.message, timer: 1600, showConfirmButton: false });
+  } catch (e) {
+    Swal.fire('Error', e.message, 'error');
+  }
+}
+
+function actualizarContador(delta) {
+  const el = document.getElementById('contadorKeys');
+  if (!el) return;
+  const n = parseInt(el.textContent) + delta;
+  el.textContent = `${n} clave(s)`;
+}
+
+// Delegación de eventos para botones de eliminar (evita onclick con Jinja2)
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('.btn-eliminar');
+  if (!btn) return;
+  eliminarKey(parseInt(btn.dataset.id), btn.dataset.nombre);
+});
+</script>
+{% endblock %}

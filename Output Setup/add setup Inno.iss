@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Fofigest"
-#define MyAppVersion "4.0.1"
+#define MyAppVersion "4.1.4"
 #define MyAppPublisher "Fofimatic S.A,S"
 #define MyAppURL "Fofimatic.com.co"
 #define MyAppExeName "Fofigest.exe"
@@ -51,6 +51,7 @@ Name: "autostart";   Description: "Iniciar Fofigest automáticamente con Windows
 
 [Files]
 Source: "D:\App.Proyectos\Fofigest\dist\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "D:\App.Proyectos\Fofigest\mcp_fofigest.py"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

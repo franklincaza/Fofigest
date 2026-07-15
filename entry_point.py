@@ -177,6 +177,14 @@ def main() -> None:
     _server_port = port   # exponer a _on_window_closing
     url  = f'http://127.0.0.1:{port}'
 
+    # Escribe el puerto activo para que mcp_fofigest.py pueda descubrirlo
+    _port_file = os.path.join(os.path.expanduser("~"), ".fofigest_port")
+    try:
+        with open(_port_file, "w", encoding="utf-8") as _pf:
+            _pf.write(str(port))
+    except Exception:
+        pass
+
     server_thread = threading.Thread(
         target=_run_server,
         args=(port,),

@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, url_for,jsonify,session, send_file,abort
+from flask import Flask, flash, redirect, render_template, request, session, url_for, jsonify, send_file, abort, g
 import os
 import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -14,6 +14,8 @@ from itsdangerous import URLSafeTimedSerializer
 from forms import EmpresaForm,ProyectoForm
 import uuid
 import hashlib
+import secrets
+from functools import wraps
 from datetime import datetime
 import markdown
 from flask_wtf.csrf import CSRFProtect, generate_csrf
@@ -59,10 +61,15 @@ def registrar_trazabilidad(codigo_tarea, accion, cambios=None):
                     Si es None se inserta un único registro sin campo/valores (usado en CREACIÓN y ELIMINACIÓN).
     """
     try:
-        correo  = session.get('correo', 'sistema')
-        rol     = session.get('username', 'sistema')
-        empresa = session.get('empresa', None)
-        ip      = request.remote_addr
+        if getattr(g, 'is_api_request', False):
+            correo  = g.api_user.correo
+            rol     = g.api_user.permisos
+            empresa = g.api_user.empresa
+        else:
+            correo  = session.get('correo', 'sistema')
+            rol     = session.get('username', 'sistema')
+            empresa = session.get('empresa', None)
+        ip = request.remote_addr
 
         if not cambios:
             registro = models.TrazabilidadTarea(
@@ -570,6 +577,8 @@ def gantt_update_tarea(codigo_tarea):
         if 'fecha_fin' in data:
             tarea.fecha_fin = datetime.strptime(data['fecha_fin'], '%Y-%m-%d').date()
         if 'estado' in data and data['estado'] in ('PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS'):
+            if data['estado'] == 'COMPLETADOS' and session.get('username') not in ('admin', 'superadmin'):
+                return jsonify({"ok": False, "error": "Solo admin puede mover tareas a COMPLETADOS."}), 403
             tarea.estado = data['estado']
         if 'responsable' in data:
             tarea.responsable = data['responsable'].strip()[:100]
@@ -1579,6 +1588,7 @@ def obtener_licencia(id):
 #<__________________________________ Tareas___________________________________________________>
 # Tareas 
 @app.route('/actualizar_estado_tarea/<int:tarea_id>', methods=['POST'])
+@login_required
 def actualizar_estado_tarea(tarea_id):
     data = request.get_json()
     nuevo_estado = data.get('nuevo_estado')
@@ -1594,6 +1604,10 @@ def actualizar_estado_tarea(tarea_id):
     # Validar que el nuevo estado es válido
     if nuevo_estado not in ['PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS']:
         return jsonify({'message': 'Estado inválido'}), 400
+
+    # Solo admin puede mover a COMPLETADOS
+    if nuevo_estado == 'COMPLETADOS' and session.get('username') not in ('admin', 'superadmin'):
+        return jsonify({'message': 'Solo un administrador puede mover tareas a COMPLETADOS.'}), 403
 
     # Actualizar el estado de la tarea
     estado_anterior = tarea.estado
@@ -3763,6 +3777,378 @@ def api_reuniones_json():
 # Exponer helpers de calendario como funciones globales de Jinja2
 app.jinja_env.globals['_url_google_calendar'] = _url_google_calendar
 app.jinja_env.globals['_url_teams_calendar']  = _url_teams_calendar
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# MCP — API de acceso programático con autenticación por API Key
+# ══════════════════════════════════════════════════════════════════════════════
+
+# Herramientas disponibles por rol (usadas en /api/mcp/me)
+_MCP_TOOLS_POR_ROL = {
+    'admin':      ['mi_perfil','listar_tareas','obtener_tarea','crear_tarea','actualizar_tarea',
+                   'eliminar_tarea','cambiar_estado_tarea','registrar_horas','asignar_tarea',
+                   'listar_proyectos','resumen_proyecto','listar_usuarios'],
+    'superadmin': ['mi_perfil','listar_tareas','obtener_tarea','crear_tarea','actualizar_tarea',
+                   'eliminar_tarea','cambiar_estado_tarea','registrar_horas','asignar_tarea',
+                   'listar_proyectos','resumen_proyecto','listar_usuarios'],
+    'dev':        ['mi_perfil','listar_tareas','obtener_tarea','crear_tarea','actualizar_tarea',
+                   'cambiar_estado_tarea','registrar_horas','asignar_tarea',
+                   'listar_proyectos','resumen_proyecto','listar_usuarios'],
+    'usuario':    ['mi_perfil','listar_tareas','obtener_tarea','registrar_horas',
+                   'listar_proyectos','resumen_proyecto'],
+}
+
+
+def require_api_key(f):
+    """Valida el header X-Fofigest-API-Key y carga el usuario autenticado en flask.g."""
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        raw_key = request.headers.get('X-Fofigest-API-Key', '').strip()
+        if not raw_key:
+            return jsonify({'error': 'Header X-Fofigest-API-Key requerido.'}), 401
+        key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
+        api_key_obj = models.ApiKey.query.filter_by(key_hash=key_hash, is_active=True).first()
+        if not api_key_obj:
+            return jsonify({'error': 'API key inválida o revocada.'}), 401
+        if api_key_obj.usuario.permisos == 'nuevo':
+            return jsonify({'error': 'Cuenta pendiente de aprobación por el administrador.'}), 403
+        try:
+            api_key_obj.last_used = datetime.utcnow()
+            models.db.session.commit()
+        except Exception:
+            models.db.session.rollback()
+        g.api_user = api_key_obj.usuario
+        g.api_role = api_key_obj.usuario.permisos
+        g.is_api_request = True
+        return f(*args, **kwargs)
+    return decorated
+
+
+def _mcp_tarea_bloqueada(tarea):
+    """Retorna (response, status_code) si la tarea no es modificable; None si libre."""
+    if not tarea.facturada and not tarea.cuenta_cobro_id:
+        return None
+    cuenta = models.CuentaCobro.query.get(tarea.cuenta_cobro_id) if tarea.cuenta_cobro_id else None
+    if cuenta and cuenta.estado == 'PAGADA':
+        return jsonify({'error': f'Tarea en cuenta {cuenta.numero_cuenta} (PAGADA) — no modificable.'}), 403
+    if g.api_role not in ('admin', 'superadmin'):
+        num = cuenta.numero_cuenta if cuenta else 'en cobro'
+        return jsonify({'error': f'Tarea vinculada a cuenta de cobro {num} — solo admin puede modificarla.'}), 403
+    return None
+
+
+# ── Gestión de API Keys (requiere sesión web activa) ──────────────────────────
+
+@app.route('/mis-api-keys')
+@login_required
+def vista_mis_api_keys():
+    if session.get('username') not in ('admin', 'superadmin', 'dev'):
+        abort(403)
+    keys = models.ApiKey.query.filter_by(user_id=current_user.id)\
+               .order_by(models.ApiKey.created_at.desc()).all()
+    return render_template('mis_api_keys.html', keys=keys)
+
+
+@app.route('/download/mcp_fofigest.py')
+@login_required
+def descargar_mcp_script():
+    if session.get('username') not in ('admin', 'superadmin', 'dev'):
+        abort(403)
+    import sys as _sys
+    if getattr(_sys, 'frozen', False):
+        # EXE: mcp_fofigest.py se instala junto al ejecutable (via Inno Setup)
+        base = os.path.dirname(_sys.executable)
+    else:
+        # Modo desarrollo: mismo directorio que app.py
+        base = os.path.dirname(os.path.abspath(__file__))
+    script_path = os.path.join(base, 'mcp_fofigest.py')
+    if not os.path.exists(script_path):
+        abort(404)
+    return send_file(script_path, as_attachment=True, download_name='mcp_fofigest.py',
+                     mimetype='text/x-python')
+
+
+@app.route('/api/auth/apikey', methods=['POST'])
+@login_required
+def crear_api_key():
+    data = request.get_json(silent=True) or {}
+    nombre = data.get('nombre', '').strip()[:100]
+    if not nombre:
+        return jsonify({'error': 'El campo "nombre" es requerido.'}), 400
+    raw_key  = 'fgt_' + secrets.token_hex(32)
+    key_hash = hashlib.sha256(raw_key.encode()).hexdigest()
+    nueva = models.ApiKey(user_id=current_user.id, key_hash=key_hash, name=nombre)
+    models.db.session.add(nueva)
+    models.db.session.commit()
+    return jsonify({'key': raw_key, 'id': nueva.id, 'name': nueva.name}), 201
+
+
+@app.route('/api/auth/apikey', methods=['GET'])
+@login_required
+def listar_api_keys():
+    keys = models.ApiKey.query.filter_by(user_id=current_user.id)\
+               .order_by(models.ApiKey.created_at.desc()).all()
+    return jsonify({'keys': [k.serialize() for k in keys]})
+
+
+@app.route('/api/auth/apikey/<int:key_id>', methods=['DELETE'])
+@login_required
+def revocar_api_key(key_id):
+    key = models.ApiKey.query.filter_by(id=key_id, user_id=current_user.id).first_or_404()
+    models.db.session.delete(key)
+    models.db.session.commit()
+    return jsonify({'message': 'API key eliminada correctamente.'})
+
+
+# ── MCP: Identidad ────────────────────────────────────────────────────────────
+
+@app.route('/api/mcp/me', methods=['GET'])
+@require_api_key
+def mcp_me():
+    return jsonify({
+        'usuario':      g.api_user.serialize(),
+        'herramientas': _MCP_TOOLS_POR_ROL.get(g.api_role, []),
+    })
+
+
+# ── MCP: Tareas ───────────────────────────────────────────────────────────────
+
+@app.route('/api/mcp/tareas', methods=['GET'])
+@require_api_key
+def mcp_listar_tareas():
+    q = models.Tareas.query
+    if g.api_role == 'usuario':
+        q = q.filter_by(empresa=g.api_user.empresa)
+    else:
+        if request.args.get('empresa'):
+            q = q.filter_by(empresa=request.args['empresa'])
+    if request.args.get('proyecto'):
+        q = q.filter_by(codigo_proyecto=request.args['proyecto'])
+    if request.args.get('estado'):
+        q = q.filter_by(estado=request.args['estado'])
+    if request.args.get('responsable'):
+        q = q.filter_by(responsable=request.args['responsable'])
+    if request.args.get('mes'):
+        q = q.filter_by(mes=request.args['mes'])
+    return jsonify({'tareas': [t.serialize() for t in q.all()]})
+
+
+@app.route('/api/mcp/tareas/<string:codigo_tarea>', methods=['GET'])
+@require_api_key
+def mcp_obtener_tarea(codigo_tarea):
+    tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first_or_404()
+    if g.api_role == 'usuario' and tarea.empresa != g.api_user.empresa:
+        return jsonify({'error': 'Sin acceso a esta tarea.'}), 403
+    return jsonify({'tarea': tarea.serialize()})
+
+
+@app.route('/api/mcp/tareas', methods=['POST'])
+@require_api_key
+def mcp_crear_tarea():
+    if g.api_role not in ('admin', 'superadmin', 'dev'):
+        return jsonify({'error': 'Se requiere rol admin o dev para crear tareas.'}), 403
+    data = request.get_json(silent=True) or {}
+    required = ['empresa', 'codigo_proyecto', 'codigo_tarea', 'titulo', 'descripcion',
+                'fecha_inicio', 'responsable', 'horas_estimadas', 'tipo_consumo', 'mes']
+    missing = [f for f in required if not data.get(f)]
+    if missing:
+        return jsonify({'error': f'Campos requeridos faltantes: {", ".join(missing)}'}), 400
+    if models.Tareas.query.filter_by(codigo_tarea=data['codigo_tarea']).first():
+        return jsonify({'error': f"El código '{data['codigo_tarea']}' ya existe."}), 409
+    try:
+        fecha_inicio = datetime.strptime(data['fecha_inicio'], '%Y-%m-%d').date()
+        fecha_fin    = datetime.strptime(data['fecha_fin'], '%Y-%m-%d').date() if data.get('fecha_fin') else None
+    except ValueError as e:
+        return jsonify({'error': f'Formato de fecha inválido (use YYYY-MM-DD): {e}'}), 400
+    tarea = models.Tareas(
+        empresa=data['empresa'], codigo_proyecto=data['codigo_proyecto'],
+        codigo_tarea=data['codigo_tarea'], titulo=data['titulo'],
+        descripcion=data['descripcion'], fecha_inicio=fecha_inicio, fecha_fin=fecha_fin,
+        responsable=data['responsable'], horas_estimadas=float(data['horas_estimadas']),
+        horas_dedicadas=0, estado=data.get('estado', 'PENDIENTE'),
+        tipo_consumo=data['tipo_consumo'], mes=data['mes'], facturada=False,
+    )
+    models.db.session.add(tarea)
+    models.db.session.commit()
+    registrar_trazabilidad(tarea.codigo_tarea, 'CREACIÓN')
+    _notificar_asignacion(tarea, tipo='task_assigned')
+    return jsonify({'tarea': tarea.serialize()}), 201
+
+
+@app.route('/api/mcp/tareas/<string:codigo_tarea>', methods=['PATCH'])
+@require_api_key
+def mcp_actualizar_tarea(codigo_tarea):
+    if g.api_role not in ('admin', 'superadmin', 'dev'):
+        return jsonify({'error': 'Se requiere rol admin o dev para actualizar tareas.'}), 403
+    tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first_or_404()
+    bloq = _mcp_tarea_bloqueada(tarea)
+    if bloq:
+        return bloq
+    data = request.get_json(silent=True) or {}
+    cambios = []
+    campos_simples = {'titulo': str, 'descripcion': str, 'responsable': str,
+                      'horas_estimadas': float, 'tipo_consumo': str, 'mes': str}
+    resp_anterior = tarea.responsable
+    for campo, cast in campos_simples.items():
+        if campo in data:
+            anterior = getattr(tarea, campo)
+            nuevo    = cast(data[campo])
+            if str(anterior) != str(nuevo):
+                cambios.append({'campo': campo, 'anterior': str(anterior), 'nuevo': str(nuevo)})
+                setattr(tarea, campo, nuevo)
+    if 'fecha_fin' in data:
+        try:
+            nueva_fecha = datetime.strptime(data['fecha_fin'], '%Y-%m-%d').date() if data['fecha_fin'] else None
+        except ValueError:
+            return jsonify({'error': 'Formato de fecha_fin inválido (use YYYY-MM-DD).'}), 400
+        if str(tarea.fecha_fin) != str(nueva_fecha):
+            cambios.append({'campo': 'fecha_fin', 'anterior': str(tarea.fecha_fin), 'nuevo': str(nueva_fecha)})
+            tarea.fecha_fin = nueva_fecha
+    if not cambios:
+        return jsonify({'message': 'Sin cambios detectados.', 'tarea': tarea.serialize()})
+    models.db.session.commit()
+    registrar_trazabilidad(tarea.codigo_tarea, 'MODIFICACIÓN', cambios)
+    if tarea.responsable != resp_anterior:
+        _notificar_asignacion(tarea, tipo='task_assigned')
+    return jsonify({'tarea': tarea.serialize()})
+
+
+@app.route('/api/mcp/tareas/<string:codigo_tarea>', methods=['DELETE'])
+@require_api_key
+def mcp_eliminar_tarea(codigo_tarea):
+    if g.api_role not in ('admin', 'superadmin'):
+        return jsonify({'error': 'Solo admin/superadmin puede eliminar tareas.'}), 403
+    tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first_or_404()
+    if tarea.facturada:
+        return jsonify({'error': 'No se puede eliminar una tarea facturada.'}), 409
+    registrar_trazabilidad(tarea.codigo_tarea, 'ELIMINACIÓN')
+    models.db.session.delete(tarea)
+    models.db.session.commit()
+    return jsonify({'message': f'Tarea {codigo_tarea} eliminada correctamente.'})
+
+
+@app.route('/api/mcp/tareas/<string:codigo_tarea>/estado', methods=['PATCH'])
+@require_api_key
+def mcp_cambiar_estado_tarea(codigo_tarea):
+    if g.api_role not in ('admin', 'superadmin', 'dev'):
+        return jsonify({'error': 'Se requiere rol admin o dev para cambiar el estado.'}), 403
+    data   = request.get_json(silent=True) or {}
+    nuevo  = data.get('estado', '').strip()
+    # Bloqueo temprano: COMPLETADOS es exclusivo de admin/superadmin
+    if nuevo.upper() == 'COMPLETADOS' and g.api_role not in ('admin', 'superadmin'):
+        return jsonify({'error': 'Solo un administrador puede mover tareas a COMPLETADOS.'}), 403
+    tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first_or_404()
+    bloq = _mcp_tarea_bloqueada(tarea)
+    if bloq:
+        return bloq
+    validos = ['PENDIENTE', 'PROGRESO', 'REVISIÓN', 'IMPEDIMENTOS', 'COMPLETADOS']
+    match  = next((v for v in validos if v.upper() == nuevo.upper()), None)
+    if not match:
+        return jsonify({'error': f'Estado inválido. Valores permitidos: {", ".join(validos)}'}), 400
+    anterior      = tarea.estado
+    tarea.estado  = match
+    models.db.session.commit()
+    registrar_trazabilidad(tarea.codigo_tarea, 'CAMBIO_ESTADO',
+                           [{'campo': 'estado', 'anterior': anterior, 'nuevo': match}])
+    return jsonify({'message': f'Estado actualizado a {match}.', 'tarea': tarea.serialize()})
+
+
+@app.route('/api/mcp/tareas/<string:codigo_tarea>/horas', methods=['PATCH'])
+@require_api_key
+def mcp_registrar_horas(codigo_tarea):
+    tarea = models.Tareas.query.filter_by(codigo_tarea=codigo_tarea).first_or_404()
+    if g.api_role == 'usuario':
+        if tarea.empresa != g.api_user.empresa:
+            return jsonify({'error': 'Sin acceso a esta tarea.'}), 403
+        nombre_completo = f"{g.api_user.nombres or ''} {g.api_user.apellidos or ''}".strip()
+        if tarea.responsable not in (g.api_user.correo, nombre_completo):
+            return jsonify({'error': 'Solo puedes registrar horas en tareas donde eres el responsable.'}), 403
+    elif g.api_role not in ('admin', 'superadmin', 'dev'):
+        return jsonify({'error': 'Sin permisos para registrar horas.'}), 403
+    bloq = _mcp_tarea_bloqueada(tarea)
+    if bloq:
+        return bloq
+    data  = request.get_json(silent=True) or {}
+    horas = float(data.get('horas', 0))
+    if horas <= 0:
+        return jsonify({'error': 'Las horas deben ser un número positivo mayor a 0.'}), 400
+    anterior             = tarea.horas_dedicadas
+    tarea.horas_dedicadas = round(anterior + horas, 2)
+    models.db.session.commit()
+    registrar_trazabilidad(tarea.codigo_tarea, 'MODIFICACIÓN',
+                           [{'campo': 'horas_dedicadas', 'anterior': str(anterior),
+                             'nuevo': str(tarea.horas_dedicadas)}])
+    pct = round(tarea.horas_dedicadas / tarea.horas_estimadas * 100, 1) if tarea.horas_estimadas else 0
+    result = tarea.serialize()
+    result['porcentaje_completado'] = pct
+    return jsonify({'tarea': result})
+
+
+# ── MCP: Proyectos ────────────────────────────────────────────────────────────
+
+@app.route('/api/mcp/proyectos', methods=['GET'])
+@require_api_key
+def mcp_listar_proyectos():
+    q = models.Proyecto.query
+    if g.api_role == 'usuario':
+        q = q.filter_by(empresa=g.api_user.empresa)
+    elif request.args.get('empresa'):
+        q = q.filter_by(empresa=request.args['empresa'])
+    return jsonify({'proyectos': [p.serialize() for p in q.all()]})
+
+
+@app.route('/api/mcp/proyectos/<string:codigo_proyecto>/resumen', methods=['GET'])
+@require_api_key
+def mcp_resumen_proyecto(codigo_proyecto):
+    proyecto = models.Proyecto.query.filter_by(codigo_proyecto=codigo_proyecto).first_or_404()
+    if g.api_role == 'usuario' and proyecto.empresa != g.api_user.empresa:
+        return jsonify({'error': 'Sin acceso a este proyecto.'}), 403
+    tareas = models.Tareas.query.filter_by(codigo_proyecto=codigo_proyecto).all()
+    total  = len(tareas)
+    por_estado = {}
+    for t in tareas:
+        por_estado[t.estado] = por_estado.get(t.estado, 0) + 1
+    completadas      = por_estado.get('COMPLETADOS', 0)
+    porcentaje       = round(completadas / total * 100, 1) if total else 0
+    horas_est        = round(sum(t.horas_estimadas or 0 for t in tareas), 2)
+    horas_ded        = round(sum(t.horas_dedicadas or 0 for t in tareas), 2)
+    fechas_ini       = [t.fecha_inicio for t in tareas if t.fecha_inicio]
+    fechas_fin       = [t.fecha_fin    for t in tareas if t.fecha_fin]
+    fecha_ini_str    = min(fechas_ini).strftime('%Y-%m-%d') if fechas_ini else None
+    fecha_fin_str    = max(fechas_fin).strftime('%Y-%m-%d') if fechas_fin else None
+    duracion_dias    = (max(fechas_fin) - min(fechas_ini)).days if fechas_ini and fechas_fin else None
+    responsables     = {}
+    for t in tareas:
+        r = t.responsable or 'Sin asignar'
+        responsables[r] = responsables.get(r, 0) + 1
+    return jsonify({
+        'proyecto': proyecto.serialize(),
+        'resumen': {
+            'total_tareas':           total,
+            'por_estado':             por_estado,
+            'porcentaje_completado':  porcentaje,
+            'horas_estimadas_total':  horas_est,
+            'horas_dedicadas_total':  horas_ded,
+            'horas_restantes':        round(max(0, horas_est - horas_ded), 2),
+            'fecha_inicio_proyecto':  fecha_ini_str,
+            'fecha_fin_proyecto':     fecha_fin_str,
+            'duracion_dias':          duracion_dias,
+            'responsables':           responsables,
+        },
+    })
+
+
+# ── MCP: Usuarios (admin/dev) ─────────────────────────────────────────────────
+
+@app.route('/api/mcp/usuarios', methods=['GET'])
+@require_api_key
+def mcp_listar_usuarios():
+    if g.api_role not in ('admin', 'superadmin', 'dev'):
+        return jsonify({'error': 'Se requiere rol admin o dev para listar usuarios.'}), 403
+    q = models.Usuarios.query
+    if request.args.get('rol'):
+        q = q.filter_by(permisos=request.args['rol'])
+    return jsonify({'usuarios': [u.serialize() for u in q.all()]})
 
 
 if __name__ == '__main__':
