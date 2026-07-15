@@ -309,7 +309,72 @@ class ProyectoForm(FlaskForm):
 
 ---
 
-## 9. Convenciones y reglas de código
+## 9. MCP — Model Context Protocol
+
+### Arquitectura
+```
+Claude Desktop / VSCode
+    │ stdio
+    ▼
+mcp_fofigest.py  ← script distribuible (httpx + mcp)
+    │ HTTP  X-Fofigest-API-Key
+    ▼
+Flask /api/mcp/*  ← valida clave, carga rol, aplica RBAC
+    │
+    ▼
+Base de datos (SQLite / PostgreSQL)
+```
+
+### Modelo ApiKey (models/models.py)
+```python
+class ApiKey(db.Model):
+    __tablename__ = 'api_keys'
+    id, user_id (FK usuarios.id), key_hash (SHA-256, unique),
+    name (String 100), created_at, last_used, is_active (Boolean)
+    usuario = relationship('Usuarios', backref='api_keys')
+```
+
+### Decorador require_api_key (app.py)
+Valida el header `X-Fofigest-API-Key` y expone:
+- `g.api_user` → instancia de `Usuarios`
+- `g.api_role` → `'admin'|'superadmin'|'dev'|'usuario'|'nuevo'`
+
+### RBAC por rol
+| Acción | admin/superadmin | dev | usuario | nuevo |
+|---|---|---|---|---|
+| Leer tareas/proyectos | Todas | Todas | Solo su empresa | ✗ |
+| Crear/actualizar tarea | ✓ | ✓ | ✗ | ✗ |
+| cambiar_estado_tarea | Todos los estados | Solo no-COMPLETADOS | ✗ | ✗ |
+| eliminar_tarea | ✓ | ✗ | ✗ | ✗ |
+| registrar_horas | ✓ | ✓ | Solo responsable/misma empresa | ✗ |
+
+### Restricción COMPLETADOS — aplica en TRES rutas
+```python
+# Verificar en CADA ruta que modifique estado:
+# 1. MCP → usa g.api_role
+# 2. Gantt PATCH /api/gantt/tarea/<codigo> → usa session.get('username')
+# 3. Kanban POST /actualizar_estado_tarea/<id> → usa session.get('username')
+if estado == 'COMPLETADOS' and rol not in ('admin', 'superadmin'):
+    return 403
+```
+
+### Rutas MCP en app.py
+| Método | Ruta | Propósito |
+|---|---|---|
+| GET | `/mis-api-keys` | Vista HTML gestión de claves |
+| POST/GET/DELETE | `/api/auth/apikey[/<id>]` | CRUD API Keys (sesión web) |
+| GET | `/download/mcp_fofigest.py` | Descarga script (login + dev+) |
+| * | `/api/mcp/*` | Todas las herramientas MCP |
+
+### Archivo mcp_fofigest.py
+- Script standalone para usuarios. Requiere: `pip install mcp httpx`
+- Credenciales en `~/.fofigest_mcp.json` → `{"server_url": "...", "api_key": "fgt_..."}`
+- Puerto desktop auto-descubierto desde `~/.fofigest_port` (escrito por entry_point.py al arrancar)
+- Instalado junto al EXE en `%LOCALAPPDATA%\Fofigest\` vía Inno Setup
+
+---
+
+## 10. Convenciones y reglas de código
 
 ## Reglas de identidad visual
 
