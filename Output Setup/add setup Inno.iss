@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Fofigest"
-#define MyAppVersion "4.1.4"
+#define MyAppVersion "4.1.5"
 #define MyAppPublisher "Fofimatic S.A,S"
 #define MyAppURL "Fofimatic.com.co"
 #define MyAppExeName "Fofigest.exe"

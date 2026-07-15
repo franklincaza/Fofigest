@@ -190,6 +190,34 @@
   .modo-oscuro .tbl-timer-display.is-running { color: #7b96f5; }
   .modo-oscuro .tbl-timer-btn                { border-color: #3c3c50; color: #5a6075; }
   .modo-oscuro .tbl-timer-btn:hover          { background: #2d2d3a; border-color: #4e73df; color: #7b96f5; }
+
+  /* ── User filter pills ── */
+  .kb-user-pill {
+    background: #fff;
+    border: 1px solid #e3e6f0;
+    color: #5a5c69;
+    font-size: .68rem;
+    font-weight: 800;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .15s ease-in-out;
+    letter-spacing: .01em;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+  }
+  .kb-user-pill:hover      { border-color: #4e73df; color: #4e73df; background: #eef0fd; }
+  .kb-user-pill.active     { background: #4e73df; border-color: #4e73df; color: #fff; }
+  .kb-user-pill--todos     { border-radius: .35rem; width: auto; padding: .28rem .7rem; font-size: .7rem; letter-spacing: .06em; }
+  .modo-oscuro .kb-user-pill           { background: #1e1e2d; border-color: #3c3c50; color: #9a9db5; }
+  .modo-oscuro .kb-user-pill:hover     { border-color: #4e73df; color: #7b96f5; background: #252535; }
+  .modo-oscuro .kb-user-pill.active    { background: #4e73df; border-color: #4e73df; color: #fff; }
+  .modo-oscuro #tb-user-filters-bar    { background: #2d2d3a !important; border-color: #3c3c50 !important; }
 </style>
 
 <div class="container-fluid">
@@ -269,6 +297,25 @@
 
       </div>
     </div><!-- /card-header -->
+
+    <!-- Barra de filtros de usuario -->
+    <div class="px-3 py-2 border-bottom d-flex align-items-center gap-2 flex-wrap"
+         id="tb-user-filters-bar" style="background:#f8f9fc">
+      <small class="text-muted fw-semibold" style="font-size:.72rem;white-space:nowrap">
+        <i class="fas fa-users me-1"></i>Usuario:
+      </small>
+      <div class="d-flex gap-1 flex-wrap align-items-center" id="tb-user-filters">
+        <button class="kb-user-pill kb-user-pill--todos active" data-user="" type="button"
+                title="Mostrar todos los usuarios">TODOS</button>
+        {% for usuario in usuarios %}
+        <button class="kb-user-pill" type="button"
+                data-user="{{ usuario.nombres }} {{ usuario.apellidos }}"
+                title="{{ usuario.nombres }} {{ usuario.apellidos }}">
+          {{ (usuario.nombres or '')[:1]|upper }}{{ (usuario.apellidos or '')[:1]|upper }}
+        </button>
+        {% endfor %}
+      </div>
+    </div>
 
     <!-- Card Body: tabla -->
     <div class="card-body p-0">
@@ -358,7 +405,7 @@
           </thead>
           <tbody>
             {% for tarea in tareas %}
-            <tr>
+            <tr data-responsable="{{ tarea.responsable or '' }}">
 
               <!-- # (desktop) -->
               <td class="d-none d-md-table-cell text-center fw-bold text-muted">
@@ -1014,7 +1061,10 @@ function eliminarTarea() {
 }
 {% endif %}
 
-/* ── Motor de filtrado combinado (global + columnas) ── */
+/* ── Motor de filtrado combinado (global + columnas + usuario) ── */
+const TB_CURRENT_USER = {{ (current_user.nombres ~ ' ' ~ current_user.apellidos) | tojson }};
+let _tbUserFilter = '';
+
 function actualizarVisibilidad() {
   const globalQ = (document.getElementById('buscador')?.value || '').toLowerCase().trim();
 
@@ -1025,17 +1075,22 @@ function actualizarVisibilidad() {
     if (val) colFilters[parseInt(inp.dataset.col)] = val;
   });
 
-  const hayFiltros = globalQ || Object.keys(colFilters).length > 0;
+  const hayFiltros = globalQ || Object.keys(colFilters).length > 0 || _tbUserFilter;
   const btnLimpiar = document.getElementById('btnLimpiarFiltros');
   if (btnLimpiar) btnLimpiar.style.display = hayFiltros ? '' : 'none';
 
   document.querySelectorAll('#dataTable tbody tr').forEach(row => {
-    /* 1) Filtro global sobre el texto completo de la fila */
+    /* 1) Filtro por usuario seleccionado */
+    if (_tbUserFilter && (row.dataset.responsable || '').toLowerCase() !== _tbUserFilter) {
+      row.style.display = 'none';
+      return;
+    }
+    /* 2) Filtro global sobre el texto completo de la fila */
     if (globalQ && !row.textContent.toLowerCase().includes(globalQ)) {
       row.style.display = 'none';
       return;
     }
-    /* 2) Filtros por columna — usa el índice exacto de la celda */
+    /* 3) Filtros por columna — usa el índice exacto de la celda */
     const cells = row.querySelectorAll('td');
     for (const [colIdx, term] of Object.entries(colFilters)) {
       const cell = cells[parseInt(colIdx)];
@@ -1056,6 +1111,10 @@ function limpiarFiltros() {
   document.querySelectorAll('#filter-row input').forEach(inp => inp.value = '');
   const buscador = document.getElementById('buscador');
   if (buscador) buscador.value = '';
+  _tbUserFilter = '';
+  document.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+  const todosBtn = document.querySelector('.kb-user-pill--todos');
+  if (todosBtn) todosBtn.classList.add('active');
   actualizarVisibilidad();
 }
 
@@ -1255,7 +1314,30 @@ async function guardarTiempoTimerTabla(id) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => TimerManagerTabla.init());
+document.addEventListener('DOMContentLoaded', () => {
+  TimerManagerTabla.init();
+
+  /* Filtros de usuario — pills */
+  document.querySelectorAll('.kb-user-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      _tbUserFilter = (btn.dataset.user || '').toLowerCase();
+      actualizarVisibilidad();
+    });
+  });
+
+  /* Pre-seleccionar el usuario en sesión */
+  if (TB_CURRENT_USER) {
+    const activePill = document.querySelector(`.kb-user-pill[data-user="${TB_CURRENT_USER}"]`);
+    if (activePill) {
+      document.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+      activePill.classList.add('active');
+      _tbUserFilter = TB_CURRENT_USER.toLowerCase();
+      actualizarVisibilidad();
+    }
+  }
+});
 </script>
 
 {% endblock %}

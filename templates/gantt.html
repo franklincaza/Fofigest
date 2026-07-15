@@ -510,24 +510,104 @@ body.modo-cliente #btn-cliente-toggle .txt-off { display: inline; }
 .modo-oscuro .grow-proj:hover      { background: #2d2d55; }
 /* Overdue */
 .modo-oscuro .tarea-vencida > td   { background: #3a1e1e !important; }
+
+/* ── User filter pills + search (gantt) ── */
+.kb-user-pill {
+  background: #fff;
+  border: 1px solid #e3e6f0;
+  color: #5a5c69;
+  font-size: .68rem;
+  font-weight: 800;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .15s ease-in-out;
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+.kb-user-pill:hover   { border-color: #4e73df; color: #4e73df; background: #eef0fd; }
+.kb-user-pill.active  { background: #4e73df; border-color: #4e73df; color: #fff; }
+.kb-user-pill--todos  { border-radius: .35rem; width: auto; padding: .28rem .7rem; font-size: .7rem; letter-spacing: .06em; font-weight: 700; }
+
+.gantt-search-wrap { position: relative; display: inline-flex; align-items: center; }
+.gantt-search-icon { position: absolute; left: .6rem; color: #adb5bd; font-size: .72rem; pointer-events: none; }
+.gantt-search-input {
+  padding: .35rem .85rem .35rem 1.85rem;
+  border: 1px solid #e3e6f0;
+  border-radius: .35rem;
+  font-size: .8rem;
+  font-family: 'Nunito', sans-serif;
+  background: #fff;
+  color: #3a3b45;
+  width: 240px;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.gantt-search-input:focus { border-color: #4e73df; box-shadow: 0 0 0 2px rgba(78,115,223,.15); }
+.gantt-search-input::placeholder { color: #adb5bd; }
+.gantt-search-clear {
+  position: absolute; right: .4rem;
+  background: transparent; border: none;
+  color: #adb5bd; font-size: .7rem;
+  cursor: pointer; padding: .2rem .25rem;
+  border-radius: .2rem; line-height: 1;
+  transition: color .15s;
+}
+.gantt-search-clear:hover { color: #e74a3b; }
+
+/* Dark mode */
+.modo-oscuro .kb-user-pill          { background: #1e1e2d; border-color: #3c3c50; color: #9a9db5; }
+.modo-oscuro .kb-user-pill:hover    { border-color: #4e73df; color: #7b96f5; background: #252535; }
+.modo-oscuro .kb-user-pill.active   { background: #4e73df; border-color: #4e73df; color: #fff; }
+.modo-oscuro .gantt-search-input    { background: #1e1e2d; border-color: #3c3c50; color: #e0e0e0; }
+.modo-oscuro .gantt-search-input:focus { border-color: #4e73df; box-shadow: 0 0 0 2px rgba(78,115,223,.2); }
+.modo-oscuro .gantt-search-input::placeholder { color: #5a6075; }
+.modo-oscuro .gantt-search-icon     { color: #5a6075; }
+.modo-oscuro .gantt-search-clear    { color: #5a6075; }
+.modo-oscuro .gantt-search-clear:hover { color: #e74a3b; }
+.modo-oscuro #gantt-header-bar      { background: #2d2d3a !important; border-color: #3c3c50 !important; }
 </style>
 
 <!-- === PAGE HEADER === -->
-<div class="d-sm-flex align-items-center justify-content-between mb-3">
-  <h1 class="h3 mb-0" style="color:#5a5c69;font-weight:800">
-    <i class="fas fa-chart-bar text-primary me-2"></i>Gantt — Proyectos
-  </h1>
-  <div class="d-flex gap-2 align-items-center">
-    <button class="btn btn-outline-info btn-sm shadow-sm no-print" id="btn-cliente-toggle" title="Activar/desactivar Vista Cliente">
-      <span class="txt-on"><i class="fas fa-eye me-1"></i>Vista Cliente</span>
-      <span class="txt-off"><i class="fas fa-eye-slash me-1"></i>Salir de Vista Cliente</span>
-    </button>
-    <button class="btn btn-outline-secondary btn-sm shadow-sm no-print" id="btn-export" title="Exportar Gantt como PDF/Imagen">
-      <i class="fas fa-file-export me-1"></i>Exportar
-    </button>
-    <button class="btn btn-primary btn-sm shadow-sm no-print" id="btn-nueva-tarea">
-      <i class="fas fa-plus fa-sm me-1"></i>Nueva Tarea
-    </button>
+<div class="mb-3 no-print">
+  <!-- Fila 1: título + acciones -->
+  <div class="d-sm-flex align-items-center justify-content-between mb-2">
+    <h1 class="h3 mb-0" style="color:#5a5c69;font-weight:800">
+      <i class="fas fa-chart-bar text-primary me-2"></i>Gantt — Proyectos
+    </h1>
+    <div class="d-flex gap-2 align-items-center">
+      <button class="btn btn-outline-info btn-sm shadow-sm" id="btn-cliente-toggle" title="Activar/desactivar Vista Cliente">
+        <span class="txt-on"><i class="fas fa-eye me-1"></i>Vista Cliente</span>
+        <span class="txt-off"><i class="fas fa-eye-slash me-1"></i>Salir de Vista Cliente</span>
+      </button>
+      <button class="btn btn-outline-secondary btn-sm shadow-sm" id="btn-export" title="Exportar Gantt como PDF/Imagen">
+        <i class="fas fa-file-export me-1"></i>Exportar
+      </button>
+      <button class="btn btn-primary btn-sm shadow-sm" id="btn-nueva-tarea">
+        <i class="fas fa-plus fa-sm me-1"></i>Nueva Tarea
+      </button>
+    </div>
+  </div>
+  <!-- Fila 2: buscador + filtros de usuario -->
+  <div class="d-flex align-items-center gap-2 flex-wrap" id="gantt-header-bar"
+       style="background:#f8f9fc;border:1px solid #e3e6f0;border-radius:.35rem;padding:.5rem .75rem">
+    <div class="gantt-search-wrap">
+      <i class="fas fa-search gantt-search-icon"></i>
+      <input type="text" id="gantt-search" class="gantt-search-input"
+             placeholder="Buscar título, código, responsable…" autocomplete="off">
+      <button class="gantt-search-clear" id="gantt-search-clear" type="button"
+              style="display:none" title="Limpiar búsqueda">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="d-flex gap-1 flex-wrap align-items-center" id="gantt-user-pills">
+      <!-- Poblado dinámicamente por JS desde ALL_TASKS -->
+    </div>
   </div>
 </div>
 
@@ -929,6 +1009,27 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.add('modo-cliente');
   }
 
+  buildUserPills();
+
+  /* Buscador del header */
+  const ganttSearch = el('gantt-search');
+  const ganttClear  = el('gantt-search-clear');
+  if (ganttSearch) {
+    ganttSearch.addEventListener('input', () => {
+      _ganttSearchText = ganttSearch.value.trim().toLowerCase();
+      if (ganttClear) ganttClear.style.display = _ganttSearchText ? '' : 'none';
+      applyFilters();
+    });
+  }
+  if (ganttClear) {
+    ganttClear.addEventListener('click', () => {
+      ganttSearch.value = '';
+      _ganttSearchText = '';
+      ganttClear.style.display = 'none';
+      applyFilters();
+    });
+  }
+
   fillRespSelect();
   applyFilters();
   wireEvents();
@@ -1013,11 +1114,67 @@ function toggleProject(code) {
   if (arrow) arrow.textContent = collapsed ? '▶' : '▼';
 }
 
+// === BÚSQUEDA + FILTRO USUARIO (header) ===
+const GANTT_CURRENT_USER = {{ (current_user.nombres ~ ' ' ~ current_user.apellidos) | tojson }};
+let _ganttUserFilter = '';
+let _ganttSearchText = '';
+
+function buildUserPills() {
+  const container = el('gantt-user-pills');
+  if (!container) return;
+  const responsables = [...new Set(tasks.map(t => (t.responsable || '').trim()).filter(Boolean))].sort();
+  container.innerHTML = '';
+
+  const todos = document.createElement('button');
+  todos.className = 'kb-user-pill kb-user-pill--todos active';
+  todos.dataset.user = '';
+  todos.type = 'button';
+  todos.title = 'Mostrar todos los usuarios';
+  todos.textContent = 'TODOS';
+  todos.addEventListener('click', () => { setUserPill(''); });
+  container.appendChild(todos);
+
+  responsables.forEach(name => {
+    const parts = name.trim().split(/\s+/);
+    const initials = (parts[0]?.[0] || '').toUpperCase() + (parts[1]?.[0] || '').toUpperCase();
+    const btn = document.createElement('button');
+    btn.className = 'kb-user-pill';
+    btn.dataset.user = name;
+    btn.type = 'button';
+    btn.title = name;
+    btn.textContent = initials || name.slice(0, 2).toUpperCase();
+    btn.addEventListener('click', () => { setUserPill(name); });
+    container.appendChild(btn);
+  });
+
+  /* Pre-seleccionar el usuario en sesión */
+  if (GANTT_CURRENT_USER) {
+    const match = [...container.querySelectorAll('.kb-user-pill[data-user]')]
+      .find(b => b.dataset.user === GANTT_CURRENT_USER);
+    if (match) {
+      container.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+      match.classList.add('active');
+      _ganttUserFilter = GANTT_CURRENT_USER;
+    }
+  }
+}
+
+function setUserPill(name) {
+  _ganttUserFilter = name;
+  const container = el('gantt-user-pills');
+  if (container) {
+    container.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+    const active = container.querySelector(`.kb-user-pill[data-user="${CSS.escape(name)}"]`);
+    if (active) active.classList.add('active');
+  }
+  applyFilters();
+}
+
 // === FILTERS ===
 function applyFilters() {
   const emp      = (el('sel-empresa').value   || '').trim();
   const proj     = (el('sel-proyecto').value  || '').trim();
-  const r        = (el('sel-resp').value      || '').trim();
+  const r        = _ganttUserFilter || (el('sel-resp').value || '').trim();
   const s        = (el('sel-estado').value    || '').trim();
   const desde    =  el('filter-desde').value;
   const hasta    =  el('filter-hasta').value;
@@ -1058,7 +1215,8 @@ function applyFilters() {
   // 4. Actualizar dropdown de responsables según los filtros anteriores
   fillRespSelect(byProj);
 
-  // 5. Aplicar el resto de filtros
+  // 5. Aplicar el resto de filtros (incluye búsqueda de texto y filtro de usuario)
+  const searchQ = _ganttSearchText;
   filtered = byProj.filter(t => {
     const tResp = (t.responsable || '').trim();
     const tEst  = (t.estado      || '').trim();
@@ -1068,6 +1226,11 @@ function applyFilters() {
     if (hasta    && t.start > hasta)        return false;
     if (noComp   && tEst === 'COMPLETADOS') return false;
     if (onlyLate && !(t.end < today && tEst !== 'COMPLETADOS')) return false;
+    if (searchQ) {
+      const haystack = [t.name, t.id, t.codigo_proyecto, t.responsable, t.empresa]
+        .map(v => (v || '').toLowerCase()).join(' ');
+      if (!haystack.includes(searchQ)) return false;
+    }
     return true;
   });
 
@@ -1603,6 +1766,17 @@ function wireEvents() {
     el('filter-hasta').value = '';
     el('chk-nocomp').checked = false;
     el('chk-late').checked = false;
+    /* Resetear buscador y filtro de usuario del header */
+    _ganttSearchText = '';
+    _ganttUserFilter = '';
+    const gs = el('gantt-search'); if (gs) gs.value = '';
+    const gc = el('gantt-search-clear'); if (gc) gc.style.display = 'none';
+    const pills = el('gantt-user-pills');
+    if (pills) {
+      pills.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+      const todosBtn = pills.querySelector('.kb-user-pill--todos');
+      if (todosBtn) todosBtn.classList.add('active');
+    }
     applyFilters();
   });
 

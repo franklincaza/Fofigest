@@ -361,40 +361,181 @@ body { font-family: 'Nunito', sans-serif; }
 .modo-oscuro .kb-stat             { background: #1e1e2d; border-color: #3c3c50; color: #c3c3cd; }
 .modo-oscuro .kb-col__add         { border-color: #3c3c50; color: #9a9db5; }
 .modo-oscuro .kb-col__add:hover   { background: #2d2d3a; border-color: #4e73df; color: #7b96f5; }
+
+/* ── Search bar ── */
+.kb-search-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+.kb-search-icon {
+    position: absolute;
+    left: .65rem;
+    color: #adb5bd;
+    font-size: .75rem;
+    pointer-events: none;
+    z-index: 1;
+}
+.kb-search-input {
+    padding: .38rem .9rem .38rem 2rem;
+    border: 1px solid var(--kb-border);
+    border-radius: var(--kb-radius);
+    font-size: .8rem;
+    font-family: 'Nunito', sans-serif;
+    background: #fff;
+    color: #3a3b45;
+    width: 700px;
+    transition: border-color var(--kb-transition), box-shadow var(--kb-transition);
+    outline: none;
+}
+.kb-search-input:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 2px rgba(78,115,223,.15);
+}
+.kb-search-input::placeholder { color: #adb5bd; }
+.kb-search-clear {
+    position: absolute;
+    right: .4rem;
+    background: transparent;
+    border: none;
+    color: #adb5bd;
+    font-size: .7rem;
+    cursor: pointer;
+    padding: .2rem .28rem;
+    border-radius: .2rem;
+    line-height: 1;
+    transition: color var(--kb-transition);
+}
+.kb-search-clear:hover { color: #e74a3b; }
+
+/* ── User filter pills ── */
+.kb-user-pill {
+    background: #fff;
+    border: 1px solid var(--kb-border);
+    color: #5a5c69;
+    font-size: .68rem;
+    font-weight: 800;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all var(--kb-transition);
+    letter-spacing: .01em;
+    line-height: 1;
+    padding: 0;
+    flex-shrink: 0;
+}
+.kb-user-pill:hover {
+    border-color: #4e73df;
+    color: #4e73df;
+    background: #eef0fd;
+}
+.kb-user-pill.active {
+    background: #4e73df;
+    border-color: #4e73df;
+    color: #fff;
+}
+.kb-user-pill--todos {
+    border-radius: var(--kb-radius);
+    width: auto;
+    padding: .28rem .7rem;
+    font-size: .7rem;
+    letter-spacing: .06em;
+}
+
+/* Dark mode — search + pills */
+.modo-oscuro .kb-search-input {
+    background: #1e1e2d;
+    border-color: #3c3c50;
+    color: #e0e0e0;
+}
+.modo-oscuro .kb-search-input:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 2px rgba(78,115,223,.2);
+}
+.modo-oscuro .kb-search-input::placeholder { color: #5a6075; }
+.modo-oscuro .kb-search-icon { color: #5a6075; }
+.modo-oscuro .kb-search-clear { color: #5a6075; }
+.modo-oscuro .kb-search-clear:hover { color: #e74a3b; }
+.modo-oscuro .kb-user-pill {
+    background: #1e1e2d;
+    border-color: #3c3c50;
+    color: #9a9db5;
+}
+.modo-oscuro .kb-user-pill:hover {
+    border-color: #4e73df;
+    color: #7b96f5;
+    background: #252535;
+}
+.modo-oscuro .kb-user-pill.active {
+    background: #4e73df;
+    border-color: #4e73df;
+    color: #fff;
+}
 </style>
 
 <!-- ══════════════════════════════════════════════════════════════
      PAGE HEADER
 ══════════════════════════════════════════════════════════════════ -->
-<div class="d-sm-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-    <div>
-        <h1 class="h3 mb-0" style="color:#3a3b45;font-weight:700;">
-            <i class="fas fa-columns me-2 text-primary"></i>Tablero de Proyectos
-        </h1>
-        <small class="text-muted">Gestión visual de tareas por estado</small>
+<div class="mb-3">
+    <!-- Fila 1: título + acciones -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-2 flex-wrap gap-2">
+        <div>
+            <h1 class="h3 mb-0" style="color:#3a3b45;font-weight:700;">
+                <i class="fas fa-columns me-2 text-primary"></i>Tablero de Proyectos
+            </h1>
+            <small class="text-muted">Gestión visual de tareas por estado</small>
+        </div>
+        <div class="d-flex gap-2 flex-wrap">
+            <!-- Stats pills -->
+            <span class="kb-stat">
+                <i class="fas fa-tasks text-primary"></i>
+                {{ (tareas_PENDIENTE|length) + (tareas_PROGRESO|length) + (tareas_REVISIÓN|length) + (tareas_IMPEDIMENTOS|length) + (tareas_COMPLETADOS|length) }} tareas
+            </span>
+            <span class="kb-stat">
+                <i class="fas fa-clock text-warning"></i>
+                {{ total_horas_ejecucion }}h ejecutadas
+            </span>
+            <!-- Actions -->
+            <button class="btn btn-sm btn-outline-secondary shadow-sm" onclick="location.reload()">
+                <i class="fas fa-sync-alt me-1"></i>Refrescar
+            </button>
+            <button class="btn btn-sm btn-outline-primary shadow-sm"
+                    data-bs-toggle="modal" data-bs-target="#filtroModal">
+                <i class="fas fa-filter me-1"></i>Filtros
+            </button>
+            <button class="btn btn-sm btn-primary shadow-sm"
+                    onclick="abrirModalNuevaTarea('PENDIENTE')">
+                <i class="fas fa-plus me-1"></i>Nueva Tarea
+            </button>
+        </div>
     </div>
-    <div class="d-flex gap-2 flex-wrap">
-        <!-- Stats pills -->
-        <span class="kb-stat">
-            <i class="fas fa-tasks text-primary"></i>
-            {{ (tareas_PENDIENTE|length) + (tareas_PROGRESO|length) + (tareas_REVISIÓN|length) + (tareas_IMPEDIMENTOS|length) + (tareas_COMPLETADOS|length) }} tareas
-        </span>
-        <span class="kb-stat">
-            <i class="fas fa-clock text-warning"></i>
-            {{ total_horas_ejecucion }}h ejecutadas
-        </span>
-        <!-- Actions -->
-        <button class="btn btn-sm btn-outline-secondary shadow-sm" onclick="location.reload()">
-            <i class="fas fa-sync-alt me-1"></i>Refrescar
-        </button>
-        <button class="btn btn-sm btn-outline-primary shadow-sm"
-                data-bs-toggle="modal" data-bs-target="#filtroModal">
-            <i class="fas fa-filter me-1"></i>Filtros
-        </button>
-        <button class="btn btn-sm btn-primary shadow-sm"
-                onclick="abrirModalNuevaTarea('PENDIENTE')">
-            <i class="fas fa-plus me-1"></i>Nueva Tarea
-        </button>
+    <!-- Fila 2: buscador + filtros de usuario -->
+    <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div class="kb-search-wrap">
+            <i class="fas fa-search kb-search-icon"></i>
+            <input type="text" id="kb-search" class="kb-search-input"
+                   placeholder="Buscar por código, título, descripción, participante…"
+                   autocomplete="off">
+            <button class="kb-search-clear" id="kb-search-clear" type="button" style="display:none;"
+                    title="Limpiar búsqueda">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="d-flex gap-1 flex-wrap align-items-center" id="kb-user-filters">
+            <button class="kb-user-pill kb-user-pill--todos active" data-user="" type="button"
+                    title="Mostrar todos los usuarios">TODOS</button>
+            {% for usuario in usuarios %}
+            <button class="kb-user-pill" type="button"
+                    data-user="{{ usuario.nombres }} {{ usuario.apellidos }}"
+                    title="{{ usuario.nombres }} {{ usuario.apellidos }}">
+                {{ (usuario.nombres or '')[:1]|upper }}{{ (usuario.apellidos or '')[:1]|upper }}
+            </button>
+            {% endfor %}
+        </div>
     </div>
 </div>
 
@@ -427,7 +568,9 @@ body { font-family: 'Nunito', sans-serif; }
                  ondragstart="drag(event)"
                  data-estado="{{ tarea.estado }}"
                  data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
-                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}"
+                 data-responsable="{{ tarea.responsable or '' }}"
+                 data-search="{{ (tarea.codigo_proyecto or '') }} {{ (tarea.codigo_tarea or '') }} {{ (tarea.titulo or '') }} {{ (tarea.descripcion or '') }} {{ (tarea.responsable or '') }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -526,7 +669,9 @@ body { font-family: 'Nunito', sans-serif; }
                  ondragstart="drag(event)"
                  data-estado="{{ tarea.estado }}"
                  data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
-                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}"
+                 data-responsable="{{ tarea.responsable or '' }}"
+                 data-search="{{ (tarea.codigo_proyecto or '') }} {{ (tarea.codigo_tarea or '') }} {{ (tarea.titulo or '') }} {{ (tarea.descripcion or '') }} {{ (tarea.responsable or '') }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -625,7 +770,9 @@ body { font-family: 'Nunito', sans-serif; }
                  ondragstart="drag(event)"
                  data-estado="{{ tarea.estado }}"
                  data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
-                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}"
+                 data-responsable="{{ tarea.responsable or '' }}"
+                 data-search="{{ (tarea.codigo_proyecto or '') }} {{ (tarea.codigo_tarea or '') }} {{ (tarea.titulo or '') }} {{ (tarea.descripcion or '') }} {{ (tarea.responsable or '') }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -724,7 +871,9 @@ body { font-family: 'Nunito', sans-serif; }
                  ondragstart="drag(event)"
                  data-estado="{{ tarea.estado }}"
                  data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
-                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}"
+                 data-responsable="{{ tarea.responsable or '' }}"
+                 data-search="{{ (tarea.codigo_proyecto or '') }} {{ (tarea.codigo_tarea or '') }} {{ (tarea.titulo or '') }} {{ (tarea.descripcion or '') }} {{ (tarea.responsable or '') }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -824,7 +973,9 @@ body { font-family: 'Nunito', sans-serif; }
                  ondragstart="drag(event)"
                  data-estado="{{ tarea.estado }}"
                  data-facturada="{{ 'true' if tarea.facturada else 'false' }}"
-                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}">
+                 data-pagada="{{ 'true' if tarea.id in tareas_pagadas_ids else 'false' }}"
+                 data-responsable="{{ tarea.responsable or '' }}"
+                 data-search="{{ (tarea.codigo_proyecto or '') }} {{ (tarea.codigo_tarea or '') }} {{ (tarea.titulo or '') }} {{ (tarea.descripcion or '') }} {{ (tarea.responsable or '') }}">
                 <div class="kb-card__top">
                     <span class="kb-card__code" title="{{ tarea.codigo_proyecto }}">
                         <i class="fas fa-tag me-1" style="font-size:.6rem;"></i>{{ tarea.codigo_proyecto }}
@@ -1588,8 +1739,76 @@ window.addEventListener('fg-timer-sync', function (e) {
     }
 });
 
+/* ── Buscador y filtros de usuario ── */
+const KB_CURRENT_USER = {{ (current_user.nombres ~ ' ' ~ current_user.apellidos) | tojson }};
+
+const KbFilter = {
+    text: '',
+    user: '',
+
+    init() {
+        const input = document.getElementById('kb-search');
+        const clear  = document.getElementById('kb-search-clear');
+        if (input) {
+            input.addEventListener('input', () => {
+                this.text = input.value.trim().toLowerCase();
+                clear.style.display = this.text ? '' : 'none';
+                this.apply();
+            });
+        }
+        if (clear) {
+            clear.addEventListener('click', () => {
+                input.value = '';
+                this.text = '';
+                clear.style.display = 'none';
+                this.apply();
+            });
+        }
+        document.querySelectorAll('.kb-user-pill').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                this.user = (btn.dataset.user || '').toLowerCase();
+                this.apply();
+            });
+        });
+
+        /* Pre-seleccionar el pill del usuario en sesión */
+        if (KB_CURRENT_USER) {
+            const activePill = document.querySelector(`.kb-user-pill[data-user="${KB_CURRENT_USER}"]`);
+            if (activePill) {
+                document.querySelectorAll('.kb-user-pill').forEach(b => b.classList.remove('active'));
+                activePill.classList.add('active');
+                this.user = KB_CURRENT_USER.toLowerCase();
+                this.apply();
+            }
+        }
+    },
+
+    apply() {
+        document.querySelectorAll('.kb-card').forEach(card => {
+            const haystack   = (card.dataset.search || '').toLowerCase();
+            const responsable = (card.dataset.responsable || '').toLowerCase();
+            const textMatch  = !this.text || haystack.includes(this.text);
+            const userMatch  = !this.user || responsable === this.user;
+            card.style.display = (textMatch && userMatch) ? '' : 'none';
+        });
+        /* Actualizar contadores de columna */
+        document.querySelectorAll('.kb-col').forEach(col => {
+            const badge = col.querySelector('.kb-badge');
+            if (!badge) return;
+            let visible = 0;
+            col.querySelectorAll('.kb-card').forEach(c => {
+                if (c.style.display !== 'none') visible++;
+            });
+            badge.textContent = visible;
+        });
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     TimerManager.init();
+    KbFilter.init();
     /* Limpiar el campo readonly de código si el modal se abre para nuevo */
     document.getElementById('tareasform').addEventListener('show.bs.modal', () => {
         if (!document.getElementById('tareaId').value) {
